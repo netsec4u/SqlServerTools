@@ -1,0 +1,11 @@
+PSTOPIC
+    about_SQLServerTools
+
+SHORT DESCRIPTION
+    SQLServerTools module provides SQL Management Object and SQL Client functions.
+
+LONG DESCRIPTION
+    SQLServerTools module provides SQL Management Object and SQL Client functions.
+
+DETAILED DESCRIPTION
+    SQLServerTools module provides SQL Management Object and SQL Client functions.

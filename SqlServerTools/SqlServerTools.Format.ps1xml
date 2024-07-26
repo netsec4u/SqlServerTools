@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+	<ViewDefinitions>
+		<View>
+			<Name>SmoRestore</Name>
+			<ViewSelectedBy>
+				<TypeName>SmoRestore.BackupHeader</TypeName>
+			</ViewSelectedBy>
+			<TableControl>
+				<!-- ################ TABLE DEFINITIONS ################ -->
+				<TableHeaders>
+					<TableColumnHeader>
+						<Label>Backup Name</Label>
+						<Width>30</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>Server Name</Label>
+						<Width>16</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>Database Name</Label>
+						<Width>24</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>Backup Type</Label>
+						<Width>22</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>Backup Date</Label>
+						<Width>24</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+				</TableHeaders>
+				<TableRowEntries>
+					<TableRowEntry>
+						<TableColumnItems>
+							<TableColumnItem>
+								<PropertyName>BackupName</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>ServerName</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>DatabaseName</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>BackupTypeDescription</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>BackupStartDate</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+						</TableColumnItems>
+					</TableRowEntry>
+				</TableRowEntries>
+			</TableControl>
+		</View>
+		<View>
+			<Name>SmoRestoreFileList</Name>
+			<ViewSelectedBy>
+				<TypeName>SmoRestore.FileList</TypeName>
+			</ViewSelectedBy>
+			<TableControl>
+				<!-- ################ TABLE DEFINITIONS ################ -->
+				<TableHeaders>
+					<TableColumnHeader>
+						<Label>Logical File Name</Label>
+						<Width>30</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>Type</Label>
+						<Width>16</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>File Group Name</Label>
+						<Width>24</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>Size</Label>
+						<Width>22</Width>
+						<Alignment>left</Alignment>
+					</TableColumnHeader>
+				</TableHeaders>
+				<TableRowEntries>
+					<TableRowEntry>
+						<TableColumnItems>
+							<TableColumnItem>
+								<PropertyName>LogicalName</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>Type</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>FileGroupName</PropertyName>
+								<Alignment>left</Alignment>
+							</TableColumnItem>
+							<TableColumnItem>
+								<Alignment>left</Alignment>
+								<Scriptblock>
+									$ByteCount = $_.Size
+
+									switch  ([math]::truncate([math]::log($ByteCount, 1024))) {
+										0 {"$ByteCount Bytes"}
+										1 {"{0:n2}KB" -f ($ByteCount / 1KB)}
+										2 {"{0:n2}MB" -f ($ByteCount / 1MB)}
+										3 {"{0:n2}GB" -f ($ByteCount / 1GB)}
+										4 {"{0:n2}TB" -f ($ByteCount / 1TB)}
+										Default {"{0:n2}PB" -f ($ByteCount / 1pb)}
+									}
+								</Scriptblock>
+							</TableColumnItem>
+						</TableColumnItems>
+					</TableRowEntry>
+				</TableRowEntries>
+			</TableControl>
+		</View>
+	</ViewDefinitions>
+</Configuration>
