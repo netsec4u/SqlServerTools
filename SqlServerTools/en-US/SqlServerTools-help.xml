@@ -1506,11 +1506,11 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
       <command:verb>Build</command:verb>
       <command:noun>SqlClientConnectionString</command:noun>
       <maml:description>
-        <maml:para>Create connection string.</maml:para>
+        <maml:para>Builds connection strings for a SQL Server database.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Create connection string.</maml:para>
+      <maml:para>Builds connection strings for a SQL Server database.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1546,7 +1546,7 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>CommandTimeout</maml:name>
           <maml:description>
-            <maml:para>The wait time (in seconds) before terminating the attempt to execute a command and generating an error.</maml:para>
+            <maml:para>The wait time (in seconds) before terminating the attempt to execute a command and generating an error. The default is 30 seconds.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -1640,6 +1640,42 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>HostNameInCertificate</maml:name>
+          <maml:description>
+            <maml:para>Specifies the host name to use when validating the server certificate for the connection. When not specified, the server name from the Data Source is used for certificate validation.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IPAddressPreference</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IP address family preference when establishing TCP connections.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">SqlConnectionIPAddressPreference</command:parameterValue>
+          <dev:type>
+            <maml:name>SqlConnectionIPAddressPreference</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MultipleActiveResultSets</maml:name>
+          <maml:description>
+            <maml:para>Specifies that an application can maintain multiple active result sets (MARS).</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>MultiSubnetFailover</maml:name>
           <maml:description>
             <maml:para>If your application is connecting to an AlwaysOn availability group (AG) on different subnets, setting MultiSubnetFailover=true provides faster detection of and connection to the (currently) active server.</maml:para>
@@ -1721,7 +1757,7 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>CommandTimeout</maml:name>
           <maml:description>
-            <maml:para>The wait time (in seconds) before terminating the attempt to execute a command and generating an error.</maml:para>
+            <maml:para>The wait time (in seconds) before terminating the attempt to execute a command and generating an error. The default is 30 seconds.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -1803,6 +1839,18 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>HostNameInCertificate</maml:name>
+          <maml:description>
+            <maml:para>Specifies the host name to use when validating the server certificate for the connection. When not specified, the server name from the Data Source is used for certificate validation.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>IntegratedSecurity</maml:name>
           <maml:description>
             <maml:para>Indicates whether User ID and Password are specified in the connection (when false) or whether the current Windows account credentials are used for authentication (when true).</maml:para>
@@ -1813,6 +1861,30 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
             <maml:uri />
           </dev:type>
           <dev:defaultValue>True</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>IPAddressPreference</maml:name>
+          <maml:description>
+            <maml:para>Specifies the IP address family preference when establishing TCP connections.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">SqlConnectionIPAddressPreference</command:parameterValue>
+          <dev:type>
+            <maml:name>SqlConnectionIPAddressPreference</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MultipleActiveResultSets</maml:name>
+          <maml:description>
+            <maml:para>Specifies that an application can maintain multiple active result sets (MARS).</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+          <dev:type>
+            <maml:name>Boolean</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>MultiSubnetFailover</maml:name>
@@ -1892,7 +1964,7 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>CommandTimeout</maml:name>
         <maml:description>
-          <maml:para>The wait time (in seconds) before terminating the attempt to execute a command and generating an error.</maml:para>
+          <maml:para>The wait time (in seconds) before terminating the attempt to execute a command and generating an error. The default is 30 seconds.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -1986,6 +2058,18 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>HostNameInCertificate</maml:name>
+        <maml:description>
+          <maml:para>Specifies the host name to use when validating the server certificate for the connection. When not specified, the server name from the Data Source is used for certificate validation.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>IntegratedSecurity</maml:name>
         <maml:description>
           <maml:para>Indicates whether User ID and Password are specified in the connection (when false) or whether the current Windows account credentials are used for authentication (when true).</maml:para>
@@ -1996,6 +2080,30 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
           <maml:uri />
         </dev:type>
         <dev:defaultValue>True</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>IPAddressPreference</maml:name>
+        <maml:description>
+          <maml:para>Specifies the IP address family preference when establishing TCP connections.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">SqlConnectionIPAddressPreference</command:parameterValue>
+        <dev:type>
+          <maml:name>SqlConnectionIPAddressPreference</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MultipleActiveResultSets</maml:name>
+        <maml:description>
+          <maml:para>Specifies that an application can maintain multiple active result sets (MARS).</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>Boolean</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>MultiSubnetFailover</maml:name>
@@ -2068,7 +2176,27 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
-        <maml:para>NetworkLibrary not yet implemented.</maml:para>
+        <maml:para>The following connection string options are not implemented: * AttachDBFilename</maml:para>
+        <maml:para>* AttestationProtocol</maml:para>
+        <maml:para>* Authentication</maml:para>
+        <maml:para>* ColumnEncryptionSetting</maml:para>
+        <maml:para>* CurrentLanguage</maml:para>
+        <maml:para>* EnclaveAttestationUrl</maml:para>
+        <maml:para>* Enlist</maml:para>
+        <maml:para>* FailoverPartnerSPN</maml:para>
+        <maml:para>* IsFixedSize</maml:para>
+        <maml:para>* LoadBalanceTimeout</maml:para>
+        <maml:para>* MaxPoolSize</maml:para>
+        <maml:para>* MinPoolSize</maml:para>
+        <maml:para>* PersistSecurityInfo</maml:para>
+        <maml:para>* PoolBlockingPeriod</maml:para>
+        <maml:para>* Pooling</maml:para>
+        <maml:para>* Replication</maml:para>
+        <maml:para>* ServerCertificate</maml:para>
+        <maml:para>* ServerSPN</maml:para>
+        <maml:para>* TransactionBinding</maml:para>
+        <maml:para>* TypeSystemVersion</maml:para>
+        <maml:para>* UserInstance</maml:para>
       </maml:alert>
     </maml:alertSet>
     <command:examples>
@@ -4109,6 +4237,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           </dev:type>
           <dev:defaultValue>30</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>CommandType</maml:name>
+          <maml:description>
+            <maml:para>Specifies a value indicating how the CommandText property is to be interpreted.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">CommandType</command:parameterValue>
+          <dev:type>
+            <maml:name>CommandType</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Text</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>DatabaseName</maml:name>
           <maml:description>
@@ -4162,6 +4302,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           </dev:type>
           <dev:defaultValue>DataTable</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OutSqlParameter</maml:name>
+          <maml:description>
+            <maml:para>Specifies reference parameter that will contain output SQL parameters.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="SqlServer">
           <maml:name>ServerInstance</maml:name>
           <maml:description>
@@ -4182,6 +4334,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SqlParameter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the SQL parameters of the Transact-SQL statement or stored procedure.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4224,6 +4388,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           <dev:defaultValue>30</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>CommandType</maml:name>
+          <maml:description>
+            <maml:para>Specifies a value indicating how the CommandText property is to be interpreted.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">CommandType</command:parameterValue>
+          <dev:type>
+            <maml:name>CommandType</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Text</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>DatabaseName</maml:name>
           <maml:description>
             <maml:para>Specifies the name of the database.</maml:para>
@@ -4276,6 +4452,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           </dev:type>
           <dev:defaultValue>DataTable</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>OutSqlParameter</maml:name>
+          <maml:description>
+            <maml:para>Specifies reference parameter that will contain output SQL parameters.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>SqlCommandText</maml:name>
           <maml:description>
@@ -4296,6 +4484,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           <command:parameterValue required="true" variableLength="false">SqlConnection</command:parameterValue>
           <dev:type>
             <maml:name>SqlConnection</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>SqlParameter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the SQL parameters of the Transact-SQL statement or stored procedure.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4336,6 +4536,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
           <maml:uri />
         </dev:type>
         <dev:defaultValue>30</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>CommandType</maml:name>
+        <maml:description>
+          <maml:para>Specifies a value indicating how the CommandText property is to be interpreted.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">CommandType</command:parameterValue>
+        <dev:type>
+          <maml:name>CommandType</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Text</dev:defaultValue>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>DatabaseName</maml:name>
@@ -4385,6 +4597,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
         </dev:type>
         <dev:defaultValue>DataTable</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>OutSqlParameter</maml:name>
+        <maml:description>
+          <maml:para>Specifies reference parameter that will contain output SQL parameters.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="SqlServer">
         <maml:name>ServerInstance</maml:name>
         <maml:description>
@@ -4417,6 +4641,18 @@ Get-SmoBackupHeader -DatabaseBackupPath "D:\MSSQL\Backup\MyBackup.bak" -SmoServe
         <command:parameterValue required="true" variableLength="false">SqlConnection</command:parameterValue>
         <dev:type>
           <maml:name>SqlConnection</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>SqlParameter</maml:name>
+        <maml:description>
+          <maml:para>Specifies the SQL parameters of the Transact-SQL statement or stored procedure.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlParameter]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

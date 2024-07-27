@@ -3155,7 +3155,7 @@ function Remove-SmoCredential {
 		DefaultParameterSetName = 'ServerInstance'
 	)]
 
-	[OutputType([void])]
+	[OutputType([System.Void])]
 
 	PARAM(
 		[Parameter(
@@ -3826,7 +3826,7 @@ function Remove-SmoServerRole {
 		DefaultParameterSetName = 'ServerInstance'
 	)]
 
-	[OutputType([void])]
+	[OutputType([System.Void])]
 
 	PARAM(
 		[Parameter(
@@ -4029,7 +4029,7 @@ function Remove-SmoSqlLogin {
 		DefaultParameterSetName = 'ServerInstance'
 	)]
 
-	[OutputType([void])]
+	[OutputType([System.Void])]
 
 	PARAM(
 		[Parameter(
@@ -5866,7 +5866,29 @@ function Build-SqlClientConnectionString {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1,128)]
+		[string]$HostNameInCertificate,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.Data.SqlClient.SqlConnectionIPAddressPreference]$IPAddressPreference,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
 		[bool]$TrustServerCertificate = $false,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[bool]$MultipleActiveResultSets = $false,
 
 		[Parameter(
 			Mandatory = $false,
@@ -5949,6 +5971,14 @@ function Build-SqlClientConnectionString {
 				$SqlConnectionStringBuilder['Encrypt'] = [Microsoft.Data.SqlClient.SqlConnectionEncryptOption]::Optional.ToString()
 			}
 
+			if ($PSBoundParameters.ContainsKey('HostNameInCertificate')) {
+				$SqlConnectionStringBuilder['HostNameInCertificate'] = $HostNameInCertificate
+			}
+
+			if ($PSBoundParameters.ContainsKey('IPAddressPreference')) {
+				$SqlConnectionStringBuilder['IPAddressPreference'] = $IPAddressPreference
+			}
+
 			$SqlConnectionStringBuilder['Pooling'] = $true
 			$SqlConnectionStringBuilder['Connect Timeout'] = $ConnectionTimeout
 			$SqlConnectionStringBuilder['Command Timeout'] = $CommandTimeout
@@ -5957,6 +5987,7 @@ function Build-SqlClientConnectionString {
 			$SqlConnectionStringBuilder['Application Name'] = $ApplicationName
 			$SqlConnectionStringBuilder['Workstation ID'] = [System.Net.Dns]::GetHostName()
 			$SqlConnectionStringBuilder['ApplicationIntent'] = $ApplicationIntent
+			$SqlConnectionStringBuilder['MultipleActiveResultSets'] = $MultipleActiveResultSets
 			$SqlConnectionStringBuilder['MultiSubnetFailover'] = $MultiSubnetFailover
 			$SqlConnectionStringBuilder['ConnectRetryCount'] = $ConnectRetryCount
 			$SqlConnectionStringBuilder['ConnectRetryInterval'] = $ConnectRetryInterval
@@ -6187,7 +6218,11 @@ function Get-SqlClientDataSet {
 		DefaultParameterSetName = 'DatabaseName'
 	)]
 
-	[OutputType([System.Data.DataSet], [System.Data.DataTable], [System.Data.DataRow])]
+	[OutputType(
+		[System.Data.DataSet],
+		[System.Data.DataTable],
+		[System.Data.DataRow]
+	)]
 
 	param (
 		[Parameter(
@@ -6229,6 +6264,27 @@ function Get-SqlClientDataSet {
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[string]$SqlCommandText,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Data.CommandType]$CommandType = [System.Data.CommandType]::Text,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Collections.Generic.List[Microsoft.Data.SqlClient.SqlParameter]]$SqlParameter,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Collections.Generic.List[Microsoft.Data.SqlClient.SqlParameter]][ref]$OutSqlParameter,
 
 		[Parameter(
 			Mandatory = $false,
@@ -6291,21 +6347,33 @@ function Get-SqlClientDataSet {
 			$SqlCommand = [Microsoft.Data.SqlClient.SqlCommand]::New()
 			$SqlCommand.Connection = $SqlConnection
 			$SqlCommand.CommandText = $SqlCommandText
-			$SqlCommand.CommandType = [System.Data.CommandType]::Text
+			$SqlCommand.CommandType = $CommandType
 			$SqlCommand.CommandTimeout = $CommandTimeout
+
+			if ($PSBoundParameters.ContainsKey('SqlParameter')) {
+				foreach ($ListItem in $SqlParameter) {
+					$Parameter = $ListItem.PSObject.Copy()
+
+					[void]$SqlCommand.Parameters.Add($Parameter)
+				}
+			}
+
+			$SqlDataAdapter = [Microsoft.Data.SqlClient.SqlDataAdapter]::New($SqlCommand)
 
 			$OutputDataset = [System.Data.DataSet]::New()
 			$OutputDataset.DataSetName = $DataSetName
 			$OutputDataset.ExtendedProperties['SqlCommand'] = $SqlCommandText
 			$OutputDataset.ExtendedProperties['SqlConnection'] = $SqlConnection
 
-			$SqlDataAdapter = [Microsoft.Data.SqlClient.SqlDataAdapter]::New($SqlCommand)
-
 			if ($PSCmdlet.ShouldProcess($DataSetName, 'Get SQL dataset')) {
 				[void]$SqlDataAdapter.Fill($OutputDataset, $DataTableName)
 
 				if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 					Disconnect-SqlServerInstance -SqlConnection $SqlConnection
+				}
+
+				foreach ($Parameter in $SqlCommand.Parameters.Where({$_.Direction -eq [System.Data.ParameterDirection]::Output})) {
+					$OutSqlParameter.Add($Parameter)
 				}
 
 				switch ($OutputAs) {
@@ -6316,7 +6384,11 @@ function Get-SqlClientDataSet {
 						$OutputDataset.Tables
 					}
 					'DataRow' {
-						$OutputDataset.Tables[0]
+						foreach ($DataTable in $OutputDataset.Tables) {
+							foreach ($DataRow in $DataTable.Rows) {
+								$DataRow
+							}
+						}
 					}
 				}
 			}
@@ -6325,7 +6397,7 @@ function Get-SqlClientDataSet {
 			throw $_
 		}
 		finally {
-			if (Test-Path -Path variable:\SqlDataAdapter) {
+			if (Test-Path -Path variable:\SqlCommand) {
 				$SqlCommand.Dispose()
 			}
 
