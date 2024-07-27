@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.3.8.0'
+ModuleVersion = '3.4.0.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -146,7 +146,7 @@ PrivateData = @{
 	PSData = @{
 
 		# Tags applied to this module. These help with module discovery in online galleries.
-		Tags = @('SQL Server Client', 'Smo', 'SQL Management Objects')
+		Tags = @('SQLServerClient', 'Smo', 'SQLManagementObjects')
 
 		# A URL to the license for this module.
 		LicenseUri = 'https://raw.githubusercontent.com/netsec4u/SqlServerTools/main/LICENSE'
@@ -173,7 +173,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-# HelpInfoURI = ''
+HelpInfoURI = 'https://github.com/netsec4u/SqlServerTools/blob/main/docs/SqlServerTools.md'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
