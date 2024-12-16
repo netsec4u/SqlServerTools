@@ -134,6 +134,9 @@ Rename log file.
 ### [Save-SqlClientDataSet](Save-SqlClientDataSet.md)
 Save dataset to SQL Server.
 
+### [Set-SmoCredential](Set-SmoCredential.md)
+Alter credential.
+
 ### [Set-SmoDatabaseObjectPermission](Set-SmoDatabaseObjectPermission.md)
 Grant, deny, or revoke database object permissions to user or role.
 
@@ -148,6 +151,12 @@ Set database schema properties.
 
 ### [Set-SmoDatabaseUser](Set-SmoDatabaseUser.md)
 Set database user properties.
+
+### [Set-SmoServerRole](Set-SmoServerRole.md)
+Alter server role.
+
+### [Set-SmoSqlLogin](Set-SmoSqlLogin.md)
+Set SQL login properties.
 
 ### [Test-SqlBrowserConnection](Test-SqlBrowserConnection.md)
 Test SQL Browser connectivity.

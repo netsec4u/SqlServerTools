@@ -58,6 +58,8 @@ Executes Transact-SQL statement against a SQL Server database.
 Get-SqlClientDataSet -ServerInstance MyServer -DatabaseName master -SqlCommandText "SELECT * FROM sys.tables;"
 ```
 
+Gets data set from query.
+
 ### EXAMPLE 2
 ```powershell
 $SqlConnection = Connect-SQLServerInstance -ServerInstance MyServer -DatabaseName master
@@ -65,7 +67,7 @@ $SqlConnection = Connect-SQLServerInstance -ServerInstance MyServer -DatabaseNam
 Get-SqlClientDataSet -SqlConnection $SqlConnection -SqlCommandText "SELECT * FROM sys.tables;"
 ```
 
-Gets data set from query.
+Gets data set from query using the specified connection.
 
 ## PARAMETERS
 

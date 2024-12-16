@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.4.0.1'
+ModuleVersion = '3.5.0.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -101,11 +101,14 @@ FunctionsToExport = @(
 	'Remove-SmoSqlLogin',
 	'Rename-SmoDatabaseDataFile',
 	'Rename-SmoDatabaseLogFile',
+	'Set-SmoCredential',
 	'Set-SmoDatabaseObjectPermission',
 	'Set-SmoDatabasePermission',
 	'Set-SmoDatabaseRole',
 	'Set-SmoDatabaseSchema',
 	'Set-SmoDatabaseUser',
+	'Set-SmoServerRole',
+	'Set-SmoSqlLogin',
 	'Build-SqlClientConnectionString',
 	'Connect-SqlServerInstance',
 	'Disconnect-SqlServerInstance',

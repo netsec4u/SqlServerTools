@@ -5,27 +5,24 @@ online version:
 schema: 2.0.0
 ---
 
-# New-SmoSqlLogin
+# Set-SmoSqlLogin
 
 ## SYNOPSIS
-Create SQL login.
+Set SQL login properties.
 
 ## SYNTAX
 
 ### ServerInstance (Default)
 ```
-New-SmoSqlLogin
+Set-SmoSqlLogin
 	-ServerInstance <String>
 	-LoginName <String>
-	-Password <SecureString>
-	[-PasswordIsHashed]
-	-LoginType <LoginType>
+	[-NewLoginName <String>]
+	[-Password <SecureString>]
 	[-DefaultDatabase <String>]
-	[-Sid <Byte[]>]
 	[-PasswordExpirationEnabled <Boolean>]
 	[-PasswordPolicyEnforced <Boolean>]
 	[-LoginDisabled <Boolean>]
-	[-MustChangePassword <Boolean>]
 	[-WhatIf]
 	[-Confirm]
 	[<CommonParameters>]
@@ -33,59 +30,40 @@ New-SmoSqlLogin
 
 ### SmoServer
 ```
-New-SmoSqlLogin
+Set-SmoSqlLogin
 	-SmoServerObject <Server>
 	-LoginName <String>
-	-Password <SecureString>
-	[-PasswordIsHashed]
-	-LoginType <LoginType>
+	[-NewLoginName <String>]
+	[-Password <SecureString>]
 	[-DefaultDatabase <String>]
-	[-Sid <Byte[]>]
 	[-PasswordExpirationEnabled <Boolean>]
 	[-PasswordPolicyEnforced <Boolean>]
 	[-LoginDisabled <Boolean>]
-	[-MustChangePassword <Boolean>]
 	[-WhatIf]
 	[-Confirm]
 	[<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Create SQL login.
+Set SQL login properties.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 ```powershell
-New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password
+Set-SmoSqlLogin -ServerInstance MyServer -LoginName DBUser -LoginDisabled $false
 ```
 
-Creates SQL login on MyServer SQL instance.
+Sets SQL login properties with the specified values.
 
-### EXAMPLE 2
+### Example 2
 ```powershell
-$SmoServerObject = Connect-SmoServer -ServerInstance .
+$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . 
 
-New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Get-Credential).Password
+Set-SmoSqlLogin -DatabaseObject $DatabaseObject -LoginName DBUser -LoginDisabled $false
 ```
 
-Creates SQL login using SMO server object.
-
-### EXAMPLE 3
-```powershell
-New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid '0x615C96F6296B18438C6DF0304CD56CE0'
-```
-
-Creates SQL login using specified SID.
-
-### EXAMPLE 4
-```powershell
-$SqlLogin = Get-SqlLogin -ServerInstance SomeServer -LoginName MyLogin
-
-New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid $SqlLogin.Sid
-```
-
-Create SQL login using SID retrieved from Get-SqlLogin.
+Sets SQL login properties using database object.
 
 ## PARAMETERS
 
@@ -99,7 +77,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: Master
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -114,7 +92,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: False
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -134,27 +112,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LoginType
-Specifies type of SQL login.
+### -NewLoginName
+New login name to rename login.
 
 ```yaml
-Type: LoginType
-Parameter Sets: (All)
-Aliases:
-Accepted values: WindowsUser, WindowsGroup, SqlLogin, Certificate, AsymmetricKey, ExternalUser, ExternalGroup
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -MustChangePassword
-Specifies user must change password on next logon.
-
-```yaml
-Type: Boolean
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -173,7 +135,7 @@ Type: SecureString
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -185,21 +147,6 @@ Specifies password expiration to be enabled.
 
 ```yaml
 Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: True
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PasswordIsHashed
-Specifies the password in the Password parameter is a hashed value.
-
-```yaml
-Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -220,7 +167,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: True
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -234,21 +181,6 @@ Parameter Sets: ServerInstance
 Aliases: SqlServer
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Sid
-Specifies Sid as a string or byte array for login.
-
-```yaml
-Type: Byte[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

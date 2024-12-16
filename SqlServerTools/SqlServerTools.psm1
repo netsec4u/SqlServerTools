@@ -128,6 +128,52 @@ enum PermissionAction {
 }
 #EndRegion
 
+#Region Classes
+class TransformSidByteArray : System.Management.Automation.ArgumentTransformationAttribute {
+    [object]Transform([System.Management.Automation.EngineIntrinsics]$EngineIntrinsics, [object]$InputData) {
+		if ($InputData -is [byte[]]) {
+			return $InputData
+		} elseif ($InputData -is [string]) {
+			$SidArray = $InputData -replace '^0x', '' -split '(?<=\G\w{2})(?=\w{2})'
+
+			$ByteArray = $SidArray | ForEach-Object { [Convert]::ToByte( $_, 16 ) }
+
+			return $ByteArray
+		}
+
+		throw [System.InvalidOperationException]::New('Unexpected error.')
+	}
+}
+
+class ValidatePathExists : System.Management.Automation.ValidateArgumentsAttribute {
+	[string]$PathType = 'Any'
+
+	ValidatePathExists([string]$PathType) {
+		$this.PathType = $PathType
+	}
+
+	[void]Validate([object]$Path, [System.Management.Automation.EngineIntrinsics]$EngineIntrinsics) {
+		if([string]::IsNullOrWhiteSpace($Path)) {
+			throw [System.ArgumentNullException]::New()
+		}
+
+		if(-not (Test-Path -Path $Path -PathType $this.PathType)) {
+			switch ($this.PathType) {
+				'Container' {
+					throw [System.IO.DirectoryNotFoundException]::New()
+				}
+				'Leaf' {
+					throw [System.IO.FileNotFoundException]::New()
+				}
+				Default {
+					throw [System.InvalidOperationException]::New('An unexpected error has occurred.')
+				}
+			}
+		}
+	}
+}
+#EndRegion
+
 #Region Type Definitions
 $TypeDefinition = @'
 using System;
@@ -1678,17 +1724,7 @@ function Get-SmoBackupFileList {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidateScript({
-			if (-not $(Test-Path -LiteralPath $_ -PathType Leaf)) {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[System.ArgumentException]::New("Cannot find path '$_' because it does not exist."),
-					'1',
-					[System.Management.Automation.ErrorCategory]::InvalidArgument,
-					$_
-				)
-			}
-			return $true
-		})]
+		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo]$DatabaseBackupPath,
 
 		[Parameter(
@@ -1777,17 +1813,7 @@ function Get-SmoBackupHeader {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidateScript({
-			if (-not $(Test-Path -LiteralPath $_ -PathType Leaf)) {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[System.ArgumentException]::New("Cannot find path '$_' because it does not exist."),
-					'1',
-					[System.Management.Automation.ErrorCategory]::InvalidArgument,
-					$_
-				)
-			}
-			return $true
-		})]
+		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo]$DatabaseBackupPath,
 
 		[Parameter(
@@ -2039,17 +2065,7 @@ function Invoke-SmoNonQuery {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'DatabaseObject_InputFile'
 		)]
-		[ValidateScript({
-			if (-not $(Test-Path -LiteralPath $_ -PathType Leaf)) {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[System.ArgumentException]::New("Cannot find path '$_' because it does not exist."),
-					'1',
-					[System.Management.Automation.ErrorCategory]::InvalidArgument,
-					$_
-				)
-			}
-			return $true
-		})]
+		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo]$InputFile,
 
 		[Parameter(
@@ -2177,6 +2193,7 @@ function New-SmoCredential {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$Name,
 
 		[Parameter(
@@ -2904,6 +2921,7 @@ function New-SmoSqlLogin {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$LoginName,
 
 		[Parameter(
@@ -2912,6 +2930,13 @@ function New-SmoSqlLogin {
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[System.Security.SecureString]$Password,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$PasswordIsHashed,
 
 		[Parameter(
 			Mandatory = $true,
@@ -2933,14 +2958,7 @@ function New-SmoSqlLogin {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[string]$Sid,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[byte[]]$SidByteArray,
+		[byte[]][TransformSidByteArray()]$Sid,
 
 		[Parameter(
 			Mandatory = $false,
@@ -2961,7 +2979,14 @@ function New-SmoSqlLogin {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[bool]$LoginDisabled = $false
+		[bool]$LoginDisabled = $false,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[bool]$MustChangePassword = $false
 	)
 
 	BEGIN {
@@ -3004,18 +3029,22 @@ function New-SmoSqlLogin {
 			$SmoLogin.PasswordExpirationEnabled = $PasswordExpirationEnabled
 			$SmoLogin.PasswordPolicyEnforced = $PasswordPolicyEnforced
 
-			if ($PSBoundParameters.ContainsKey('SidByteArray')) {
-				$SmoLogin.Set_SID($SidByteArray)
-			} elseif ($PSBoundParameters.ContainsKey('Sid')) {
-				$SidArray = $Sid -replace '^0x', '' -split '(?<=\G\w{2})(?=\w{2})'
+			if ($PSBoundParameters.ContainsKey('Sid')) {
+				$SmoLogin.Set_SID($Sid)
+			}
 
-				$ByteArray = $SidArray | ForEach-Object { [Convert]::ToByte( $_, 16 ) }
+			$LoginCreateOptions = [Microsoft.SqlServer.Management.Smo.LoginCreateOptions]::None
 
-				$SmoLogin.Set_SID($ByteArray)
+			if ($PasswordIsHashed) {
+				$LoginCreateOptions += [Microsoft.SqlServer.Management.Smo.LoginCreateOptions]::IsHashed
+			}
+
+			if ($MustChangePassword) {
+				$LoginCreateOptions += [Microsoft.SqlServer.Management.Smo.LoginCreateOptions]::MustChange
 			}
 
 			if ($PSCmdlet.ShouldProcess($SmoServerObject.name, "Creating login $LoginName.")) {
-				$SmoLogin.Create($Password)
+				$SmoLogin.Create($Password, $LoginCreateOptions)
 
 				if ($LoginDisabled) {
 					$SmoLogin.Disable()
@@ -3181,6 +3210,7 @@ function Remove-SmoCredential {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$Name
 	)
 
@@ -3852,6 +3882,7 @@ function Remove-SmoServerRole {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$ServerRoleName
 	)
 
@@ -4055,6 +4086,7 @@ function Remove-SmoSqlLogin {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$LoginName
 	)
 
@@ -4862,6 +4894,124 @@ function Rename-SmoDatabaseLogFile {
 	}
 }
 
+function Set-SmoCredential {
+	<#
+	.EXTERNALHELP
+	SQLServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.Credential])]
+
+	PARAM(
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$Name,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$Identity,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Security.SecureString]$Password
+	)
+
+	BEGIN {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance;
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	PROCESS {
+		try {
+			if ($Name -NotIn $SmoServerObject.Credentials.Name) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Credential not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$Name
+				)
+			}
+
+			$SmoCredential = $SmoServerObject.Credentials[$Name]
+
+			$SmoCredential.Identity = [System.Management.Automation.PSCredential]::New($Identity, $Password)
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, "Altering database role $RoleName")) {
+				$SmoCredential.Alter()
+				$SmoCredential.Refresh()
+
+				$SmoCredential
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	END {
+	}
+}
+
 function Set-SmoDatabaseObjectPermission {
 	<#
 	.EXTERNALHELP
@@ -5298,7 +5448,7 @@ function Set-SmoDatabaseRole {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Low',
+		ConfirmImpact = 'Medium',
 		DefaultParameterSetName = 'DatabaseName'
 	)]
 
@@ -5389,6 +5539,7 @@ function Set-SmoDatabaseRole {
 
 			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, "Creating database role $RoleName")) {
 				$RoleObject.Alter()
+				$RoleObject.Refresh()
 
 				$RoleObject
 			}
@@ -5418,7 +5569,7 @@ function Set-SmoDatabaseSchema {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Low',
+		ConfirmImpact = 'Medium',
 		DefaultParameterSetName = 'DatabaseName'
 	)]
 
@@ -5509,6 +5660,7 @@ function Set-SmoDatabaseSchema {
 
 			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, "Creating database schema $SchemaName")) {
 				$SchemaObject.Alter()
+				$SchemaObject.Refresh()
 
 				$SchemaObject
 			}
@@ -5538,7 +5690,7 @@ function Set-SmoDatabaseUser {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Low',
+		ConfirmImpact = 'Medium',
 		DefaultParameterSetName = 'DatabaseName'
 	)]
 
@@ -5666,6 +5818,7 @@ function Set-SmoDatabaseUser {
 				}
 
 				$UserObject.Alter()
+				$UserObject.Refresh()
 
 				$UserObject
 			}
@@ -5677,6 +5830,284 @@ function Set-SmoDatabaseUser {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
+		}
+	}
+
+	END {
+	}
+}
+
+function Set-SmoServerRole {
+	<#
+	.EXTERNALHELP
+	SQLServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.ServerRole])]
+
+	PARAM(
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$ServerRoleName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$ServerRoleOwner
+	)
+
+	BEGIN {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	PROCESS {
+		try {
+			if ($Name -NotIn $SmoServerObject.Roles.Name) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Credential not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$ServerRoleName
+				)
+			}
+
+			$SmoServerRole = $SmoServerObject.Roles[$ServerRoleName]
+
+			$SmoServerRole.Owner = $ServerRoleOwner
+
+			if ($PSCmdlet.ShouldProcess($SmoServerObject.name, "Altering server role $ServerRoleName.")) {
+				$SmoServerRole.Alter()
+				$SmoServerRole.Refresh()
+
+				$SmoServerRole
+			}
+		}
+		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+
+			throw $_
+		}
+	}
+
+	END {
+	}
+}
+
+function Set-SmoSqlLogin {
+	<#
+	.EXTERNALHELP
+	SQLServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.Login])]
+
+	PARAM(
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$LoginName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$NewLoginName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Security.SecureString]$Password,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DefaultDatabase,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[bool]$PasswordExpirationEnabled,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[bool]$PasswordPolicyEnforced,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[bool]$LoginDisabled
+	)
+
+	BEGIN {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance;
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	PROCESS {
+		try {
+			if ($LoginName -NotIn $SmoServerObject.Logins.Name) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('SQL Login not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$LoginName
+				)
+			}
+
+			$SmoLogin = $SmoServerObject.Logins[$LoginName]
+
+			if ($PSBoundParameters.ContainsKey('DefaultDatabase')) {
+				$SmoLogin.DefaultDatabase = $DefaultDatabase
+			}
+
+			if ($PSBoundParameters.ContainsKey('Password')) {
+				$SmoLogin.ChangePassword($Password)
+			}
+
+			if ($PSBoundParameters.ContainsKey('PasswordExpirationEnabled')) {
+				$SmoLogin.PasswordExpirationEnabled = $PasswordExpirationEnabled
+			}
+
+			if ($PSBoundParameters.ContainsKey('PasswordPolicyEnforced')) {
+				$SmoLogin.PasswordPolicyEnforced = $PasswordPolicyEnforced
+			}
+
+			if ($PSBoundParameters.ContainsKey('LoginDisabled')) {
+				$SmoLogin.Disable()
+			}
+
+			if ($PSBoundParameters.ContainsKey('NewLoginName')) {
+				$SmoLogin.Rename($NewLoginName)
+			}
+
+			if ($PSCmdlet.ShouldProcess($LoginName, "Alter login.")) {
+				$SmoLogin.Alter()
+				$SmoLogin.Refresh()
+
+				$SmoLogin
+			}
+		}
+		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+
+			throw $_
 		}
 	}
 
@@ -5924,8 +6355,8 @@ function Build-SqlClientConnectionString {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidateRange(1, 255)]
-		[int]$ConnectRetryCount = 1,
+		[ValidateRange(0, 255)]
+		[int]$ConnectRetryCount = 2,
 
 		[Parameter(
 			Mandatory = $false,
@@ -6142,8 +6573,9 @@ function Connect-SqlServerInstance {
 
 			if ($PSBoundParameters['Verbose']) {
 				$SqlInfoMessageEventHandler = [Microsoft.Data.SqlClient.SqlInfoMessageEventHandler] {
-					param($SqlSender, $SqlEvent)
+					param([Object]$SqlSender, [Microsoft.Data.SqlClient.SqlInfoMessageEventArgs]$SqlEvent)
 
+					[void]$SqlSender
 					Write-Verbose $SqlEvent.Message
 				}
 
@@ -6284,7 +6716,7 @@ function Get-SqlClientDataSet {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[System.Collections.Generic.List[Microsoft.Data.SqlClient.SqlParameter]][ref]$OutSqlParameter,
+		[System.Collections.Generic.List[Microsoft.Data.SqlClient.SqlParameter]]$OutSqlParameter,
 
 		[Parameter(
 			Mandatory = $false,
@@ -6299,6 +6731,7 @@ function Get-SqlClientDataSet {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$DataSetName = 'NewDataSet',
 
 		[Parameter(
@@ -6306,6 +6739,7 @@ function Get-SqlClientDataSet {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidateLength(1, 128)]
 		[string]$DataTableName = 'NewDataTable',
 
 		[Parameter(
@@ -6705,17 +7139,7 @@ function Publish-SqlDatabaseDacPac {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidateScript({
-			if (-not $(Test-Path -LiteralPath $_ -PathType Leaf)) {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[System.ArgumentException]::New("Cannot find path '$_' because it does not exist."),
-					'1',
-					[System.Management.Automation.ErrorCategory]::InvalidArgument,
-					$_
-				)
-			}
-			return $true
-		})]
+		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo]$DacPacPath,
 
 		[Parameter(
