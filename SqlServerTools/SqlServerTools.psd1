@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.5.0.0'
+ModuleVersion = '3.6.1.2'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -44,7 +44,7 @@ PowerShellVersion = '5.1'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-	@{ModuleName="SqlServer"; ModuleVersion="22.2.0"; GUID="97c3b589-6545-4107-a061-3fe23a4e9195"}
+	@{ModuleName="SqlServer"; ModuleVersion="22.3.0"; GUID="97c3b589-6545-4107-a061-3fe23a4e9195"}
 )
 
 # Assemblies that must be loaded prior to importing this module
@@ -69,39 +69,76 @@ FormatsToProcess = @(
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
 	'Add-SmoAvailabilityDatabase',
+	'Add-SmoDatabaseAsymmetricKeyPrivateKey',
+#	'Add-SmoDatabaseCertificatePrivateKey',
 	'Add-SmoDatabaseDataFile',
-	'Add-SmoDatabaseEncryptionKey',
+	'Add-SmoDatabaseMasterKeyPasswordEncryption',
+	'Add-SmoDatabaseMasterKeyServiceKeyEncryption',
 	'Add-SmoDatabaseRoleMember',
+	'Add-SmoDatabaseSymmetricKeyKeyEncryption',
 	'Add-SmoServerRoleMember',
+	'Close-SmoDatabaseMasterKey',
+	'Close-SmoDatabaseSymmetricKey',
 	'Connect-SmoServer',
 	'Disable-SmoTransparentDatabaseEncryption',
 	'Disconnect-SmoServer',
 	'Enable-SmoTransparentDatabaseEncryption',
+	'Export-SmoDatabaseCertificate',
+	'Export-SmoDatabaseMasterKey',
+	'Export-SmoServiceMasterKey',
 	'Get-SmoAvailabilityGroup',
 	'Get-SmoBackupFileList',
 	'Get-SmoBackupHeader',
+	'Get-SmoDatabaseAsymmetricKey',
+	'Get-SmoDatabaseCertificate',
+	'Get-SmoDatabaseEncryptionKey',
+	'Get-SmoDatabaseMasterKey',
 	'Get-SmoDatabaseObject',
+	'Get-SmoDatabaseSymmetricKey',
+	'Import-SmoDatabaseMasterKey',
+	'Import-SmoServiceMasterKey',
 	'Invoke-SmoNonQuery',
 	'New-SmoCredential',
+	'New-SmoDatabaseAsymmetricKey',
+	'New-SmoDatabaseCertificate',
+	'New-SmoDatabaseEncryptionKey',
 	'New-SmoDatabaseFileGroup',
+	'New-SmoDatabaseMasterKey',
 	'New-SmoDatabaseRole',
 	'New-SmoDatabaseSchema',
+	'New-SmoDatabaseSymmetricKey',
 	'New-SmoDatabaseUser',
 	'New-SmoServerRole',
 	'New-SmoSqlLogin',
+	'Open-SmoDatabaseMasterKey',
+	'Open-SmoDatabaseSymmetricKey'
 	'Remove-SmoAvailabilityDatabase',
 	'Remove-SmoCredential',
+	'Remove-SmoDatabaseAsymmetricKey',
+	'Remove-SmoDatabaseAsymmetricKeyPrivateKey',
+	'Remove-SmoDatabaseCertificate',
 	'Remove-SmoDatabaseEncryptionKey',
+	'Remove-SmoDatabaseMasterKey',
+	'Remove-SmoDatabaseMasterKeyPasswordEncryption',
+	'Remove-SmoDatabaseMasterKeyServiceKeyEncryption',
 	'Remove-SmoDatabaseRole',
 	'Remove-SmoDatabaseRoleMember',
 	'Remove-SmoDatabaseSchema',
+	'Remove-SmoDatabaseSymmetricKey',
+	'Remove-SmoDatabaseSymmetricKeyKeyEncryption',
 	'Remove-SmoDatabaseUser',
 	'Remove-SmoServerRole',
 	'Remove-SmoServerRoleMember',
 	'Remove-SmoSqlLogin',
 	'Rename-SmoDatabaseDataFile',
 	'Rename-SmoDatabaseLogFile',
+	'Reset-SmoDatabaseEncryptionKey',
+	'Reset-SmoDatabaseMasterKey',
+	'Reset-SmoServiceMasterKey',
 	'Set-SmoCredential',
+	'Set-SmoDatabaseAsymmetricKey',
+	'Set-SmoDatabaseCertificate',
+	'Set-SmoDatabaseEncryptionKey',
 	'Set-SmoDatabaseObjectPermission',
 	'Set-SmoDatabasePermission',
 	'Set-SmoDatabaseRole',
@@ -128,7 +165,9 @@ FunctionsToExport = @(
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-# AliasesToExport = @()
+AliasesToExport = @(
+	'Add-SmoDatabaseEncryptionKey'
+)
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -161,7 +200,13 @@ PrivateData = @{
 		# IconUri = ''
 
 		# ReleaseNotes of this module
-		ReleaseNotes = 'Release Notes'
+		ReleaseNotes = 'Release Notes
+
+			Known Issues:
+				Add-SmoDatabaseSymmetricKeyKeyEncryption - Returns an error indicating symmetric key not open despite key being open.
+				Open-SmoDatabaseSymmetricKey - Does not always open symmetric key.
+				Remove-SmoDatabaseSymmetricKeyKeyEncryption - Returns an error indicating symmetric key not open despite key being open.
+		'
 
 		# Prerelease string of this module
 		# Prerelease = ''

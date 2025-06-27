@@ -72,7 +72,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to remove schema.
+SMO database object to remove schema.
 
 ```yaml
 Type: Database

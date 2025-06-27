@@ -24,14 +24,17 @@ Build-SqlClientConnectionString
 	[-EncryptConnection <Boolean>]
 	[-HostNameInCertificate <String>]
 	[-IPAddressPreference <SqlConnectionIPAddressPreference>]
-	[-MultipleActiveResultSets <Boolean>]
 	[-TrustServerCertificate <Boolean>]
+	[-MultipleActiveResultSets <Boolean>]
 	[-PacketSize <Int32>]
 	[-ApplicationName <String>]
 	[-ApplicationIntent <ApplicationIntent>]
 	[-MultiSubnetFailover <Boolean>]
 	[-ConnectRetryCount <Int32>]
 	[-ConnectRetryInterval <Int32>]
+	[-MinPoolSize <Int32>]
+	[-MaxPoolSize <Int32>]
+	[-ConnectionLifetime <Int32>]
 	[<CommonParameters>]
 ```
 
@@ -47,14 +50,17 @@ Build-SqlClientConnectionString
 	[-EncryptConnection <Boolean>]
 	[-HostNameInCertificate <String>]
 	[-IPAddressPreference <SqlConnectionIPAddressPreference>]
-	[-MultipleActiveResultSets <Boolean>]
 	[-TrustServerCertificate <Boolean>]
+	[-MultipleActiveResultSets <Boolean>]
 	[-PacketSize <Int32>]
 	[-ApplicationName <String>]
 	[-ApplicationIntent <ApplicationIntent>]
 	[-MultiSubnetFailover <Boolean>]
 	[-ConnectRetryCount <Int32>]
 	[-ConnectRetryInterval <Int32>]
+	[-MinPoolSize <Int32>]
+	[-MaxPoolSize <Int32>]
+	[-ConnectionLifetime <Int32>]
 	[<CommonParameters>]
 ```
 
@@ -126,6 +132,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ConnectionLifetime
+When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Connection Lifetime.
+
+A value of zero (0) causes pooled connections to have the maximum connection timeout.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 600
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ConnectionTimeout
 The length of time (in seconds) to wait for a connection to the server before terminating the attempt and throwing an exception.
 Default is 15 seconds.
@@ -152,7 +175,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: 1
+Default value: 2
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -233,7 +256,8 @@ Accept wildcard characters: False
 ```
 
 ### -HostNameInCertificate
-Specifies the host name to use when validating the server certificate for the connection. When not specified, the server name from the Data Source is used for certificate validation.
+Specifies the host name to use when validating the server certificate for the connection.
+When not specified, the server name from the Data Source is used for certificate validation.
 
 ```yaml
 Type: String
@@ -269,10 +293,43 @@ Specifies the IP address family preference when establishing TCP connections.
 Type: SqlConnectionIPAddressPreference
 Parameter Sets: (All)
 Aliases:
+Accepted values: IPv4First, IPv6First, UsePlatformDefault
 
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MaxPoolSize
+The maximum number of connections that are allowed in the pool.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 100
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MinPoolSize
+The minimum number of connections that are allowed in the pool.
+
+Zero (0) in this field means no minimum connections are initially opened.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -374,9 +431,6 @@ The following connection string options are not implemented:
 * Enlist
 * FailoverPartnerSPN
 * IsFixedSize
-* LoadBalanceTimeout
-* MaxPoolSize
-* MinPoolSize
 * PersistSecurityInfo
 * PoolBlockingPeriod
 * Pooling
@@ -386,6 +440,5 @@ The following connection string options are not implemented:
 * TransactionBinding
 * TypeSystemVersion
 * UserInstance
-
 
 ## RELATED LINKS

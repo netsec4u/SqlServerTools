@@ -2,7 +2,7 @@
 <Configuration>
 	<ViewDefinitions>
 		<View>
-			<Name>SmoRestore</Name>
+			<Name>SmoRestoreBackupHeader</Name>
 			<ViewSelectedBy>
 				<TypeName>SmoRestore.BackupHeader</TypeName>
 			</ViewSelectedBy>
@@ -112,7 +112,7 @@
 								<Scriptblock>
 									$ByteCount = $_.Size
 
-									switch  ([math]::truncate([math]::log($ByteCount, 1024))) {
+									switch ([math]::truncate([math]::log($ByteCount, 1024))) {
 										0 {"$ByteCount Bytes"}
 										1 {"{0:n2}KB" -f ($ByteCount / 1KB)}
 										2 {"{0:n2}MB" -f ($ByteCount / 1MB)}

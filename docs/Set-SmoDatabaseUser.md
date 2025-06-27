@@ -85,7 +85,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to add database login.
+SMO database object to add database login.
 
 ```yaml
 Type: Database

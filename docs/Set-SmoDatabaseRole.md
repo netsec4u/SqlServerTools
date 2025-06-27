@@ -74,7 +74,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to add database role.
+SMO database object to add database role.
 
 ```yaml
 Type: Database

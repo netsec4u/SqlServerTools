@@ -2,135 +2,148 @@ Set-StrictMode -Version Latest
 
 #Region Enumerations
 enum ApplicationIntent {
-	ReadWrite;
+	ReadWrite
 	ReadOnly
 }
 
 enum AuthenticationMode {
-	AsUser;
+	AsUser
 	SQL
 }
 
 enum DatabaseObjectClass {
-	Assembly;
-	AsymmetricKey;
-	Certificate;
-	ExtendedStoredProcedure;
-	Schema;
-	StoredProcedure;
-	Sequences;
-	SymmetricKey;
-	Synonym;
-	Table;
-	UserDefinedFunction;
+	Assembly
+	AsymmetricKey
+	Certificate
+	ExtendedStoredProcedure
+	Schema
+	StoredProcedure
+	Sequences
+	SymmetricKey
+	Synonym
+	Table
+	UserDefinedFunction
 	View
 }
 
 enum DatabaseObjectPermission {
-	Alter;
-	Connect;
-	Control;
-	CreateSequence;
-	Delete;
-	Execute;
-	Impersonate;
-	Insert;
-	Receive;
-	References;
-	Select;
-	Send;
-	TakeOwnership;
-	Update;
-	ViewChangeTracking;
+	Alter
+	Connect
+	Control
+	CreateSequence
+	Delete
+	Execute
+	Impersonate
+	Insert
+	Receive
+	References
+	Select
+	Send
+	TakeOwnership
+	Update
+	ViewChangeTracking
 	ViewDefinition
 }
 
 enum DatabasePermission {
-	Alter;
-	AlterAnyApplicationRole;
-	AlterAnyAssembly;
-	AlterAnyAsymmetricKey;
-	AlterAnyCertificate;
-	AlterAnyContract;
-	AlterAnyDatabaseAudit;
-	AlterAnyDatabaseDdlTrigger;
-	AlterAnyDatabaseEventNotification;
-	AlterAnyDataSpace;
-	AlterAnyExternalDataSource;
-	AlterAnyExternalFileFormat;
-	AlterAnyFullTextCatalog;
-	AlterAnyMask;
-	AlterAnyMessageType;
-	AlterAnyRemoteServiceBinding;
-	AlterAnyRole;
-	AlterAnyRoute;
-	AlterAnySchema;
-	AlterAnySecurityPolicy;
-	AlterAnyService;
-	AlterAnySymmetricKey;
-	AlterAnyUser;
-	Authenticate;
-	BackupDatabase;
-	BackupLog;
-	Checkpoint;
-	Connect;
-	ConnectReplication;
-	Control;
-	CreateAggregate;
-	CreateAssembly;
-	CreateAsymmetricKey;
-	CreateCertificate;
-	CreateContract;
-	CreateDatabase;
-	CreateDatabaseDdlEventNotification;
-	CreateDefault;
-	CreateFullTextCatalog;
-	CreateFunction;
-	CreateMessageType;
-	CreateProcedure;
-	CreateQueue;
-	CreateRemoteServiceBinding;
-	CreateRole;
-	CreateRoute;
-	CreateRule;
-	CreateSchema;
-	CreateService;
-	CreateSymmetricKey;
-	CreateSynonym;
-	CreateTable;
-	CreateType;
-	CreateView;
-	CreateXmlSchemaCollection;
-	Delete;
-	Execute;
-	Insert;
-	References;
-	Select;
-	ShowPlan;
-	SubscribeQueryNotifications;
-	TakeOwnership;
-	Unmask;
-	Update;
-	ViewDatabaseState;
+	Alter
+	AlterAnyApplicationRole
+	AlterAnyAssembly
+	AlterAnyAsymmetricKey
+	AlterAnyCertificate
+	AlterAnyContract
+	AlterAnyDatabaseAudit
+	AlterAnyDatabaseDdlTrigger
+	AlterAnyDatabaseEventNotification
+	AlterAnyDataSpace
+	AlterAnyExternalDataSource
+	AlterAnyExternalFileFormat
+	AlterAnyFullTextCatalog
+	AlterAnyMask
+	AlterAnyMessageType
+	AlterAnyRemoteServiceBinding
+	AlterAnyRole
+	AlterAnyRoute
+	AlterAnySchema
+	AlterAnySecurityPolicy
+	AlterAnyService
+	AlterAnySymmetricKey
+	AlterAnyUser
+	Authenticate
+	BackupDatabase
+	BackupLog
+	Checkpoint
+	Connect
+	ConnectReplication
+	Control
+	CreateAggregate
+	CreateAssembly
+	CreateAsymmetricKey
+	CreateCertificate
+	CreateContract
+	CreateDatabase
+	CreateDatabaseDdlEventNotification
+	CreateDefault
+	CreateFullTextCatalog
+	CreateFunction
+	CreateMessageType
+	CreateProcedure
+	CreateQueue
+	CreateRemoteServiceBinding
+	CreateRole
+	CreateRoute
+	CreateRule
+	CreateSchema
+	CreateService
+	CreateSymmetricKey
+	CreateSynonym
+	CreateTable
+	CreateType
+	CreateView
+	CreateXmlSchemaCollection
+	Delete
+	Execute
+	Insert
+	References
+	Select
+	ShowPlan
+	SubscribeQueryNotifications
+	TakeOwnership
+	Unmask
+	Update
+	ViewDatabaseState
 	ViewDefinition
 }
 
 enum DataOutputType {
-	DataSet;
-	DataTable;
+	DataSet
+	DataTable
 	DataRow
+	None
 }
 
 enum PermissionAction {
-	Grant;
-	Deny;
+	Grant
+	Deny
 	Revoke
 }
 #EndRegion
 
 #Region Classes
+class TransformPath : System.Management.Automation.ArgumentTransformationAttribute {
+	[object]Transform([System.Management.Automation.EngineIntrinsics]$EngineIntrinsics, [object]$InputData) {
+		if ([System.IO.Path]::IsPathRooted($InputData)) {
+			return $InputData
+		} else {
+			return $(Join-Path -Path $(Get-Location) -ChildPath $InputData)
+		}
+
+		throw [System.InvalidOperationException]::New('Unexpected error.')
+	}
+}
+
 class TransformSidByteArray : System.Management.Automation.ArgumentTransformationAttribute {
-    [object]Transform([System.Management.Automation.EngineIntrinsics]$EngineIntrinsics, [object]$InputData) {
+	[object]Transform([System.Management.Automation.EngineIntrinsics]$EngineIntrinsics, [object]$InputData) {
 		if ($InputData -is [byte[]]) {
 			return $InputData
 		} elseif ($InputData -is [string]) {
@@ -168,6 +181,63 @@ class ValidatePathExists : System.Management.Automation.ValidateArgumentsAttribu
 				Default {
 					throw [System.InvalidOperationException]::New('An unexpected error has occurred.')
 				}
+			}
+		}
+	}
+}
+
+class ValidatePassword : System.Management.Automation.ValidateArgumentsAttribute {
+	[void]Validate([object]$SecureString, [System.Management.Automation.EngineIntrinsics]$EngineIntrinsics) {
+		if ([Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)) -notmatch '(?-i)(?=.{12,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])|(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])).*') {
+			throw [System.Management.Automation.ErrorRecord]::New(
+				[System.ArgumentException]::New('Password does not meet complexity requirements.'),
+				'1',
+				[System.Management.Automation.ErrorCategory]::InvalidArgument,
+				$SecureString
+			)
+		}
+	}
+}
+
+class ValidatePathIsValid : System.Management.Automation.ValidateArgumentsAttribute {
+	[void]Validate([object]$Path, [System.Management.Automation.EngineIntrinsics]$EngineIntrinsics) {
+		if([string]::IsNullOrWhiteSpace($Path)) {
+			throw [System.ArgumentNullException]::New()
+		}
+
+		if ($Path -is [System.IO.DirectoryInfo]) {
+			if (-not $(Test-Path -LiteralPath $Path.Parent -PathType Container)) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[System.ArgumentException]::New("Cannot find path '$Path.Directory' because it does not exist."),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidArgument,
+					$Path
+				)
+			} elseif (-not $(Test-Path -LiteralPath $Path -PathType Container -IsValid)) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[System.ArgumentException]::New("The path '$Path.Name' is not valid."),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidArgument,
+					$Path
+				)
+			}
+		}
+
+		if ($Path -is [System.IO.FileInfo]) {
+			if (-not $(Test-Path -LiteralPath $Path.Directory -PathType Container)) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[System.ArgumentException]::New("Cannot find path '$Path.Directory' because it does not exist."),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidArgument,
+					$Path
+				)
+			} elseif (-not $(Test-Path -LiteralPath $Path -PathType Leaf -IsValid)) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[System.ArgumentException]::New("The path '$Path.Name' is not valid."),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidArgument,
+					$Path
+				)
 			}
 		}
 	}
@@ -329,10 +399,657 @@ Remove-Variable -Name TypeDefinition
 #EndRegion
 
 
+#Region Supporting Functions
+function Format-SqlInstanceName {
+	<#
+	.SYNOPSIS
+	Formats sql instance name.
+	.DESCRIPTION
+	Formats sql instance name.
+	.PARAMETER ServerInstance
+	SQL Server host name and instance name.
+	.EXAMPLE
+	Format-SqlInstanceName -ServerInstance 'mysqlserver'
+	.NOTES
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low'
+	)]
+
+	[OutputType([PsCustomObject])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance
+	)
+
+	begin {
+	}
+
+	process {
+		if ($ServerInstance.IndexOf('\') -gt 0) {
+			$ConnectionName = $ServerInstance.Split('\')[0]
+			$InstanceName = $ServerInstance.Split('\')[1]
+		} else {
+			$ConnectionName = $ServerInstance
+			$InstanceName = $null
+		}
+
+		if ($ConnectionName.IndexOf(':') -gt 0) {
+			$ServerHostName = $ConnectionName.Split(':')[0]
+			[nullable[int]]$TcpPort = $ConnectionName.Split(':')[1]
+		} elseif ($ConnectionName.IndexOf(',') -gt 0) {
+			$ServerHostName = $ConnectionName.Split(',')[0]
+			[nullable[int]]$TcpPort = $ConnectionName.Split(',')[1]
+		} else {
+			$ServerHostName = $ConnectionName
+			[nullable[int]]$TcpPort = $null
+		}
+
+		if ($ServerHostName -in @('.', '(local)')) {
+			$ServerFQDN = $null
+			$DomainName = $null
+			$SqlInstanceName = $ServerInstance.Replace(':', ',')
+		} else {
+			if ($ServerHostName -as [IpAddress]) {
+				$ServerFQDN = $null
+				$DomainName = $null
+
+				$SqlInstanceName = $ServerInstance.Replace(':', ',')
+			} else {
+				$ServerFQDN = [System.Net.Dns]::GetHostByName($ServerHostName).HostName
+				$DomainName = $ServerFQDN.Substring($ServerFQDN.IndexOf('.') + 1)
+
+				if ($null -eq $InstanceName) {
+					if ($null -eq $TcpPort) {
+						$SqlInstanceName = $ServerFQDN
+					} else {
+						$SqlInstanceName = [string]::Format('{0},{1}', $ServerFQDN, $TcpPort)
+					}
+				} else {
+					if ($null -eq $TcpPort) {
+						$SqlInstanceName = [string]::Format('{0}\{1}', $ServerFQDN, $InstanceName)
+					} else {
+						$SqlInstanceName = [string]::Format('{0},{1}\{2}', $ServerFQDN, $TcpPort, $InstanceName)
+					}
+				}
+			}
+		}
+
+		[PsCustomObject][Ordered]@{
+			'ServerHostName' = $ServerHostName
+			'ServerFQDN' = $ServerFQDN
+			'DomainName' = $DomainName
+			'TcpPort' = $TcpPort
+			'SqlInstance' = $InstanceName
+			'SqlInstanceName' = $SqlInstanceName
+		}
+	}
+
+	end {
+	}
+}
+
+function Test-RunAsAdministrator {
+	<#
+	.SYNOPSIS
+	Test for current windows identity running as administrator.
+	.DESCRIPTION
+	Test for current windows identity running as administrator.
+	.EXAMPLE
+	Test-RunAsAdministrator
+	.NOTES
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low'
+	)]
+
+	[OutputType([System.Boolean])]
+
+	param ()
+
+	begin {
+		if ($PSVersionTable.PSEdition -eq 'Core') {
+			if ($PSVersionTable.Platform -ne 'Win32NT') {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Platform not supported.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidOperation,
+					$FileGroupName
+				)
+			}
+		}
+	}
+
+	process {
+		$WindowsIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
+		$WindowsPrincipal = [Security.Principal.WindowsPrincipal]::New($WindowsIdentity)
+
+		$WindowsPrincipal.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+	}
+
+	end {
+	}
+}
+
+function Rename-CIMFile {
+	<#
+	.SYNOPSIS
+	Rename file.
+	.DESCRIPTION
+	Rename file using WMI method.
+	.PARAMETER SourcePath
+	Path of file to rename.
+	.PARAMETER DestinationPath
+	Path of new file name.
+	.PARAMETER ComputerName
+	Computer name where file is located.
+	.PARAMETER Credential
+	SQL Server authentication credentials.
+	.EXAMPLE
+	Rename-CIMFile -SourcePath c:\working\Test.txt -DestinationPath c:\working\Test2.txt -ComputerName localhost
+	.EXAMPLE
+	Rename-CIMFile -SourcePath c:\working\Test.txt -DestinationPath c:\working\Test2.txt -ComputerName MyServer -Credential $(Get-Credential)
+	.NOTES
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'High'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.IO.FileInfo]$SourcePath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.IO.FileInfo]$DestinationPath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$ComputerName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Management.Automation.PSCredential]$Credential
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			$CimSessionParameters = @{
+				'Name' = 'RenameCIMDataFile'
+			}
+
+			if ($ComputerName -in @('localhost', [System.Net.Dns]::GetHostName(), [System.Net.Dns]::GetHostEntry([System.Net.Dns]::GetHostName()).HostName)) {
+				if ($PSBoundParameters.ContainsKey('Credential')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('Credentials cannot be used to connect to local machine.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$ComputerName
+					)
+				}
+			} else {
+				$CimSessionParameters.Add('ComputerName', $ComputerName)
+
+				if ($PSBoundParameters.ContainsKey('Credential')) {
+					$CimSessionParameters.Add('Credential', $Credential)
+				}
+			}
+
+			$CimSession = New-CimSession @CimSessionParameters
+
+			if ($null -eq $CimSession) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Unable to open CIM Session on host.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ConnectionError,
+					$ComputerName
+				)
+			}
+
+			$CimInstanceParameters = @{
+				'CimSession' = $CimSession
+				'ClassName' = 'CIM_DataFile'
+				'Filter' = "Name='" + $($SourcePath.FullName.Replace('\', '\\')) + "'"
+			}
+
+			$CIMDataFile = Get-CimInstance @CimInstanceParameters
+
+			if ($null -eq $CIMDataFile) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[System.IO.FileNotFoundException]::New('File not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$SourcePath.FullName
+				)
+			}
+
+			$Return = $CIMDataFile | Invoke-CimMethod -MethodName Rename -Arguments @{FileName = "$($DestinationPath.FullName.Replace('\', '\\'))"}
+
+			switch ($Return.ReturnValue) {
+				0 {
+					# No error
+				}
+				2 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[System.AccessViolationException]::New('You do not have access to perform the operation.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::PermissionDenied,
+						$SourcePath.FullName
+					)
+				}
+				8 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('The operation failed for an undefined reason.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidResult,
+						$SourcePath.FullName
+					)
+				}
+				9 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('The name specified as a target does not point to a real file or directory.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+						$SourcePath.FullName
+					)
+				}
+				10 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('The file or directory specified as a target already exists and cannot be overwritten.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				11 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You have attempted to perform an NTFS operation on a non-NTFS filesystem.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				12 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You have attempted to perform an NT/2000-specific operation on a non-NT/2000 platform.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				13 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You have attempted to perform an operation across drives that can be carried out within only a single drive.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				14 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You have attempted to delete a directory that is not empty.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				15 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('There has been a sharing violation. Another process is using the file you are attempting to manipulate.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				16 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You are attempting to act on a nonexistent file.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+						$SourcePath.FullName
+					)
+				}
+				17 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You do not have the relevant NT security privileges to carry out the operation.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::PermissionDenied,
+						$SourcePath.FullName
+					)
+				}
+				21 {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('You have supplied an invalid parameter to the method.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$SourcePath.FullName
+					)
+				}
+				default {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('Unknown exception.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidResult,
+						$SourcePath.FullName
+					)
+				}
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($null -ne $CimSession) {
+				Remove-CimSession -CimSession $CimSession
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Test-SqlBrowserConnection {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'Hostname'
+	)]
+
+	[OutputType([System.Boolean])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'Hostname'
+		)]
+		[string]$Computer,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'IPAddress'
+		)]
+		[System.Net.IPAddress]$IPAddress,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(1, 65535)]
+		[int]$Port = 1434,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(0, 86400000)]
+		[int]$ConnectionTimeout = 5000
+	)
+
+	begin {
+		$ASCIIEncoding = [System.Text.ASCIIEncoding]::New()
+		[byte[]]$UDPPacket = 0x02,0x00	#,0x00
+	}
+
+	process {
+		Try {
+			if ($PSBoundParameters.ContainsKey('Computer')) {
+				$IPAddress = [System.Net.Dns]::Resolve($Computer).AddressList[0]
+			}
+
+			$UDPClient = [System.Net.Sockets.UdpClient]::New()
+
+			$UDPClient.Client.ReceiveTimeout = $ConnectionTimeout
+			$UDPClient.Client.Blocking = $true
+
+			$UDPClient.Connect($IPAddress, $Port)
+
+			$IPEndPoint = [System.Net.IPEndPoint]::New([System.Net.IPAddress]::Any, 14340)
+
+			[void]$UDPClient.Send($UDPPacket, $UDPPacket.length)
+
+			$BytesReceived = $UDPClient.Receive([ref]$IPEndPoint)
+
+			[string]$Response = $ASCIIEncoding.GetString($BytesReceived)
+
+			if ($Response) {
+				Write-Verbose $Response
+
+				$true
+			}
+		}
+		Catch [System.Management.Automation.MethodInvocationException] {
+			Write-Warning 'Hidden SQL instances will not be included in response.  When all instances are hidden, the SQL browser will not provide a response.'
+
+			$false
+		}
+		Catch {
+			throw $_
+		}
+		finally {
+			if (Test-Path -Path variable:\UDPClient) {
+				$UDPClient.Close()
+				$UDPClient.Dispose()
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Test-SqlConnection {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'Hostname'
+	)]
+
+	[OutputType([System.Boolean])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'Hostname'
+		)]
+		[string]$Computer,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'IPAddress'
+		)]
+		[System.Net.IPAddress]$IPAddress,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(1, 65535)]
+		[int]$Port = 1433,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Management.Automation.PSCredential]$Credential,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(0, 86400)]
+		[int]$ConnectionTimeout = 15
+	)
+
+	begin {
+		try {
+			$TcpClient = [System.Net.Sockets.TcpClient]::New()
+			$TcpClient.SendTimeout = $ConnectionTimeout
+
+			$SqlConnection = [Microsoft.Data.SqlClient.SqlConnection]::New()
+
+			$ConnectionStringParameters = @{
+				'DatabaseName' = 'master'
+				'ConnectionTimeout' = $ConnectionTimeout
+			}
+
+			if ($PSBoundParameters.ContainsKey('Computer')) {
+				$FormatStringArray = @(
+					$Computer,
+					$Port
+				)
+			} else {
+				$FormatStringArray = @(
+					$IPAddress,
+					$Port
+				)
+			}
+
+			$ConnectionStringParameters.Add('ServerInstance', [string]::Format('{0},{1}', $FormatStringArray))
+
+			if ($PSBoundParameters.ContainsKey('Credential')) {
+				$ConnectionStringParameters.Add('Credential', $Credential)
+			}
+
+			$SqlConnection.ConnectionString = Build-SqlClientConnectionString @ConnectionStringParameters
+		}
+		catch {
+			if (Test-Path -Path variable:\TcpClient) {
+				$TcpClient.Dispose()
+			}
+
+			if (Test-Path -Path variable:\SqlConnection) {
+				$SqlConnection.Dispose()
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSBoundParameters.ContainsKey('Computer')) {
+				switch ($Computer) {
+					'.' {
+						[void]$TcpClient.Connect([System.Net.Dns]::GetHostName(), $Port)
+					}
+					'localhost' {
+						[void]$TcpClient.Connect([System.Net.Dns]::GetHostName(), $Port)
+					}
+					Default {
+						[void]$TcpClient.Connect($Computer, $Port)
+					}
+				}
+
+			} else {
+				[void]$TcpClient.Connect($IPAddress, $Port)
+			}
+
+			if ($TcpClient.Connected) {
+				Write-Verbose 'TCP Connected'
+
+				$TcpClient.Close()
+
+				$SqlConnection.Open()
+				$SqlConnection.Close()
+			} else {
+				throw $_
+			}
+
+			$true
+		} catch {
+			$false
+		}
+		finally {
+			if (Test-Path -Path variable:\TcpClient) {
+				$TcpClient.Dispose()
+			}
+
+			if (Test-Path -Path variable:\SqlConnection) {
+				$SqlConnection.Dispose()
+			}
+		}
+	}
+
+	end {
+	}
+}
+#EndRegion
+
+#Region SMO Functions
 function Add-SmoAvailabilityDatabase {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -346,7 +1063,7 @@ function Add-SmoAvailabilityDatabase {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.AvailabilityDatabase])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -416,7 +1133,7 @@ function Add-SmoAvailabilityDatabase {
 					$SmoAvailabilityDatabase.JoinAvailabilityGroup()
 				}
 
-				$SmoAvailabilityDatabase.Initialize()
+				[void]$SmoAvailabilityDatabase.Initialize()
 
 				$SmoAvailabilityDatabase
 			}
@@ -454,15 +1171,15 @@ function Add-SmoAssembly {
 
 	[OutputType([System.Void])]
 
-	PARAM ()
+	param ()
 
-	BEGIN {
+	begin {
 		$Assemblies = @(
 			'Microsoft.SqlServer.Dac.dll'
 		)
 	}
 
-	PROCESS {
+	process {
 		try {
 			[System.IO.FileInfo]$SmoPath = [AppDomain]::CurrentDomain.GetAssemblies().where({$_.ManifestModule.Name -eq 'Microsoft.SqlServer.Smo.dll'}).Location
 
@@ -483,15 +1200,136 @@ function Add-SmoAssembly {
 		}
 	}
 
-	END {
+	end {
 		$Error.Clear()
+	}
+}
+
+function Add-SmoDatabaseAsymmetricKeyPrivateKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$AsymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$PrivateKeyPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$AsymmetricKey = Get-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName $AsymmetricKeyName
+
+			if ($null -eq $AsymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Asymmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$AsymmetricKeyName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Adding database Asymmetric key.")) {
+				$AsymmetricKey.AddPrivateKey(
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword))
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function Add-SmoDatabaseDataFile {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -505,7 +1343,7 @@ function Add-SmoDatabaseDataFile {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.DataFile])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -572,7 +1410,7 @@ function Add-SmoDatabaseDataFile {
 		[System.IO.FileInfo]$DataFilePath
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -602,7 +1440,7 @@ function Add-SmoDatabaseDataFile {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -612,7 +1450,7 @@ function Add-SmoDatabaseDataFile {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$DataFileObject = [Microsoft.SqlServer.Management.SMO.DataFile]::New($FileGroupObject, $DataFileName)
 			$DataFileObject.FileName = $DataFilePath.FullName
@@ -633,14 +1471,14 @@ function Add-SmoDatabaseDataFile {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
-function Add-SmoDatabaseEncryptionKey {
+function Add-SmoDatabaseMasterKeyPasswordEncryption {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -648,37 +1486,16 @@ function Add-SmoDatabaseEncryptionKey {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Low',
-		DefaultParameterSetName = 'DatabaseName'
+		ConfirmImpact = 'Medium'
 	)]
 
-	[OutputType([Microsoft.SqlServer.Management.Smo.DatabaseEncryptionKey])]
+	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'DatabaseName'
-		)]
-		[ValidateLength(1, 128)]
-		[Alias('SqlServer')]
-		[string]$ServerInstance,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'DatabaseName'
-		)]
-		[ValidateLength(1, 128)]
-		[string]$DatabaseName,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'DatabaseObject'
+			ValueFromPipelineByPropertyName = $false
 		)]
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
 
@@ -687,83 +1504,97 @@ function Add-SmoDatabaseEncryptionKey {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[Microsoft.SqlServer.Management.Smo.DatabaseEncryptionAlgorithm]$EncryptionAlgorithm,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[Microsoft.SqlServer.Management.Smo.DatabaseEncryptionType]$EncryptionType,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateLength(1, 128)]
-		[string]$EncryptorName
+		[ValidatePassword()]
+		[SecureString]$EncryptionPassword
 	)
 
-	BEGIN {
-		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
-				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance
-					'DatabaseName' = $DatabaseName
-				}
-
-				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
-			}
-		}
-		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
-				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
-						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
-					}
-				}
-			}
-
-			throw $_
-		}
+	begin {
 	}
 
-	PROCESS {
+	process {
 		try {
-			$DatabaseEncryptionKey = [Microsoft.SqlServer.Management.Smo.DatabaseEncryptionKey]::New()
-			$DatabaseEncryptionKey.Parent = $DatabaseObject
-			$DatabaseEncryptionKey.EncryptionAlgorithm = $EncryptionAlgorithm
-			$DatabaseEncryptionKey.EncryptionType = $EncryptionType
-			$DatabaseEncryptionKey.EncryptorName = $EncryptorName
+			$MasterKey = $DatabaseObject.MasterKey
 
-			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Adding database encryption key')) {
-				$DatabaseEncryptionKey.Create()
+			if ($null -eq $MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database does not contain master key.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
 
-				$DatabaseObject.Alter()
-				$DatabaseObject.Refresh()
-
-				$DatabaseEncryptionKey
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Add database master key password encryption')) {
+				$MasterKey.AddPasswordEncryption([Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword)))
 			}
 		}
 		catch {
 			throw $_
 		}
-		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
-				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+	}
+
+	end {
+	}
+}
+
+function Add-SmoDatabaseMasterKeyServiceKeyEncryption {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			$MasterKey = $DatabaseObject.MasterKey
+
+			if ($null -eq $MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database does not contain master key.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
 			}
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Add database master key service key encryption')) {
+				$MasterKey.AddServiceKeyEncryption()
+			}
+		}
+		catch {
+			throw $_
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Add-SmoDatabaseRoleMember {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -777,7 +1608,7 @@ function Add-SmoDatabaseRoleMember {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -822,7 +1653,7 @@ function Add-SmoDatabaseRoleMember {
 		[string]$RoleMemberName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -845,7 +1676,7 @@ function Add-SmoDatabaseRoleMember {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -855,7 +1686,7 @@ function Add-SmoDatabaseRoleMember {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -eq $DatabaseObject.Users[$RoleMemberName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -880,14 +1711,104 @@ function Add-SmoDatabaseRoleMember {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Add-SmoDatabaseSymmetricKeyKeyEncryption {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.KeyEncryptionType]$KeyEncryptionType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$KeyEncryptionValue
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			$SymmetricKey = Get-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName $SymmetricKeyName
+
+			if ($null -eq $SymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Symmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$SymmetricKeyName
+				)
+			}
+
+			if ($SymmetricKey.IsOpen -eq $false) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Symmetric key is not open.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::OpenError,
+					$SymmetricKeyName
+				)
+			}
+
+			$KeyEncryption = [Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryption]::New(
+				$KeyEncryptionType,
+				$KeyEncryptionValue
+			)
+
+			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, "Add database symmetric key encryption.")) {
+				$SymmetricKey.AddKeyEncryption($KeyEncryption)
+			}
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	end {
 	}
 }
 
 function Add-SmoServerRoleMember {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -901,7 +1822,7 @@ function Add-SmoServerRoleMember {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Credential])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -937,7 +1858,7 @@ function Add-SmoServerRoleMember {
 		[string]$ServerRoleMemberName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
@@ -960,7 +1881,9 @@ function Add-SmoServerRoleMember {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -968,7 +1891,7 @@ function Add-SmoServerRoleMember {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -eq $SmoServerObject.Logins[$ServerRoleMemberName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -995,14 +1918,124 @@ function Add-SmoServerRoleMember {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Close-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			if ($null -eq $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database Master Key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			$DatabaseObject.MasterKey.Close()
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	end {
+	}
+}
+
+function Close-SmoDatabaseSymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			$SymmetricKey = Get-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName $SymmetricKeyName
+
+			if ($null -eq $SymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Symmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$SymmetricKeyName
+				)
+			}
+
+			$SymmetricKey.Close()
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	end {
 	}
 }
 
 function Connect-SmoServer {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1016,7 +2049,7 @@ function Connect-SmoServer {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Server])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $true,
@@ -1189,10 +2222,10 @@ function Connect-SmoServer {
 		[Microsoft.Data.SqlClient.SqlConnection]$SqlConnection
 	)
 
-	BEGIN {
+	begin {
 	}
 
-	PROCESS {
+	process {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'SqlConnection') {
 				$ServerConnection = [Microsoft.SqlServer.Management.Common.ServerConnection]::New($SqlConnection)
@@ -1236,9 +2269,9 @@ function Connect-SmoServer {
 							$ServerConnection.ConnectAsUserPassword = $Credential.GetNetworkCredential().Password
 						}
 						'SQL' {
-							$ServerConnection.LoginSecure = $false;
-							$ServerConnection.Login = $Credential.UserName;
-							$ServerConnection.SecurePassword = $Credential.Password;
+							$ServerConnection.LoginSecure = $false
+							$ServerConnection.Login = $Credential.UserName
+							$ServerConnection.SecurePassword = $Credential.Password
 						}
 					}
 				}
@@ -1258,14 +2291,14 @@ function Connect-SmoServer {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Disable-SmoTransparentDatabaseEncryption {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1279,7 +2312,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1308,7 +2341,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -1322,7 +2355,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -1332,7 +2365,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($DatabaseObject.EncryptionEnabled) {
 				if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Disabling database encryption')) {
@@ -1354,14 +2387,14 @@ function Disable-SmoTransparentDatabaseEncryption {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Disconnect-SmoServer {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1374,7 +2407,7 @@ function Disconnect-SmoServer {
 
 	[OutputType([System.Void])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1383,30 +2416,30 @@ function Disconnect-SmoServer {
 		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject
 	)
 
-	BEGIN {
+	begin {
 	}
 
-	PROCESS {
+	process {
 		try {
-			[Microsoft.Data.SqlClient.SqlConnection]::ClearAllPools()
-
 			if ($SmoServerObject.ConnectionContext.IsOpen -eq $true) {
 				$SmoServerObject.ConnectionContext.Disconnect()
 			}
+
+			[Microsoft.Data.SqlClient.SqlConnection]::ClearPool($SmoServerObject.ConnectionContext.SqlConnectionObject)
 		}
 		catch {
 			throw $_
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Enable-SmoTransparentDatabaseEncryption {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1420,7 +2453,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1449,7 +2482,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -1463,7 +2496,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -1473,7 +2506,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Enabling database encryption')) {
 				$DatabaseObject.EncryptionEnabled = $true
@@ -1491,21 +2524,14 @@ function Enable-SmoTransparentDatabaseEncryption {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
-function Format-SqlInstanceName {
+function Export-SmoDatabaseCertificate {
 	<#
-	.SYNOPSIS
-	Formats sql instance name.
-	.DESCRIPTION
-	Formats sql instance name.
-	.PARAMETER ServerInstance
-	SQL Server host name and instance name.
-	.EXAMPLE
-	Format-SqlInstanceName -ServerInstance 'mysqlserver'
-	.NOTES
+	.EXTERNALHELP
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1513,85 +2539,349 @@ function Format-SqlInstanceName {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $false,
-		ConfirmImpact = 'Low'
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
 	)]
 
-	[OutputType([PsCustomObject])]
+	[OutputType([System.Void])]
 
 	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[ValidateLength(1, 128)]
-		[Alias('SqlServer')]
-		[string]$ServerInstance
+		[string]$CertificateName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Alias('DecryptionPassword')]
+		[SecureString]$PrivateKeyDecryptionPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$CertificatePath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$PrivateKeyPath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Alias('EncryptionPassword')]
+		[ValidatePassword()]
+		[SecureString]$PrivateKeyEncryptionPassword
 	)
 
 	begin {
-	}
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
 
-	process {
-		if ($ServerInstance -in @('.', '(local)')) {
-			$ServerHostName = $null
-			$ServerFQDN = $null
-			$DomainName = $null
-			[nullable[int]]$TcpPort = $null
-			$InstanceName = $null
-			$SqlInstanceName = $ServerInstance
-		} else {
-			if ($ServerInstance.IndexOf('\') -gt 0) {
-				$ConnectionName = $ServerInstance.Split('\')[0]
-				$InstanceName = $ServerInstance.Split('\')[1]
-			} else {
-				$ConnectionName = $ServerInstance
-				$InstanceName = $null
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
 			}
-
-			if ($ConnectionName.IndexOf(':') -gt 0) {
-				$ServerHostName = $ConnectionName.Split(':')[0]
-				[nullable[int]]$TcpPort = $ConnectionName.Split(':')[1]
-			} elseif ($ConnectionName.IndexOf(',') -gt 0) {
-				$ServerHostName = $ConnectionName.Split(',')[0]
-				[nullable[int]]$TcpPort = $ConnectionName.Split(',')[1]
-			} else {
-				$ServerHostName = $ConnectionName
-				[nullable[int]]$TcpPort = $null
-			}
-
-			if ($ServerHostName -as [IpAddress]) {
-				$ServerFQDN = $null
-				$DomainName = $null
-
-				$SqlInstanceName = $ServerInstance.Replace(':', ',')
-			} else {
-				$ServerFQDN = [System.Net.Dns]::GetHostByName($ServerHostName).HostName
-				$DomainName = $ServerFQDN.Substring($ServerFQDN.IndexOf('.') + 1)
-
-				if ($null -eq $InstanceName) {
-					if ($null -eq $TcpPort) {
-						$SqlInstanceName = $ServerFQDN
-					} else {
-						$SqlInstanceName = [string]::Format('{0},{1}', $ServerFQDN, $TcpPort)
-					}
-				} else {
-					if ($null -eq $TcpPort) {
-						$SqlInstanceName = [string]::Format('{0}\{1}', $ServerFQDN, $InstanceName)
-					} else {
-						$SqlInstanceName = [string]::Format('{0},{1}\{2}', $ServerFQDN, $TcpPort, $InstanceName)
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
 			}
-		}
 
-		[PsCustomObject][Ordered]@{
-			'ServerHostName' = $ServerHostName
-			'ServerFQDN' = $ServerFQDN
-			'DomainName' = $DomainName
-			'TcpPort' = $TcpPort
-			'SqlInstance' = $InstanceName
-			'SqlInstanceName' = $SqlInstanceName
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$Certificate = Get-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName $CertificateName
+
+			if ($null -eq $Certificate) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Certificate not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$CertificateName
+				)
+			}
+
+			if ($PSBoundParameters.ContainsKey('PrivateKeyDecryptionPassword')) {
+				$Certificate.Export(
+					$CertificatePath.FullName,
+					$PrivateKeyPath.FullName,
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyEncryptionPassword)),
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyDecryptionPassword))
+				)
+			} else {
+				$Certificate.Export(
+					$CertificatePath.FullName,
+					$PrivateKeyPath.FullName,
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyEncryptionPassword))
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Export-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$EncryptionPassword
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($null -eq $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database Master Key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			$DatabaseObject.MasterKey.Export(
+				$Path.FullName,
+				[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword))
+			)
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Export-SmoServiceMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$EncryptionPassword
+	)
+
+	begin {
+		try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSCmdlet.ShouldProcess($Path, 'Export Service Master Key')) {
+				$SmoServerObject.ServiceMasterKey.Export(
+					$Path.FullName,
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword))
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
 		}
 	}
 
@@ -1602,7 +2892,7 @@ function Format-SqlInstanceName {
 function Get-SmoAvailabilityGroup {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1616,7 +2906,7 @@ function Get-SmoAvailabilityGroup {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.AvailabilityGroup])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1644,7 +2934,7 @@ function Get-SmoAvailabilityGroup {
 		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject
 	)
 
-	BEGIN {
+	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
@@ -1658,7 +2948,7 @@ function Get-SmoAvailabilityGroup {
 		catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					if ($null -ne $SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
 					}
 				}
@@ -1668,9 +2958,9 @@ function Get-SmoAvailabilityGroup {
 		}
 	}
 
-	PROCESS{
+	process {
 		Try {
-			If ($PSBoundParameters.ContainsKey('AvailabilityGroupName')) {
+			if ($PSBoundParameters.ContainsKey('AvailabilityGroupName')) {
 				$AvailabilityGroups = $SmoServerObject.AvailabilityGroups[$AvailabilityGroupName]
 
 				if ($null -eq $AvailabilityGroups) {
@@ -1697,14 +2987,14 @@ function Get-SmoAvailabilityGroup {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Get-SmoBackupFileList {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1718,7 +3008,7 @@ function Get-SmoBackupFileList {
 
 	[OutputType([SmoRestore.FileList])]
 
-	Param(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1745,7 +3035,7 @@ function Get-SmoBackupFileList {
 		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject
 	)
 
-	BEGIN {
+	begin {
 		try {
 			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
 
@@ -1754,11 +3044,19 @@ function Get-SmoBackupFileList {
 			}
 		}
 		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
 			throw $_
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SmoRestore.Devices.AddDevice((Resolve-Path -Path $DatabaseBackupPath).ProviderPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
 
@@ -1786,14 +3084,14 @@ function Get-SmoBackupFileList {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Get-SmoBackupHeader {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1807,7 +3105,7 @@ function Get-SmoBackupHeader {
 
 	[OutputType([SmoRestore.BackupHeader])]
 
-	Param(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1834,7 +3132,7 @@ function Get-SmoBackupHeader {
 		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject
 	)
 
-	BEGIN {
+	begin {
 		try {
 			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
 
@@ -1843,11 +3141,19 @@ function Get-SmoBackupHeader {
 			}
 		}
 		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
 			throw $_
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SmoRestore.Devices.AddDevice((Resolve-Path -Path $DatabaseBackupPath).ProviderPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
 
@@ -1875,14 +3181,401 @@ function Get-SmoBackupHeader {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Get-SmoDatabaseAsymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.AsymmetricKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$AsymmetricKeyName
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSBoundParameters.ContainsKey('AsymmetricKeyName')) {
+				$DatabaseObject.AsymmetricKeys[$AsymmetricKeyName]
+			} else {
+				$DatabaseObject.AsymmetricKeys
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Get-SmoDatabaseCertificate {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.Certificate])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$CertificateName
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSBoundParameters.ContainsKey('CertificateName')) {
+				$DatabaseObject.Certificates[$CertificateName]
+			} else {
+				$DatabaseObject.Certificates
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Get-SmoDatabaseEncryptionKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.DatabaseEncryptionKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if([string]::IsNullOrWhiteSpace($DatabaseObject.DatabaseEncryptionKey.Thumbprint)) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database encryption key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			$DatabaseObject.DatabaseEncryptionKey
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Get-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.MasterKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($null -ne $DatabaseObject.MasterKey) {
+				$DatabaseObject.MasterKey
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function Get-SmoDatabaseObject {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1896,7 +3589,7 @@ function Get-SmoDatabaseObject {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Database])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -1931,7 +3624,7 @@ function Get-SmoDatabaseObject {
 		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject
 	)
 
-	BEGIN {
+	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$SmoServerParameters = @{
@@ -1951,7 +3644,7 @@ function Get-SmoDatabaseObject {
 		catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					if ($null -ne $SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
 					}
 				}
@@ -1961,7 +3654,7 @@ function Get-SmoDatabaseObject {
 		}
 	}
 
-	PROCESS{
+	process {
 		Try {
 			$DatabaseObject = $SmoServerObject.Databases[$DatabaseName]
 
@@ -1986,14 +3679,339 @@ function Get-SmoDatabaseObject {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Get-SmoDatabaseSymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.SymmetricKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSBoundParameters.ContainsKey('SymmetricKeyName')) {
+				$DatabaseObject.SymmetricKeys[$SymmetricKeyName]
+			} else {
+				$DatabaseObject.SymmetricKeys
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Import-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathExists('Leaf')]
+		[System.IO.FileInfo][TransformPath()]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[SecureString]$DecryptionPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$EncryptionPassword,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$Force
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($null -eq $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database Master Key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($Path, 'Import Database Master Key')) {
+				$DatabaseObject.MasterKey.Import(
+					$Path.FullName,
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($DecryptionPassword)),
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword)),
+					$Force
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Import-SmoServiceMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathExists('Leaf')]
+		[System.IO.FileInfo][TransformPath()]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[SecureString]$DecryptionPassword
+	)
+
+	begin {
+		try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSCmdlet.ShouldProcess($Path, 'Import Service Master Key')) {
+				$SmoServerObject.ServiceMasterKey.Import(
+					$Path.FullName,
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($DecryptionPassword))
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function Invoke-SmoNonQuery {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2007,7 +4025,7 @@ function Invoke-SmoNonQuery {
 
 	[OutputType([System.Void])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2083,11 +4101,11 @@ function Invoke-SmoNonQuery {
 		[string]$SqlCommandText
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -in ('DatabaseName_CommandText', 'DatabaseName_InputFile')) {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -2097,7 +4115,7 @@ function Invoke-SmoNonQuery {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -in ('DatabaseName_CommandText', 'DatabaseName_InputFile')) {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -2107,7 +4125,7 @@ function Invoke-SmoNonQuery {
 		}
 	}
 
-	PROCESS {
+	process {
 		Try {
 			if (-not $PSBoundParameters.ContainsKey('SqlCommandText')) {
 				$SqlCommandText = Get-Content -LiteralPath $InputFile -Raw
@@ -2125,7 +4143,7 @@ function Invoke-SmoNonQuery {
 					[System.Management.Automation.ErrorRecord]::New(
 						[Exception]::New("Failed to execute SQL non-query file `"$($InputFile.Name)`" at `"$(Split-Path -Parent $InputFile -Resolve)`""),
 						'1',
-						[System.Management.Automation.ErrorCategory]::NotSpecified,
+						[System.Management.Automation.ErrorCategory]::InvalidArgument,
 						$InputFile.Name
 					)
 				)
@@ -2134,7 +4152,7 @@ function Invoke-SmoNonQuery {
 			throw [System.Management.Automation.ErrorRecord]::New(
 				$BaseException,
 				'1',
-				[System.Management.Automation.ErrorCategory]::NotSpecified,
+				[System.Management.Automation.ErrorCategory]::InvalidOperation,
 				$null
 			)
 		}
@@ -2148,14 +4166,14 @@ function Invoke-SmoNonQuery {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function New-SmoCredential {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2169,7 +4187,7 @@ function New-SmoCredential {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Credential])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2212,11 +4230,11 @@ function New-SmoCredential {
 		[System.Security.SecureString]$Password
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -2226,7 +4244,9 @@ function New-SmoCredential {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -2234,7 +4254,7 @@ function New-SmoCredential {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($PSCmdlet.ShouldProcess($SmoServerObject.name, "Creating Credential $Name.")) {
 				$SmoCredential = [Microsoft.SqlServer.Management.Smo.Credential]::New($SmoServerObject, $Name)
@@ -2254,14 +4274,596 @@ function New-SmoCredential {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function New-SmoDatabaseAsymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName-EncryptionAlgorithm'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.AsymmetricKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-EncryptionAlgorithm'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-SourceType'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-EncryptionAlgorithm'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-SourceType'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-EncryptionAlgorithm'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-SourceType'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$AsymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-EncryptionAlgorithm'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-EncryptionAlgorithm'
+		)]
+		[Microsoft.SqlServer.Management.Smo.AsymmetricKeyEncryptionAlgorithm]$EncryptionAlgorithm,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-SourceType'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-SourceType'
+		)]
+		[Microsoft.SqlServer.Management.Smo.AsymmetricKeySourceType]$SourceType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-SourceType'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-SourceType'
+		)]
+		[string]$KeySource,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$KeyPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName-EncryptionAlgorithm', 'DatabaseName-SourceType')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$AsymmetricKey = [Microsoft.SqlServer.Management.Smo.AsymmetricKey]::New($DatabaseObject, $AsymmetricKeyName)
+
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Creating database asymmetric key.")) {
+				switch ($PSCmdlet.ParameterSetName) {
+					{$_ -in @('DatabaseName-EncryptionAlgorithm', 'DatabaseObject-EncryptionAlgorithm')} {
+						if ($PSBoundParameters.ContainsKey('KeyPassword')) {
+							$AsymmetricKey.Create(
+								$EncryptionAlgorithm,
+								[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($KeyPassword))
+							)
+						} else {
+							$AsymmetricKey.Create($EncryptionAlgorithm)
+						}
+					}
+
+					{$_ -in @('DatabaseName-SourceType', 'DatabaseObject-SourceType')} {
+						if ($PSBoundParameters.ContainsKey('KeyPassword')) {
+							$AsymmetricKey.Create(
+								$KeySource,
+								$SourceType,
+								[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($KeyPassword))
+							)
+						} else {
+							$AsymmetricKey.Create(
+								$KeySource,
+								$SourceType
+							)
+						}
+					}
+
+					Default {
+						throw [System.Management.Automation.ErrorRecord]::New(
+							[Exception]::New('Unknown Parameter set.'),
+							'2',
+							[System.Management.Automation.ErrorCategory]::InvalidType,
+							$PSCmdlet.ParameterSetName
+						)
+					}
+				}
+
+				$AsymmetricKey
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function New-SmoDatabaseCertificate {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.Certificate])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFileWithKey'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFileWithKey'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFileWithKey'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$CertificateName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[string]$Subject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFileWithKey'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFileWithKey'
+		)]
+		[ValidatePathExists('Leaf')]
+		[System.IO.FileInfo][TransformPath()]$CertificatePath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFileWithKey'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFileWithKey'
+		)]
+		[ValidatePathExists('Leaf')]
+		[System.IO.FileInfo][TransformPath()]$PrivateKeyPath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFileWithKey'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFileWithKey'
+		)]
+		[Alias('DecryptionPassword')]
+		[SecureString]$PrivateKeyDecryptionPassword,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Alias('EncryptionPassword')]
+		[ValidatePassword()]
+		[SecureString]$PrivateKeyEncryptionPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName', 'DatabaseName-CertFile', 'DatabaseName-CertFileWithKey')
+			$CertFileParameterSets = @('DatabaseName-CertFile', 'DatabaseName-CertFileWithKey', 'DatabaseObject-CertFile', 'DatabaseObject-CertFileWithKey')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$Certificate = [Microsoft.SqlServer.Management.Smo.Certificate]::New($DatabaseObject, $CertificateName)
+
+			if ($PSCmdlet.ShouldProcess($CertificateName, "Creating database certificate.")) {
+				if ($PSCmdlet.ParameterSetName -in $CertFileParameterSets) {
+					if ($PSBoundParameters.ContainsKey('PrivateKeyPath')) {
+						if ($PSBoundParameters.ContainsKey('PrivateKeyEncryptionPassword')) {
+							$Certificate.Create(
+								$CertificatePath.FullName,
+								[Microsoft.SqlServer.Management.Smo.CertificateSourceType]::File,
+								$PrivateKeyPath.FullName,
+								[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyDecryptionPassword)),
+								[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyEncryptionPassword))
+							)
+						} else {
+							$Certificate.Create(
+								$CertificatePath.FullName,
+								[Microsoft.SqlServer.Management.Smo.CertificateSourceType]::File,
+								$PrivateKeyPath.FullName,
+								[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyDecryptionPassword))
+							)
+						}
+					} else {
+						$Certificate.Create($CertificatePath, [Microsoft.SqlServer.Management.Smo.CertificateSourceType]::File)
+					}
+				} else {
+					$Certificate.Subject = $Subject
+
+					if ($PSBoundParameters.ContainsKey('PrivateKeyEncryptionPassword')) {
+						$Certificate.Create(
+							[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyEncryptionPassword))
+						)
+					} else {
+						$Certificate.Create()
+					}
+				}
+
+				$Certificate
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function New-SmoDatabaseEncryptionKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.DatabaseEncryptionKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.DatabaseEncryptionAlgorithm]$EncryptionAlgorithm,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.DatabaseEncryptionType]$EncryptionType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$EncryptorName
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$DatabaseEncryptionKey = [Microsoft.SqlServer.Management.Smo.DatabaseEncryptionKey]::New()
+			$DatabaseEncryptionKey.Parent = $DatabaseObject
+			$DatabaseEncryptionKey.EncryptionAlgorithm = $EncryptionAlgorithm
+			$DatabaseEncryptionKey.EncryptionType = $EncryptionType
+			$DatabaseEncryptionKey.EncryptorName = $EncryptorName
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Adding database encryption key')) {
+				$DatabaseEncryptionKey.Create()
+
+				$DatabaseObject.Alter()
+				$DatabaseObject.Refresh()
+
+				$DatabaseEncryptionKey
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function New-SmoDatabaseFileGroup {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2275,7 +4877,7 @@ function New-SmoDatabaseFileGroup {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.FileGroup])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2312,7 +4914,7 @@ function New-SmoDatabaseFileGroup {
 		[string]$FileGroupName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -2326,7 +4928,7 @@ function New-SmoDatabaseFileGroup {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -2336,7 +4938,7 @@ function New-SmoDatabaseFileGroup {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -ne $DatabaseObject.FileGroups[$FileGroupName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -2364,14 +4966,189 @@ function New-SmoDatabaseFileGroup {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function New-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.MasterKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFile'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$EncryptionPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFile'
+		)]
+		[System.IO.FileInfo]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-CertFile'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-CertFile'
+		)]
+		[SecureString]$DecryptionPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName', 'DatabaseName-CertFile')
+			$CertFileParameterSets = @('DatabaseName-CertFile', 'DatabaseObject-CertFile')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($null -ne $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('There is already a master key in the database.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ResourceExists,
+					$DatabaseObject.Name
+				)
+			}
+
+			$MasterKey = [Microsoft.SqlServer.Management.Smo.MasterKey]::New()
+
+			$MasterKey.Parent = $DatabaseObject
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Create database master key')) {
+				if ($PSCmdlet.ParameterSetName -in $CertFileParameterSets) {
+					$MasterKey.Create(
+						$Path.FullName,
+						[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($DecryptionPassword)),
+						[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword))
+					)
+				} else {
+					$MasterKey.Create(
+						[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword))
+					)
+				}
+
+				$DatabaseObject.Alter()
+				$DatabaseObject.Refresh()
+
+				$MasterKey
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function New-SmoDatabaseRole {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2385,7 +5162,7 @@ function New-SmoDatabaseRole {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.DatabaseRole])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2430,7 +5207,7 @@ function New-SmoDatabaseRole {
 		[string]$RoleOwner
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -2444,7 +5221,7 @@ function New-SmoDatabaseRole {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -2454,7 +5231,7 @@ function New-SmoDatabaseRole {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -ne $DatabaseObject.Roles[$RoleName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -2484,14 +5261,14 @@ function New-SmoDatabaseRole {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function New-SmoDatabaseSchema {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2505,7 +5282,7 @@ function New-SmoDatabaseSchema {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.Schema])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2550,7 +5327,7 @@ function New-SmoDatabaseSchema {
 		[string]$SchemaOwner
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
@@ -2573,7 +5350,7 @@ function New-SmoDatabaseSchema {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -2583,7 +5360,7 @@ function New-SmoDatabaseSchema {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SchemaObject = [Microsoft.SqlServer.Management.SMO.Schema]::New($DatabaseObject, $SchemaName)
 			$SchemaObject.Owner = $SchemaOwner
@@ -2604,14 +5381,220 @@ function New-SmoDatabaseSchema {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function New-SmoDatabaseSymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.SymmetricKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-PassPhrase'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-PassPhrase'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-PassPhrase'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.KeyEncryptionType]$KeyEncryptionType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$KeyEncryptionValue,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryptionAlgorithm]$KeyEncryptionAlgorithm,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-PassPhrase'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-PassPhrase'
+		)]
+		[ValidatePassword()]
+		[SecureString]$PassPhrase,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName-PassPhrase'
+		)]
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-PassPhrase'
+		)]
+		[string]$IdentityPhrase
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName', 'DatabaseName-PassPhrase')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$SymmetricKey = [Microsoft.SqlServer.Management.Smo.SymmetricKey]::New($DatabaseObject, $SymmetricKeyName)
+			$KeyEncryption = [Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryption]::New($KeyEncryptionType, $KeyEncryptionValue)
+
+			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, "Creating database symmetric key.")) {
+				switch ($PSCmdlet.ParameterSetName) {
+					{$_ -in @('DatabaseName', 'DatabaseObject')} {
+						$SymmetricKey.Create(
+							$KeyEncryption,
+							$KeyEncryptionAlgorithm
+						)
+					}
+
+					{$_ -in @('DatabaseName-PassPhrase', 'DatabaseObject-PassPhrase')} {
+						if ($PSBoundParameters.ContainsKey('IdentityPhrase')) {
+							$SymmetricKey.Create(
+								$KeyEncryption,
+								$KeyEncryptionAlgorithm,
+								$PassPhrase,
+								$IdentityPhrase
+							)
+						} else {
+							$SymmetricKey.Create(
+								$KeyEncryption,
+								$KeyEncryptionAlgorithm,
+								$PassPhrase
+							)
+						}
+					}
+
+					Default {
+						throw [System.Management.Automation.ErrorRecord]::New(
+							[Exception]::New('Unknown Parameter set.'),
+							'2',
+							[System.Management.Automation.ErrorCategory]::InvalidType,
+							$PSCmdlet.ParameterSetName
+						)
+					}
+				}
+
+				$SymmetricKey
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function New-SmoDatabaseUser {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2625,7 +5608,7 @@ function New-SmoDatabaseUser {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.User])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2684,7 +5667,7 @@ function New-SmoDatabaseUser {
 		[Microsoft.SqlServer.Management.Smo.UserType]$UserType = 'SqlUser'
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($UserType -in @('AsymmetricKey', 'Certificate', 'External')) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -2736,7 +5719,7 @@ function New-SmoDatabaseUser {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -2746,7 +5729,7 @@ function New-SmoDatabaseUser {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$UserObject = [Microsoft.SqlServer.Management.SMO.User]::New($DatabaseObject, $UserName)
 
@@ -2777,14 +5760,14 @@ function New-SmoDatabaseUser {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function New-SmoServerRole {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2798,7 +5781,7 @@ function New-SmoServerRole {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.ServerRole])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2834,7 +5817,7 @@ function New-SmoServerRole {
 		[string]$ServerRoleOwner
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
@@ -2848,7 +5831,9 @@ function New-SmoServerRole {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -2856,7 +5841,7 @@ function New-SmoServerRole {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SmoServerRole = [Microsoft.SqlServer.Management.Smo.ServerRole]::New($SmoServerObject, $ServerRoleName)
 			$SmoServerRole.Owner = $ServerRoleOwner
@@ -2876,14 +5861,14 @@ function New-SmoServerRole {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function New-SmoSqlLogin {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2897,7 +5882,7 @@ function New-SmoSqlLogin {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Login])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -2989,11 +5974,11 @@ function New-SmoSqlLogin {
 		[bool]$MustChangePassword = $false
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -3012,7 +5997,9 @@ function New-SmoSqlLogin {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -3020,7 +6007,7 @@ function New-SmoSqlLogin {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SmoLogin = [Microsoft.SqlServer.Management.Smo.Login]::New($SmoServerObject, $LoginName)
 
@@ -3062,14 +6049,207 @@ function New-SmoSqlLogin {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Open-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Medium'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[SecureString]$DecryptionPassword
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			if ($null -eq $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database Master Key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			$DatabaseObject.MasterKey.Open(
+				[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($DecryptionPassword))
+			)
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	end {
+	}
+}
+
+function Open-SmoDatabaseSymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseObject'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-WithCertificate'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-WithSymmetricKey'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[SecureString]$DecryptionPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-WithCertificate'
+		)]
+		[string]$CertificateName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-WithCertificate'
+		)]
+		[SecureString]$PrivateKeyPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject-WithSymmetricKey'
+		)]
+		[string]$DecryptionSymmetricKeyName
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			$SymmetricKey = Get-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName $SymmetricKeyName
+
+			if ($null -eq $SymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Symmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$SymmetricKeyName
+				)
+			}
+
+			switch ($PSCmdlet.ParameterSetName) {
+				'DatabaseObject' {
+					$SymmetricKey.Open(
+						[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($DecryptionPassword))
+					)
+				}
+				'DatabaseObject-WithCertificate' {
+					if ($PSBoundParameters.ContainsKey('PrivateKeyPassword')) {
+						$SymmetricKey.OpenWithCertificate(
+							$CertificateName,
+							[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword))
+						)
+					} else {
+						$SymmetricKey.OpenWithCertificate($CertificateName)
+					}
+				}
+				'DatabaseObject-WithSymmetricKey' {
+					$SymmetricKey.OpenWithSymmetricKey($DecryptionSymmetricKeyName)
+				}
+				Default {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('Unknown Parameter set.'),
+						'2',
+						[System.Management.Automation.ErrorCategory]::InvalidType,
+						$PSCmdlet.ParameterSetName
+					)
+				}
+			}
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	end {
 	}
 }
 
 function Remove-SmoAvailabilityDatabase {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3083,7 +6263,7 @@ function Remove-SmoAvailabilityDatabase {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.AvailabilityGroup])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3172,7 +6352,7 @@ function Remove-SmoAvailabilityDatabase {
 function Remove-SmoCredential {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3186,7 +6366,7 @@ function Remove-SmoCredential {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3214,11 +6394,11 @@ function Remove-SmoCredential {
 		[string]$Name
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -3228,7 +6408,9 @@ function Remove-SmoCredential {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -3236,7 +6418,7 @@ function Remove-SmoCredential {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($Name -NotIn $SmoServerObject.Credentials.Name) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -3263,14 +6445,14 @@ function Remove-SmoCredential {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
-function Remove-SmoDatabaseEncryptionKey {
+function Remove-SmoDatabaseAsymmetricKey {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3278,13 +6460,349 @@ function Remove-SmoDatabaseEncryptionKey {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Low',
+		ConfirmImpact = 'High',
 		DefaultParameterSetName = 'DatabaseName'
 	)]
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$AsymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$RemoveProviderKey
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$AsymmetricKey = Get-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName $AsymmetricKeyName
+
+			if ($null -eq $AsymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Asymmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$AsymmetricKeyName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($AsymmetricKey.name, 'Removing asymmetric key')) {
+				$AsymmetricKey.Drop($RemoveProviderKey)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Remove-SmoDatabaseAsymmetricKeyPrivateKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$AsymmetricKeyName
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$AsymmetricKey = Get-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName $AsymmetricKeyName
+
+			if ($null -eq $AsymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Asymmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$AsymmetricKeyName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Removing database Asymmetric key.")) {
+				$AsymmetricKey.RemovePrivateKey()
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Remove-SmoDatabaseCertificate {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$CertificateName
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$Certificate = Get-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName $CertificateName
+
+			if ($null -eq $Certificate) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Certificate not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$CertificateName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($Certificate.name, 'Removing database certificate')) {
+				$Certificate.Drop()
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Remove-SmoDatabaseEncryptionKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3313,11 +6831,11 @@ function Remove-SmoDatabaseEncryptionKey {
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -3327,7 +6845,7 @@ function Remove-SmoDatabaseEncryptionKey {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -3337,7 +6855,7 @@ function Remove-SmoDatabaseEncryptionKey {
 		}
 	}
 
-	PROCESS{
+	process {
 		try {
 			if ($DatabaseObject.EncryptionEnabled) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -3350,9 +6868,9 @@ function Remove-SmoDatabaseEncryptionKey {
 
 			if ($DatabaseObject.HasDatabaseEncryptionKey) {
 				$ProgressParameters = @{
-					'Id' = 0;
-					'Activity' = 'Decryption In Progress';
-					'Status' = 'Decryption In Progress';
+					'Id' = 0
+					'Status' = 'Decryption In Progress'
+					'Activity' = 'Decryption In Progress'
 					'PercentComplete' = 0
 				}
 
@@ -3389,14 +6907,330 @@ function Remove-SmoDatabaseEncryptionKey {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Remove-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($null -eq $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database Master Key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.Name, 'Remove Database Master Key')) {
+				$DatabaseObject.MasterKey.Drop()
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Remove-SmoDatabaseMasterKeyPasswordEncryption {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[SecureString]$DecryptionPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$MasterKey = $DatabaseObject.MasterKey
+
+			if ($null -eq $MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database does not contain master key.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			if ($MasterKey.IsOpen  -eq $false) {
+				Open-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -DecryptionPassword $DecryptionPassword
+			}
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Remove database master key password encryption')) {
+				$MasterKey.DropPasswordEncryption([Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($DecryptionPassword)))
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Remove-SmoDatabaseMasterKeyServiceKeyEncryption {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$MasterKey = $DatabaseObject.MasterKey
+
+			if ($null -eq $MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database does not contain master key.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Remove database master key service key encryption')) {
+				$MasterKey.DropServiceKeyEncryption()
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function Remove-SmoDatabaseRole {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3410,7 +7244,7 @@ function Remove-SmoDatabaseRole {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3447,11 +7281,11 @@ function Remove-SmoDatabaseRole {
 		[string]$RoleName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -3461,7 +7295,7 @@ function Remove-SmoDatabaseRole {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -3471,7 +7305,7 @@ function Remove-SmoDatabaseRole {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -eq $DatabaseObject.Roles[$RoleName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -3496,14 +7330,14 @@ function Remove-SmoDatabaseRole {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Remove-SmoDatabaseRoleMember {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3517,7 +7351,7 @@ function Remove-SmoDatabaseRoleMember {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3562,11 +7396,11 @@ function Remove-SmoDatabaseRoleMember {
 		[string]$RoleMemberName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -3594,7 +7428,7 @@ function Remove-SmoDatabaseRoleMember {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -3604,7 +7438,7 @@ function Remove-SmoDatabaseRoleMember {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($PSCmdlet.ShouldProcess($RoleName, "Removing $RoleMemberName")) {
 				$DatabaseObject.Roles[$RoleName].DropMember($RoleMemberName)
@@ -3621,14 +7455,14 @@ function Remove-SmoDatabaseRoleMember {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Remove-SmoDatabaseSchema {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3642,7 +7476,7 @@ function Remove-SmoDatabaseSchema {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3679,11 +7513,11 @@ function Remove-SmoDatabaseSchema {
 		[string]$SchemaName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -3693,7 +7527,7 @@ function Remove-SmoDatabaseSchema {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -3703,7 +7537,7 @@ function Remove-SmoDatabaseSchema {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -eq $DatabaseObject.Schemas[$SchemaName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -3730,14 +7564,257 @@ function Remove-SmoDatabaseSchema {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Remove-SmoDatabaseSymmetricKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$RemoveProviderKey
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$SymmetricKey = Get-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName $SymmetricKeyName
+
+			if ($null -eq $SymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Symmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$SymmetricKeyName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($SymmetricKey.name, 'Removing symmetric key')) {
+				$SymmetricKey.Drop($RemoveProviderKey)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Remove-SmoDatabaseSymmetricKeyKeyEncryption {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$SymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.KeyEncryptionType]$KeyEncryptionType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$KeyEncryptionValue
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName', 'DatabaseName-WithCertificate')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$SymmetricKey = Get-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName $SymmetricKeyName
+
+			if ($null -eq $SymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Symmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$SymmetricKeyName
+				)
+			}
+
+			$KeyEncryption = [Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryption]::New($KeyEncryptionType, $KeyEncryptionValue)
+
+			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, "Remove database symmetric key encryption.")) {
+				$SymmetricKey.DropKeyEncryption($KeyEncryption)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function Remove-SmoDatabaseUser {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3751,7 +7828,7 @@ function Remove-SmoDatabaseUser {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3788,11 +7865,11 @@ function Remove-SmoDatabaseUser {
 		[string]$UserName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -3802,7 +7879,7 @@ function Remove-SmoDatabaseUser {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -3812,7 +7889,7 @@ function Remove-SmoDatabaseUser {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -eq $DatabaseObject.Users[$UserName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -3837,14 +7914,14 @@ function Remove-SmoDatabaseUser {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Remove-SmoServerRole {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3858,7 +7935,7 @@ function Remove-SmoServerRole {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3886,11 +7963,11 @@ function Remove-SmoServerRole {
 		[string]$ServerRoleName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -3900,7 +7977,9 @@ function Remove-SmoServerRole {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -3908,7 +7987,7 @@ function Remove-SmoServerRole {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($ServerRoleName -NotIn $SmoServerObject.Roles.Name) {
 				throw[System.Management.Automation.ErrorRecord]::New(
@@ -3935,14 +8014,14 @@ function Remove-SmoServerRole {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Remove-SmoServerRoleMember {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3956,7 +8035,7 @@ function Remove-SmoServerRoleMember {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Credential])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -3992,11 +8071,11 @@ function Remove-SmoServerRoleMember {
 		[string]$ServerRoleMemberName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -4006,7 +8085,9 @@ function Remove-SmoServerRoleMember {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -4014,7 +8095,7 @@ function Remove-SmoServerRoleMember {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($ServerRoleName -NotIn $SmoServerObject.Roles.Name) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -4041,14 +8122,14 @@ function Remove-SmoServerRoleMember {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Remove-SmoSqlLogin {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4062,7 +8143,7 @@ function Remove-SmoSqlLogin {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -4090,11 +8171,11 @@ function Remove-SmoSqlLogin {
 		[string]$LoginName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -4104,7 +8185,9 @@ function Remove-SmoSqlLogin {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -4112,7 +8195,7 @@ function Remove-SmoSqlLogin {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($LoginName -NotIn $SmoServerObject.Logins.Name) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -4139,255 +8222,14 @@ function Remove-SmoSqlLogin {
 		}
 	}
 
-	END {
-	}
-}
-
-function Rename-CIMFile {
-	<#
-	.SYNOPSIS
-	Rename file.
-	.DESCRIPTION
-	Rename file using WMI method.
-	.PARAMETER SourcePath
-	Path of file to rename.
-	.PARAMETER DestinationPath
-	Path of new file name.
-	.PARAMETER ComputerName
-	Computer name where file is located.
-	.PARAMETER Credential
-	SQL Server authentication credentials.
-	.EXAMPLE
-	Rename-CIMFile -SourcePath c:\working\Test.txt -DestinationPath c:\working\Test2.txt -ComputerName localhost
-	.EXAMPLE
-	Rename-CIMFile -SourcePath c:\working\Test.txt -DestinationPath c:\working\Test2.txt -ComputerName MyServer -Credential $(Get-Credential)
-	.NOTES
-	#>
-
-	[System.Diagnostics.DebuggerStepThrough()]
-
-	[CmdletBinding(
-		PositionalBinding = $false,
-		SupportsShouldProcess = $false,
-		ConfirmImpact = 'High'
-	)]
-
-	[OutputType([System.Void])]
-
-	Param (
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[System.IO.FileInfo]$SourcePath,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[System.IO.FileInfo]$DestinationPath,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[string]$ComputerName,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[System.Management.Automation.PSCredential]$Credential
-	)
-
-	BEGIN {
-	}
-
-	PROCESS {
-		try {
-			$CimSessionParameters = @{
-				'Name' = 'RenameCIMDataFile';
-			}
-
-			if ($ComputerName -in [System.Net.Dns]::GetHostName(), 'localhost') {
-				if ($PSBoundParameters.ContainsKey('Credential')) {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('Credentials cannot be used to connect to local machine.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$ComputerName
-					)
-				}
-			} else {
-				$CimSessionParameters.Add('ComputerName', $ComputerName)
-
-				If ($PSBoundParameters.ContainsKey('Credential')) {
-					$CimSessionParameters.Add('Credential', $Credential)
-				}
-			}
-
-			$CimSession = New-CimSession @CimSessionParameters
-
-			if ($null -eq $CimSession) {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[Exception]::New('Unable to open CIM Session on host.'),
-					'1',
-					[System.Management.Automation.ErrorCategory]::ConnectionError,
-					$ComputerName
-				)
-			}
-
-			$CimInstanceParameters = @{
-				'CimSession' = $CimSession;
-				'ClassName' = 'CIM_DataFile';
-				'Filter' = "Name='" + $($SourcePath.FullName.Replace('\', '\\')) + "'";
-			}
-
-			$CIMDataFile = Get-CimInstance @CimInstanceParameters
-
-			if ($null -eq $CIMDataFile) {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[System.IO.FileNotFoundException]::New('File not found.'),
-					'1',
-					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
-					$SourcePath.FullName
-				)
-			}
-
-			$Return = $CIMDataFile | Invoke-CimMethod -MethodName Rename -Arguments @{FileName = "$($DestinationPath.FullName.Replace('\', '\\'))"}
-
-			Switch ($Return.ReturnValue) {
-				0 {
-					# No error
-				}
-				2 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[System.AccessViolationException]::New('You do not have access to perform the operation.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::PermissionDenied,
-						$SourcePath.FullName
-					)
-				}
-				8 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('The operation failed for an undefined reason.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::NotSpecified,
-						$SourcePath.FullName
-					)
-				}
-				9 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('The name specified as a target does not point to a real file or directory.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::ObjectNotFound,
-						$SourcePath.FullName
-					)
-				}
-				10 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('The file or directory specified as a target already exists and cannot be overwritten.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				11 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You have attempted to perform an NTFS operation on a non-NTFS filesystem.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				12 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You have attempted to perform an NT/2000-specific operation on a non-NT/2000 platform.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				13 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You have attempted to perform an operation across drives that can be carried out within only a single drive.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				14 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You have attempted to delete a directory that is not empty.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				15 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('There has been a sharing violation. Another process is using the file you are attempting to manipulate.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				16 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You are attempting to act on a nonexistent file.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::ObjectNotFound,
-						$SourcePath.FullName
-					)
-				}
-				17 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You do not have the relevant NT security privileges to carry out the operation.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::PermissionDenied,
-						$SourcePath.FullName
-					)
-				}
-				21 {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('You have supplied an invalid parameter to the method.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::InvalidOperation,
-						$SourcePath.FullName
-					)
-				}
-				default {
-					throw [System.Management.Automation.ErrorRecord]::New(
-						[Exception]::New('Unknown exception.'),
-						'1',
-						[System.Management.Automation.ErrorCategory]::NotSpecified,
-						$SourcePath.FullName
-					)
-				}
-			}
-		}
-		catch {
-			throw $_
-		}
-		finally {
-			if ($null -ne $CimSession) {
-				Remove-CimSession -CimSession $CimSession
-			}
-		}
-	}
-
-	END {
+	end {
 	}
 }
 
 function Rename-SmoDatabaseDataFile {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[OutputType([System.Void])]
@@ -4401,7 +8243,7 @@ function Rename-SmoDatabaseDataFile {
 
 	[System.Diagnostics.DebuggerStepThrough()]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -4477,11 +8319,11 @@ function Rename-SmoDatabaseDataFile {
 		[string]$NewPhysicalFileName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -4554,7 +8396,7 @@ function Rename-SmoDatabaseDataFile {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -4564,13 +8406,13 @@ function Rename-SmoDatabaseDataFile {
 		}
 
 		$TestPathScriptBlock = {
-			param($Path)
+			param ($Path)
 
 			Test-Path -Path $Path -PathType Leaf
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($LogicalFileName -ne $NewLogicalFileName) {
 				Write-Verbose "Renaming logical file name $LogicalFileName to $NewLogicalFileName"
@@ -4616,8 +8458,8 @@ function Rename-SmoDatabaseDataFile {
 					$DatabaseObject.SetOffline()
 
 					$CIMDataFileProperties = @{
-						'SourcePath' = $OldPath;
-						'DestinationPath' = $NewPath;
+						'SourcePath' = $OldPath
+						'DestinationPath' = $NewPath
 						'ComputerName' = $ComputerName
 					}
 
@@ -4644,14 +8486,14 @@ function Rename-SmoDatabaseDataFile {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Rename-SmoDatabaseLogFile {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4665,7 +8507,7 @@ function Rename-SmoDatabaseLogFile {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -4733,11 +8575,11 @@ function Rename-SmoDatabaseLogFile {
 		[string]$NewPhysicalFileName
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -4799,7 +8641,7 @@ function Rename-SmoDatabaseLogFile {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -4809,13 +8651,13 @@ function Rename-SmoDatabaseLogFile {
 		}
 
 		$TestPathScriptBlock = {
-			param($Path)
+			param ($Path)
 
 			Test-Path -Path $Path -PathType Leaf
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($LogFileObject.Name -ne $NewLogicalFileName) {
 				Write-Verbose "Renaming logical file name $($LogFileObject.Name) to $NewLogicalFileName"
@@ -4861,8 +8703,8 @@ function Rename-SmoDatabaseLogFile {
 					$DatabaseObject.SetOffline()
 
 					$CIMDataFileProperties = @{
-						'SourcePath' = $OldPath;
-						'DestinationPath' = $NewPath;
+						'SourcePath' = $OldPath
+						'DestinationPath' = $NewPath
 						'ComputerName' = $ComputerName
 					}
 
@@ -4890,14 +8732,315 @@ function Rename-SmoDatabaseLogFile {
 		}
 	}
 
-	END {
+	end {
+	}
+}
+
+function Reset-SmoDatabaseEncryptionKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.DatabaseEncryptionAlgorithm]$EncryptionAlgorithm
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Regenerating database encryption key')) {
+				$DatabaseObject.DatabaseEncryptionKey.Regenerate($EncryptionAlgorithm)
+
+				$DatabaseObject.Alter()
+				$DatabaseObject.Refresh()
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Reset-SmoDatabaseMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$EncryptionPassword,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$Force
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($null -eq $DatabaseObject.MasterKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database Master Key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseObject.Name
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Regenerating database master key')) {
+				$DatabaseObject.MasterKey.Regenerate(
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($EncryptionPassword)),
+					$Force
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Reset-SmoServiceMasterKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$Force
+	)
+
+	begin {
+		try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSCmdlet.ShouldProcess('Service Master Key', 'Regenerate')) {
+				if ($Force) {
+					$SmoServerObject.ServiceMasterKey.Regenerate($Force)
+				} else {
+					$SmoServerObject.ServiceMasterKey.Regenerate()
+				}
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
 	}
 }
 
 function Set-SmoCredential {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4911,7 +9054,7 @@ function Set-SmoCredential {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Credential])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -4954,11 +9097,11 @@ function Set-SmoCredential {
 		[System.Security.SecureString]$Password
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -4968,7 +9111,9 @@ function Set-SmoCredential {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -4976,7 +9121,7 @@ function Set-SmoCredential {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($Name -NotIn $SmoServerObject.Credentials.Name) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -5008,14 +9153,14 @@ function Set-SmoCredential {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
-function Set-SmoDatabaseObjectPermission {
+function Set-SmoDatabaseAsymmetricKey {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5029,7 +9174,373 @@ function Set-SmoDatabaseObjectPermission {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$AsymmetricKeyName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[SecureString]$PrivateKeyPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$NewPrivateKeyPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$AsymmetricKey = Get-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName $AsymmetricKeyName
+
+			if ($null -eq $AsymmetricKey) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Asymmetric key not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$AsymmetricKeyName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Updating database Asymmetric key.")) {
+				$AsymmetricKey.ChangePrivateKeyPassword(
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword)),
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($NewPrivateKeyPassword))
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Set-SmoDatabaseCertificate {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$CertificateName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[SecureString]$PrivateKeyPassword,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[SecureString]$NewPrivateKeyPassword
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$Certificate = Get-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName $CertificateName
+
+			if ($null -eq $Certificate) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Certificate not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$CertificateName
+				)
+			}
+
+			if ($PSCmdlet.ShouldProcess($CertificateName, "Updating database certificate.")) {
+				$Certificate.ChangePrivateKeyPassword(
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword)),
+					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($NewPrivateKeyPassword))
+				)
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Set-SmoDatabaseEncryptionKey {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.DatabaseEncryptionKey])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.DatabaseEncryptionType]$EncryptionType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$EncryptorName
+	)
+
+	begin {
+		Try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Regenerating database encryption key')) {
+				$DatabaseObject.DatabaseEncryptionKey.Reencrypt($EncryptorName, $EncryptionType)
+
+				$DatabaseObject.Alter()
+				$DatabaseObject.Refresh()
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Set-SmoDatabaseObjectPermission {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'High',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -5134,11 +9645,11 @@ function Set-SmoDatabaseObjectPermission {
 		[PermissionAction]$Action
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -in ('DatabaseName', 'DatabaseNameWithPermissionSet')) {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -5154,7 +9665,7 @@ function Set-SmoDatabaseObjectPermission {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -in ('DatabaseName', 'DatabaseNameWithPermissionSet')) {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -5164,7 +9675,7 @@ function Set-SmoDatabaseObjectPermission {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if (($DatabaseObject.Users.where({$_.name -eq $Principal})) -or ($DatabaseObject.Roles.where({$_.name -eq $Principal}))) {
 				switch ($ObjectClass) {
@@ -5257,14 +9768,14 @@ function Set-SmoDatabaseObjectPermission {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Set-SmoDatabasePermission {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5278,7 +9789,7 @@ function Set-SmoDatabasePermission {
 
 	[OutputType([System.Void])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -5368,11 +9879,11 @@ function Set-SmoDatabasePermission {
 		[PermissionAction]$Action
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -in ('DatabaseName', 'DatabaseNameWithPermissionSet')) {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -5388,7 +9899,7 @@ function Set-SmoDatabasePermission {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -in ('DatabaseName', 'DatabaseNameWithPermissionSet')) {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -5398,7 +9909,7 @@ function Set-SmoDatabasePermission {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if (($DatabaseObject.Users.where({$_.name -eq $Principal})) -or ($DatabaseObject.Roles.where({$_.name -eq $Principal}))) {
 				if ($PSCmdlet.ShouldProcess($DatabaseObject.name, "$Action database permissions to principal $Principal")) {
@@ -5433,14 +9944,14 @@ function Set-SmoDatabasePermission {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Set-SmoDatabaseRole {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5454,7 +9965,7 @@ function Set-SmoDatabaseRole {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.DatabaseRole])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -5499,11 +10010,11 @@ function Set-SmoDatabaseRole {
 		[string]$RoleOwner
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -5513,7 +10024,7 @@ function Set-SmoDatabaseRole {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -5523,7 +10034,7 @@ function Set-SmoDatabaseRole {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($null -eq $DatabaseObject.Roles[$RoleName]) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -5554,14 +10065,14 @@ function Set-SmoDatabaseRole {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Set-SmoDatabaseSchema {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5575,7 +10086,7 @@ function Set-SmoDatabaseSchema {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.Schema])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -5620,11 +10131,11 @@ function Set-SmoDatabaseSchema {
 		[string]$SchemaOwner
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -5643,7 +10154,7 @@ function Set-SmoDatabaseSchema {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -5653,7 +10164,7 @@ function Set-SmoDatabaseSchema {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SchemaObject = $DatabaseObject.Schemas[$SchemaName]
 			$SchemaObject.Owner = $SchemaOwner
@@ -5675,14 +10186,14 @@ function Set-SmoDatabaseSchema {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Set-SmoDatabaseUser {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5696,7 +10207,7 @@ function Set-SmoDatabaseUser {
 
 	[OutputType([Microsoft.SqlServer.Management.SMO.User])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -5756,11 +10267,11 @@ function Set-SmoDatabaseUser {
 		[string]$DefaultSchema
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$DatabaseObjectParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -5792,7 +10303,7 @@ function Set-SmoDatabaseUser {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				if (Test-Path -Path variable:\DatabaseObject) {
-					if ($null -ne $DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 					}
 				}
@@ -5802,7 +10313,7 @@ function Set-SmoDatabaseUser {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, "Setting database login $UserName properties.")) {
 				if ($PSBoundParameters.ContainsKey('NewUserName')) {
@@ -5833,14 +10344,14 @@ function Set-SmoDatabaseUser {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Set-SmoServerRole {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5854,7 +10365,7 @@ function Set-SmoServerRole {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.ServerRole])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -5890,7 +10401,7 @@ function Set-SmoServerRole {
 		[string]$ServerRoleOwner
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
@@ -5904,7 +10415,9 @@ function Set-SmoServerRole {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -5912,7 +10425,7 @@ function Set-SmoServerRole {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($Name -NotIn $SmoServerObject.Roles.Name) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -5943,14 +10456,14 @@ function Set-SmoServerRole {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Set-SmoSqlLogin {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5964,7 +10477,7 @@ function Set-SmoSqlLogin {
 
 	[OutputType([Microsoft.SqlServer.Management.Smo.Login])]
 
-	PARAM(
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -6036,11 +10549,11 @@ function Set-SmoSqlLogin {
 		[bool]$LoginDisabled
 	)
 
-	BEGIN {
+	begin {
 		Try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
 				}
 
@@ -6050,7 +10563,9 @@ function Set-SmoSqlLogin {
 		Catch {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 				if (Test-Path -Path variable:\SmoServerObject) {
-					Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
 				}
 			}
 
@@ -6058,7 +10573,7 @@ function Set-SmoSqlLogin {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if ($LoginName -NotIn $SmoServerObject.Logins.Name) {
 				throw [System.Management.Automation.ErrorRecord]::New(
@@ -6111,58 +10626,12 @@ function Set-SmoSqlLogin {
 		}
 	}
 
-	END {
+	end {
 	}
 }
+#EndRegion
 
-function Test-RunAsAdministrator {
-	<#
-	.SYNOPSIS
-	Test for current windows identity running as administrator.
-	.DESCRIPTION
-	Test for current windows identity running as administrator.
-	.EXAMPLE
-	Test-RunAsAdministrator
-	.NOTES
-	#>
-
-	[System.Diagnostics.DebuggerStepThrough()]
-
-	[CmdletBinding(
-		PositionalBinding = $false,
-		SupportsShouldProcess = $false,
-		ConfirmImpact = 'Low'
-	)]
-
-	[OutputType([System.Boolean])]
-
-	PARAM()
-
-	BEGIN {
-		if ($PSVersionTable.PSEdition -eq 'Core') {
-			if ($PSVersionTable.Platform -ne 'Win32NT') {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[Exception]::New('Platform not supported.'),
-					'1',
-					[System.Management.Automation.ErrorCategory]::InvalidOperation,
-					$FileGroupName
-				)
-			}
-		}
-	}
-
-	PROCESS {
-		$WindowsIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
-		$WindowsPrincipal = [Security.Principal.WindowsPrincipal]::New($WindowsIdentity)
-
-		$WindowsPrincipal.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-	}
-
-	END {
-
-	}
-}
-
+#Region SQL Client Functions
 function Add-SqlClientAssembly {
 	<#
 	.SYNOPSIS
@@ -6184,12 +10653,12 @@ function Add-SqlClientAssembly {
 
 	[OutputType([System.Void])]
 
-	PARAM ()
+	param ()
 
-	BEGIN {
+	begin {
 	}
 
-	PROCESS {
+	process {
 		try {
 			[System.IO.FileInfo]$SqlClientPath = [AppDomain]::CurrentDomain.GetAssemblies().where({$_.ManifestModule.Name -eq 'Microsoft.Data.SqlClient.dll'}).Location
 
@@ -6197,7 +10666,7 @@ function Add-SqlClientAssembly {
 				throw [System.Management.Automation.ErrorRecord]::New(
 					[Exception]::New('Assembly not found.'),
 					'1',
-					[System.Management.Automation.ErrorCategory]::NotSpecified,
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
 					'Microsoft.Data.SqlClient'
 				)
 			}
@@ -6207,14 +10676,14 @@ function Add-SqlClientAssembly {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Build-SqlClientConnectionString {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6228,7 +10697,7 @@ function Build-SqlClientConnectionString {
 
 	[OutputType([System.String])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -6364,7 +10833,31 @@ function Build-SqlClientConnectionString {
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[ValidateRange(1, 60)]
-		[int]$ConnectRetryInterval = 10
+		[int]$ConnectRetryInterval = 10,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(0, [int]::MaxValue)]
+		[int]$MinPoolSize = 0,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(1, [int]::MaxValue)]
+		[int]$MaxPoolSize = 100,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(0, [int]::MaxValue)]
+		[int]$ConnectionLifetime = 600
 	)
 
 	begin {
@@ -6411,6 +10904,9 @@ function Build-SqlClientConnectionString {
 			}
 
 			$SqlConnectionStringBuilder['Pooling'] = $true
+			$SqlConnectionStringBuilder['Min Pool Size'] = $MinPoolSize
+			$SqlConnectionStringBuilder['Max Pool Size'] = $MaxPoolSize
+			$SqlConnectionStringBuilder['Connection Lifetime'] = $ConnectionLifetime
 			$SqlConnectionStringBuilder['Connect Timeout'] = $ConnectionTimeout
 			$SqlConnectionStringBuilder['Command Timeout'] = $CommandTimeout
 			$SqlConnectionStringBuilder['TrustServerCertificate'] = $TrustServerCertificate
@@ -6437,7 +10933,7 @@ function Build-SqlClientConnectionString {
 function Connect-SqlServerInstance {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6451,7 +10947,7 @@ function Connect-SqlServerInstance {
 
 	[OutputType([Microsoft.Data.SqlClient.SqlConnection])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -6537,13 +11033,13 @@ function Connect-SqlServerInstance {
 		[int]$CommandTimeout
 	)
 
-	BEGIN {
+	begin {
 		if ($PSCmdlet.ParameterSetName -eq 'WithCredential') {
 			$Credential.Password.MakeReadOnly()
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			if (-not ($PSBoundParameters.ContainsKey('ConnectionString'))) {
 				$ConnectionStringParameters = @{
@@ -6573,7 +11069,7 @@ function Connect-SqlServerInstance {
 
 			if ($PSBoundParameters['Verbose']) {
 				$SqlInfoMessageEventHandler = [Microsoft.Data.SqlClient.SqlInfoMessageEventHandler] {
-					param([Object]$SqlSender, [Microsoft.Data.SqlClient.SqlInfoMessageEventArgs]$SqlEvent)
+					param ([Object]$SqlSender, [Microsoft.Data.SqlClient.SqlInfoMessageEventArgs]$SqlEvent)
 
 					[void]$SqlSender
 					Write-Verbose $SqlEvent.Message
@@ -6590,14 +11086,14 @@ function Connect-SqlServerInstance {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Disconnect-SqlServerInstance {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6610,7 +11106,7 @@ function Disconnect-SqlServerInstance {
 
 	[OutputType([System.Void])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -6619,26 +11115,27 @@ function Disconnect-SqlServerInstance {
 		[Microsoft.Data.SqlClient.SqlConnection]$SqlConnection
 	)
 
-	BEGIN {
-		[Microsoft.Data.SqlClient.SqlConnection]::ClearAllPools()
+	begin {
 	}
 
-	PROCESS {
+	process {
 		if ($SqlConnection.State -eq [System.Data.ConnectionState]::Open) {
 			$SqlConnection.Close()
 		}
 
+		[Microsoft.Data.SqlClient.SqlConnection]::ClearPool($SqlConnection)
+
 		$SqlConnection.Dispose()
 	}
 
-	END {
+	end {
 	}
 }
 
 function Get-SqlClientDataSet {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6653,7 +11150,8 @@ function Get-SqlClientDataSet {
 	[OutputType(
 		[System.Data.DataSet],
 		[System.Data.DataTable],
-		[System.Data.DataRow]
+		[System.Data.DataRow],
+		[System.Boolean]
 	)]
 
 	param (
@@ -6750,11 +11248,11 @@ function Get-SqlClientDataSet {
 		[DataOutputType]$OutputAs = 'DataTable'
 	)
 
-	BEGIN {
+	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$SqlServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -6776,7 +11274,7 @@ function Get-SqlClientDataSet {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SqlCommand = [Microsoft.Data.SqlClient.SqlCommand]::New()
 			$SqlCommand.Connection = $SqlConnection
@@ -6792,35 +11290,45 @@ function Get-SqlClientDataSet {
 				}
 			}
 
-			$SqlDataAdapter = [Microsoft.Data.SqlClient.SqlDataAdapter]::New($SqlCommand)
+			if ($OutputAs -eq 'None') {
+				$Result = $SqlCommand.ExecuteNonQuery()
 
-			$OutputDataset = [System.Data.DataSet]::New()
-			$OutputDataset.DataSetName = $DataSetName
-			$OutputDataset.ExtendedProperties['SqlCommand'] = $SqlCommandText
-			$OutputDataset.ExtendedProperties['SqlConnection'] = $SqlConnection
-
-			if ($PSCmdlet.ShouldProcess($DataSetName, 'Get SQL dataset')) {
-				[void]$SqlDataAdapter.Fill($OutputDataset, $DataTableName)
-
-				if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
-					Disconnect-SqlServerInstance -SqlConnection $SqlConnection
+				if ($Result -eq -1 -or $Result -gt 0) {
+					$true
+				} else {
+					$false
 				}
+			} else {
+				$SqlDataAdapter = [Microsoft.Data.SqlClient.SqlDataAdapter]::New($SqlCommand)
 
-				foreach ($Parameter in $SqlCommand.Parameters.Where({$_.Direction -eq [System.Data.ParameterDirection]::Output})) {
-					$OutSqlParameter.Add($Parameter)
-				}
+				$OutputDataset = [System.Data.DataSet]::New()
+				$OutputDataset.DataSetName = $DataSetName
+				$OutputDataset.ExtendedProperties['SqlCommand'] = $SqlCommandText
+				$OutputDataset.ExtendedProperties['SqlConnection'] = $SqlConnection
 
-				switch ($OutputAs) {
-					'DataSet' {
-						$OutputDataset
+				if ($PSCmdlet.ShouldProcess($DataSetName, 'Get SQL dataset')) {
+					[void]$SqlDataAdapter.Fill($OutputDataset, $DataTableName)
+
+					if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+						Disconnect-SqlServerInstance -SqlConnection $SqlConnection
 					}
-					'DataTable' {
-						$OutputDataset.Tables
+
+					foreach ($Parameter in $SqlCommand.Parameters.Where({$_.Direction -eq [System.Data.ParameterDirection]::Output})) {
+						$OutSqlParameter.Add($Parameter)
 					}
-					'DataRow' {
-						foreach ($DataTable in $OutputDataset.Tables) {
-							foreach ($DataRow in $DataTable.Rows) {
-								$DataRow
+
+					switch ($OutputAs) {
+						'DataSet' {
+							$OutputDataset
+						}
+						'DataTable' {
+							$OutputDataset.Tables
+						}
+						'DataRow' {
+							foreach ($DataTable in $OutputDataset.Tables) {
+								foreach ($DataRow in $DataTable.Rows) {
+									$DataRow
+								}
 							}
 						}
 					}
@@ -6841,14 +11349,14 @@ function Get-SqlClientDataSet {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Invoke-SqlClientBulkCopy {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6893,6 +11401,14 @@ function Invoke-SqlClientBulkCopy {
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnection'
+		)]
+		[Microsoft.Data.SqlClient.SqlConnection]$SqlConnection,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[ValidateLength(1, 128)]
@@ -6929,15 +11445,19 @@ function Invoke-SqlClientBulkCopy {
 		[Microsoft.Data.SqlClient.SqlBulkCopyOptions]$SqlBulkCopyOptions = 'Default'
 	)
 
-	BEGIN {
+	begin {
 		if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
 			$ConnectionString = Build-SqlClientConnectionString -ServerInstance $ServerInstance -DatabaseName $DatabaseName
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
-			$SqlBulkCopy = [Microsoft.Data.SqlClient.SqlBulkCopy]::New($ConnectionString, $SqlBulkCopyOptions)
+			if ($PSCmdlet.ParameterSetName -eq 'SqlConnection') {
+				$SqlBulkCopy = [Microsoft.Data.SqlClient.SqlBulkCopy]::New($SqlConnection, $SqlBulkCopyOptions, $null)
+			} else {
+				$SqlBulkCopy = [Microsoft.Data.SqlClient.SqlBulkCopy]::New($ConnectionString, $SqlBulkCopyOptions)
+			}
 
 			$SqlBulkCopy.DestinationTableName = $TableName
 			$SqlBulkCopy.BulkCopyTimeout = $QueryTimeout
@@ -6969,14 +11489,14 @@ function Invoke-SqlClientBulkCopy {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Invoke-SqlClientNonQuery {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7034,11 +11554,11 @@ function Invoke-SqlClientNonQuery {
 		[int]$CommandTimeout = 30
 	)
 
-	BEGIN {
+	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
 				$SqlServerParameters = @{
-					'ServerInstance' = $ServerInstance;
+					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
 				}
 
@@ -7050,7 +11570,7 @@ function Invoke-SqlClientNonQuery {
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$SqlCommand = [Microsoft.Data.SqlClient.SqlCommand]::New()
 			$SqlCommand.Connection = $SqlConnection
@@ -7086,14 +11606,14 @@ function Invoke-SqlClientNonQuery {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Publish-SqlDatabaseDacPac {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7107,7 +11627,7 @@ function Publish-SqlDatabaseDacPac {
 
 	[OutputType([System.Void])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -7150,13 +11670,13 @@ function Publish-SqlDatabaseDacPac {
 		[Microsoft.SqlServer.Dac.DacDeployOptions]$DeployOptions
 	)
 
-	BEGIN {
+	begin {
 		if ($PSBoundParameters.ContainsKey('FailoverPartnerServerInstance')) {
 			$ConnectionString = Build-SqlClientConnectionString -ServerInstance $ServerInstance -DatabaseName $DatabaseName -IntegratedSecurity $true
 		}
 	}
 
-	PROCESS {
+	process {
 		try {
 			$DacService = [Microsoft.SqlServer.Dac.DacServices]::New($ConnectionString)
 
@@ -7171,14 +11691,14 @@ function Publish-SqlDatabaseDacPac {
 		}
 	}
 
-	END {
+	end {
 	}
 }
 
 function Save-SqlClientDataSet {
 	<#
 	.EXTERNALHELP
-	SQLServerTools-help.xml
+	SqlServerTools-help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7191,7 +11711,7 @@ function Save-SqlClientDataSet {
 
 	[OutputType([System.Void])]
 
-	PARAM (
+	param (
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
@@ -7207,10 +11727,10 @@ function Save-SqlClientDataSet {
 		[Microsoft.Data.SqlClient.SqlDataAdapter]$SqlDataAdapter
 	)
 
-	BEGIN {
+	begin {
 	}
 
-	PROCESS {
+	process {
 		try {
 			if (-not $PSBoundParameters.ContainsKey('SqlDataAdapter')) {
 				$SqlCommandBuilder = [Microsoft.Data.SqlClient.SqlCommandBuilder]::New($SqlDataAdapter)
@@ -7240,269 +11760,21 @@ function Save-SqlClientDataSet {
 		}
 	}
 
-	END {
+	end {
 	}
 }
-
-function Test-SqlBrowserConnection {
-	<#
-	.EXTERNALHELP
-	SQLServerTools-help.xml
-	#>
-
-	[System.Diagnostics.DebuggerStepThrough()]
-
-	[CmdletBinding(
-		PositionalBinding = $false,
-		SupportsShouldProcess = $false,
-		ConfirmImpact = 'Low',
-		DefaultParameterSetName = 'Hostname'
-	)]
-
-	[OutputType([System.Boolean])]
-
-	Param(
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'Hostname'
-		)]
-		[string]$Computer,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'IPAddress'
-		)]
-		[System.Net.IPAddress]$IPAddress,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateRange(1, 65535)]
-		[int]$Port = 1434,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateRange(0, 86400000)]
-		[int]$ConnectionTimeout = 5000
-	)
-
-	Begin {
-		$ASCIIEncoding = [System.Text.ASCIIEncoding]::New()
-		[byte[]]$UDPPacket = 0x02,0x00	#,0x00
-	}
-
-	Process {
-		Try {
-			if ($PSBoundParameters.ContainsKey('Computer')) {
-				$IPAddress = [System.Net.Dns]::Resolve($Computer).AddressList[0]
-			}
-
-			$UDPClient = [System.Net.Sockets.UdpClient]::New()
-
-			$UDPClient.Client.ReceiveTimeout = $ConnectionTimeout
-			$UDPClient.Client.Blocking = $true
-
-			$UDPClient.Connect($IPAddress, $Port)
-
-			$IPEndPoint = [System.Net.IPEndPoint]::New([System.Net.IPAddress]::Any, 14340)
-
-			[void]$UDPClient.Send($UDPPacket, $UDPPacket.length)
-
-			$BytesReceived = $UDPClient.Receive([ref]$IPEndPoint)
-
-			[string]$Response = $ASCIIEncoding.GetString($BytesReceived)
-
-			If ($Response) {
-				Write-Verbose $Response
-
-				$true
-			}
-		}
-		Catch [System.Management.Automation.MethodInvocationException] {
-			Write-Warning 'Hidden SQL instances will not be included in response.  When all instances are hidden, the SQL browser will not provide a response.'
-
-			$false
-		}
-		Catch {
-			throw $_
-		}
-		finally {
-			if (Test-Path -Path variable:\UDPClient) {
-				$UDPClient.Close()
-				$UDPClient.Dispose()
-			}
-		}
-	}
-
-	END {
-	}
-}
-
-function Test-SqlConnection {
-	<#
-	.EXTERNALHELP
-	SQLServerTools-help.xml
-	#>
-
-	[System.Diagnostics.DebuggerStepThrough()]
-
-	[CmdletBinding(
-		PositionalBinding = $false,
-		SupportsShouldProcess = $false,
-		ConfirmImpact = 'Low',
-		DefaultParameterSetName = 'Hostname'
-	)]
-
-	[OutputType([System.Boolean])]
-
-	Param(
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'Hostname'
-		)]
-		[string]$Computer,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'IPAddress'
-		)]
-		[System.Net.IPAddress]$IPAddress,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateRange(1, 65535)]
-		[int]$Port = 1433,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[System.Management.Automation.PSCredential]$Credential,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateRange(0, 86400)]
-		[int]$ConnectionTimeout = 15
-	)
-
-	BEGIN {
-		try {
-			$TcpClient = [System.Net.Sockets.TcpClient]::New()
-			$TcpClient.SendTimeout = $ConnectionTimeout
-
-			$SqlConnection = [Microsoft.Data.SqlClient.SqlConnection]::New()
-
-			$ConnectionStringParameters = @{
-				'DatabaseName' = 'master';
-				'ConnectionTimeout' = $ConnectionTimeout
-			}
-
-			if ($PSBoundParameters.ContainsKey('Computer')) {
-				$FormatStringArray = @(
-					$Computer,
-					$Port
-				)
-			} else {
-				$FormatStringArray = @(
-					$IPAddress,
-					$Port
-				)
-			}
-
-			$ConnectionStringParameters.Add('ServerInstance', [string]::Format('{0},{1}', $FormatStringArray))
-
-			if ($PSBoundParameters.ContainsKey('Credential')) {
-				$ConnectionStringParameters.Add('Credential', $Credential)
-			}
-
-			$SqlConnection.ConnectionString = Build-SqlClientConnectionString @ConnectionStringParameters
-		}
-		catch {
-			if (Test-Path -Path variable:\TcpClient) {
-				$TcpClient.Dispose()
-			}
-
-			if (Test-Path -Path variable:\SqlConnection) {
-				$SqlConnection.Dispose()
-			}
-
-			throw $_
-		}
-	}
-
-	PROCESS {
-		try {
-			if ($PSBoundParameters.ContainsKey('Computer')) {
-				switch ($Computer) {
-					'.' {
-						[void]$TcpClient.Connect([System.Net.Dns]::GetHostName(), $Port)
-					}
-					'localhost' {
-						[void]$TcpClient.Connect([System.Net.Dns]::GetHostName(), $Port)
-					}
-					Default {
-						[void]$TcpClient.Connect($Computer, $Port)
-					}
-				}
-
-			} else {
-				[void]$TcpClient.Connect($IPAddress, $Port)
-			}
-
-			if ($TcpClient.Connected) {
-				Write-Verbose 'TCP Connected'
-
-				$TcpClient.Close()
-
-				$SqlConnection.Open()
-				$SqlConnection.Close()
-			} else {
-				throw $_
-			}
-
-			$true
-		} catch {
-			$false
-		}
-		finally {
-			if (Test-Path -Path variable:\TcpClient) {
-				$TcpClient.Dispose()
-			}
-
-			if (Test-Path -Path variable:\SqlConnection) {
-				$SqlConnection.Dispose()
-			}
-		}
-	}
-
-	END {
-	}
-}
+#EndRegion
 
 
 try {
 	Add-SqlClientAssembly
 	Add-SmoAssembly
+
+	New-Alias -Name Add-SmoDatabaseEncryptionKey -Value New-SmoDatabaseEncryptionKey
+
+	#Region Export Module Members
+	Export-ModuleMember	-Alias Add-SmoDatabaseEncryptionKey
+	#EndRegion
 }
 catch {
 	throw $_

@@ -74,7 +74,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object.
+SMO database object.
 
 ```yaml
 Type: Database

@@ -72,7 +72,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to remove database user.
+SMO database object to remove database user.
 
 ```yaml
 Type: Database

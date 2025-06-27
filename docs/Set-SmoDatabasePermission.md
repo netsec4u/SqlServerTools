@@ -138,7 +138,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Database SMO Object.
+SMO database object.
 
 ```yaml
 Type: Database

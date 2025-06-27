@@ -72,7 +72,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to add file group.
+SMO database object to add file group.
 
 ```yaml
 Type: Database

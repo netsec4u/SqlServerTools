@@ -100,7 +100,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to rename dat file.
+SMO database object to rename dat file.
 
 ```yaml
 Type: Database

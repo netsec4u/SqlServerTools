@@ -87,7 +87,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to add data file.
+SMO database object to add data file.
 
 ```yaml
 Type: Database

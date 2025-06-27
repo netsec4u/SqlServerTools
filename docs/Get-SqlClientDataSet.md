@@ -166,7 +166,7 @@ Specifies output object type.
 Type: DataOutputType
 Parameter Sets: (All)
 Aliases:
-Accepted values: DataSet, DataTable, DataRow
+Accepted values: DataSet, DataTable, DataRow, None
 
 Required: False
 Position: Named
@@ -295,6 +295,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### System.Data.DataTable
 
 ### System.Data.DataRow
+
+### System.Boolean
 
 ## NOTES
 

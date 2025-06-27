@@ -70,7 +70,7 @@ Accept wildcard characters: False
 ```
 
 ### -DatabaseObject
-Name of database object to disable transparent database encryption.
+SMO database object to disable transparent database encryption.
 
 ```yaml
 Type: Database

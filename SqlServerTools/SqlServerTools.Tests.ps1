@@ -11,10 +11,6 @@ Describe 'SQL Server Tools' {
 
 	}
 
-	Context 'Add-SmoDatabaseEncryptionKey' {
-
-	}
-
 	Context 'Add-SmoDatabaseRoleMember' {
 
 	}
@@ -106,6 +102,10 @@ Describe 'SQL Server Tools' {
 	}
 
 	Context 'New-SmoCredential' {
+
+	}
+
+	Context 'New-SmoDatabaseEncryptionKey' {
 
 	}
 

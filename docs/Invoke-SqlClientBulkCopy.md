@@ -41,6 +41,20 @@ Invoke-SqlClientBulkCopy
 	[<CommonParameters>]
 ```
 
+### SqlConnection
+```
+Invoke-SqlClientBulkCopy
+	-SqlConnection <SqlConnection>
+	-TableName <String>
+	[-QueryTimeout <Int32>]
+	[-BatchSize <Int32>]
+	-DataTable <DataTable>
+	[-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+	[-WhatIf]
+	[-Confirm]
+	[<CommonParameters>]
+```
+
 ## DESCRIPTION
 Use SQL Bulk copy to insert data into database table.
 
@@ -57,13 +71,23 @@ Perform bulk copy against AdventureWorks database.
 
 ### EXAMPLE 2
 ```powershell
-$DataTable = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
+$DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
 
 Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable" -DataTable $DataTable
 ```
 
 Perform bulk copy using connection string.
+
+### EXAMPLE 3
+```powershell
+$DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
+$SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks
+
+Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataTable
+```
+
+Perform bulk copy using the SQL connection.
 
 ## PARAMETERS
 
@@ -170,6 +194,21 @@ Accepted values: Default, KeepIdentity, CheckConstraints, TableLock, KeepNulls, 
 Required: False
 Position: Named
 Default value: Default
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SqlConnection
+Specifies SQL connection object.
+
+```yaml
+Type: SqlConnection
+Parameter Sets: SqlConnection
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
