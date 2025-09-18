@@ -1,233 +1,317 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: Rename-SmoDatabaseLogFile
 ---
 
 # Rename-SmoDatabaseLogFile
 
 ## SYNOPSIS
+
 Rename log file.
 
 ## SYNTAX
 
 ### DatabaseName (Default)
+
 ```
 Rename-SmoDatabaseLogFile
-	-ServerInstance <String>
-	-DatabaseName <String>
-	-LogicalFileName <String>
-	-NewLogicalFileName <String>
-	-NewPhysicalFileName <String>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -LogicalFileName <string>
+  -NewLogicalFileName <string>
+  -NewPhysicalFileName <string>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### DatabaseObject
+
 ```
 Rename-SmoDatabaseLogFile
-	-DatabaseObject <Database>
-	-LogicalFileName <String>
-	-NewLogicalFileName <String>
-	-NewPhysicalFileName <String>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -DatabaseObject <Database>
+  -LogicalFileName <string>
+  -NewLogicalFileName <string>
+  -NewPhysicalFileName <string>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### LogFileObject
+
 ```
 Rename-SmoDatabaseLogFile
-	-LogFileObject <LogFile>
-	-NewLogicalFileName <String>
-	-NewPhysicalFileName <String>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -LogFileObject <LogFile>
+  -NewLogicalFileName <string>
+  -NewPhysicalFileName <string>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Rename log file.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 Rename-SmoDatabaseLogFile -ServerInstance MyServer -DatabaseName AdventureWorks -LogicalFileName Log -NewLogicalFileName AdventureWorks_Log -NewPhysicalFileName AdventureWorks_log.ldf
-```
 
 Renames AdventureWorks log file logical and physical name.
 
 ### EXAMPLE 2
-```powershell
+
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
 Rename-SmoDatabaseLogFile -DatabaseObject $DatabaseObject -LogicalFileName Log -NewLogicalFileName AdventureWorks_Log -NewPhysicalFileName AdventureWorks_log.ldf
-```
 
 Renames log file logical and physical name using SMO database object.
 
 ### EXAMPLE 3
-```powershell
+
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 $LogFileObject = $DatabaseObject.LogFiles
 
 Rename-SmoDatabaseLogFile -LogFileObject $LogFileObject -NewLogicalFileName AdventureWorks_Log -NewPhysicalFileName AdventureWorks_log.ldf
-```
 
 Renames log file logical and physical name using SMO log file object object.
 
 ## PARAMETERS
 
-### -DatabaseName
-Name of database.
-
-```yaml
-Type: String
-Parameter Sets: DatabaseName
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DatabaseObject
-SMO database object.
-
-```yaml
-Type: Database
-Parameter Sets: DatabaseObject
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogFileObject
-Name of log file object.
-
-```yaml
-Type: LogFile
-Parameter Sets: LogFileObject
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogicalFileName
-Data file name.
-
-```yaml
-Type: String
-Parameter Sets: DatabaseName, DatabaseObject
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -NewLogicalFileName
-New logical file name.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -NewPhysicalFileName
-New physical file name.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ServerInstance
-SQL Server host name and instance name.
-
-```yaml
-Type: String
-Parameter Sets: DatabaseName
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Confirm
+
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+### -DatabaseName
+
+Name of database.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -DatabaseObject
+
+SMO database object.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.Database
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseObject
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -LogFileObject
+
+Name of log file object.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.LogFile
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: LogFileObject
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -LogicalFileName
+
+Data file name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseObject
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -NewLogicalFileName
+
+New logical file name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -NewPhysicalFileName
+
+New physical file name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerInstance
+
+SQL Server host name and instance name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### System.Void
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+

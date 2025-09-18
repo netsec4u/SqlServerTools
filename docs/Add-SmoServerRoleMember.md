@@ -1,164 +1,224 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: Add-SmoServerRoleMember
 ---
 
 # Add-SmoServerRoleMember
 
 ## SYNOPSIS
+
 Add member to server role.
 
 ## SYNTAX
 
 ### ServerInstance (Default)
+
 ```
 Add-SmoServerRoleMember
-	-ServerInstance <String>
-	-ServerRoleName <String>
-	-ServerRoleMemberName <String>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -ServerRoleName <string>
+  -ServerRoleMemberName <string>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### SmoServer
+
 ```
 Add-SmoServerRoleMember
-	-SmoServerObject <Server>
-	-ServerRoleName <String>
-	-ServerRoleMemberName <String>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -SmoServerObject <Server>
+  -ServerRoleName <string>
+  -ServerRoleMemberName <string>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Add member to server role.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 Add-SmoServerRoleMember -ServerInstance MyServer -ServerRoleName MyServerRole -ServerRoleMemberName JSmith
-```
 
 Add JSmith to server role MyServerRole.
 
 ### EXAMPLE 2
-```powershell
+
 $SmoServerObject = Connect-SmoServer -ServerInstance .
 
 Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole -ServerRoleMemberName JSmith
-```
 
 Add JSmith to server role MyServerRole using Smo Server Object.
 
 ## PARAMETERS
 
-### -ServerInstance
-SQL Server host name and instance name.
-
-```yaml
-Type: String
-Parameter Sets: ServerInstance
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ServerRoleMemberName
-Name of SQL user to add to role.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ServerRoleName
-Name of Server Role to add members to.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SmoServerObject
-SQL Server Management Object.
-
-```yaml
-Type: Server
-Parameter Sets: SmoServer
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Confirm
+
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+### -ServerInstance
+
+SQL Server host name and instance name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: ServerInstance
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerRoleMemberName
+
+Name of SQL user to add to role.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerRoleName
+
+Name of Server Role to add members to.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -SmoServerObject
+
+SQL Server Management Object.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.Server
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SmoServer
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### Microsoft.SqlServer.Management.Smo.Credential
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+

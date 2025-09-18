@@ -1,317 +1,422 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: New-SmoSqlLogin
 ---
 
 # New-SmoSqlLogin
 
 ## SYNOPSIS
+
 Create SQL login.
 
 ## SYNTAX
 
 ### ServerInstance (Default)
+
 ```
 New-SmoSqlLogin
-	-ServerInstance <String>
-	-LoginName <String>
-	-Password <SecureString>
-	[-PasswordIsHashed]
-	-LoginType <LoginType>
-	[-DefaultDatabase <String>]
-	[-Sid <Byte[]>]
-	[-PasswordExpirationEnabled <Boolean>]
-	[-PasswordPolicyEnforced <Boolean>]
-	[-LoginDisabled <Boolean>]
-	[-MustChangePassword <Boolean>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -LoginName <string>
+  -Password <securestring>
+  -LoginType <LoginType>
+  [-PasswordIsHashed]
+  [-DefaultDatabase <string>]
+  [-Sid <byte[]>]
+  [-PasswordExpirationEnabled <bool>]
+  [-PasswordPolicyEnforced <bool>]
+  [-LoginDisabled <bool>]
+  [-MustChangePassword <bool>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### SmoServer
+
 ```
 New-SmoSqlLogin
-	-SmoServerObject <Server>
-	-LoginName <String>
-	-Password <SecureString>
-	[-PasswordIsHashed]
-	-LoginType <LoginType>
-	[-DefaultDatabase <String>]
-	[-Sid <Byte[]>]
-	[-PasswordExpirationEnabled <Boolean>]
-	[-PasswordPolicyEnforced <Boolean>]
-	[-LoginDisabled <Boolean>]
-	[-MustChangePassword <Boolean>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -SmoServerObject <Server>
+  -LoginName <string>
+  -Password <securestring>
+  -LoginType <LoginType>
+  [-PasswordIsHashed]
+  [-DefaultDatabase <string>]
+  [-Sid <byte[]>]
+  [-PasswordExpirationEnabled <bool>]
+  [-PasswordPolicyEnforced <bool>]
+  [-LoginDisabled <bool>]
+  [-MustChangePassword <bool>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Create SQL login.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password
-```
 
 Creates SQL login on MyServer SQL instance.
 
 ### EXAMPLE 2
-```powershell
+
 $SmoServerObject = Connect-SmoServer -ServerInstance .
 
 New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Get-Credential).Password
-```
 
 Creates SQL login using SMO server object.
 
 ### EXAMPLE 3
-```powershell
+
 New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid '0x615C96F6296B18438C6DF0304CD56CE0'
-```
 
 Creates SQL login using specified SID.
 
 ### EXAMPLE 4
-```powershell
+
 $SqlLogin = Get-SqlLogin -ServerInstance SomeServer -LoginName MyLogin
 
 New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid $SqlLogin.Sid
-```
 
 Create SQL login using SID retrieved from Get-SqlLogin.
 
 ## PARAMETERS
 
-### -DefaultDatabase
-Specifies default database for login.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: Master
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoginDisabled
-Login disabled.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoginName
-Login name.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LoginType
-Specifies type of SQL login.
-
-```yaml
-Type: LoginType
-Parameter Sets: (All)
-Aliases:
-Accepted values: WindowsUser, WindowsGroup, SqlLogin, Certificate, AsymmetricKey, ExternalUser, ExternalGroup
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -MustChangePassword
-Specifies user must change password on next logon.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Password
-Password for login.
-
-```yaml
-Type: SecureString
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PasswordExpirationEnabled
-Specifies password expiration to be enabled.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: True
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PasswordIsHashed
-Specifies the password in the Password parameter is a hashed value.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PasswordPolicyEnforced
-Password policy enforced.
-
-```yaml
-Type: Boolean
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: True
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ServerInstance
-SQL Server host name and instance name.
-
-```yaml
-Type: String
-Parameter Sets: ServerInstance
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Sid
-Specifies Sid as a string or byte array for login.
-
-```yaml
-Type: Byte[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SmoServerObject
-SQL Server Management Object.
-
-```yaml
-Type: Server
-Parameter Sets: SmoServer
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Confirm
+
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+### -DefaultDatabase
+
+Specifies default database for login.
+
+```yaml
+Type: System.String
+DefaultValue: Master
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -LoginDisabled
+
+Login disabled.
+
+```yaml
+Type: System.Boolean
+DefaultValue: False
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -LoginName
+
+Login name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -LoginType
+
+Specifies type of SQL login.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.LoginType
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -MustChangePassword
+
+Specifies user must change password on next logon.
+
+```yaml
+Type: System.Boolean
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -Password
+
+Password for login.
+
+```yaml
+Type: System.Security.SecureString
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -PasswordExpirationEnabled
+
+Specifies password expiration to be enabled.
+
+```yaml
+Type: System.Boolean
+DefaultValue: True
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -PasswordIsHashed
+
+Specifies the password in the Password parameter is a hashed value.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -PasswordPolicyEnforced
+
+Password policy enforced.
+
+```yaml
+Type: System.Boolean
+DefaultValue: True
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerInstance
+
+SQL Server host name and instance name.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: ServerInstance
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -Sid
+
+Specifies Sid as a string or byte array for login.
+
+```yaml
+Type: System.Byte[]
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -SmoServerObject
+
+SQL Server Management Object.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.Server
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SmoServer
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### Microsoft.SqlServer.Management.Smo.Login
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+

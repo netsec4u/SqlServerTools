@@ -1,115 +1,150 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: Get-SmoDatabaseObject
 ---
 
 # Get-SmoDatabaseObject
 
 ## SYNOPSIS
+
 Get database object.
 
 ## SYNTAX
 
 ### DatabaseName (Default)
+
 ```
 Get-SmoDatabaseObject
-	-ServerInstance <String>
-	-DatabaseName <String>
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -DatabaseName <string>
+  [<CommonParameters>]
 ```
 
 ### SmoServer
+
 ```
 Get-SmoDatabaseObject
-	[-DatabaseName <String>]
-	-SmoServerObject <Server>
-	[<CommonParameters>]
+  -SmoServerObject <Server>
+  [-DatabaseName <string>]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Get database object.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 Get-SmoDatabaseObject -ServerInstance MyServer -DatabaseName AdventureWorks
-```
 
 Gets AdventureWorks Database object from SQL Management Object.
 
 ## PARAMETERS
 
 ### -DatabaseName
+
 Name of database.
 
 ```yaml
-Type: String
-Parameter Sets: DatabaseName
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-```yaml
-Type: String
-Parameter Sets: SmoServer
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SmoServer
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -ServerInstance
+
 SQL Server host name and instance name.
 
 ```yaml
-Type: String
-Parameter Sets: DatabaseName
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -SmoServerObject
+
 SQL Server Management Object.
 
 ```yaml
-Type: Server
-Parameter Sets: SmoServer
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: Microsoft.SqlServer.Management.Smo.Server
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SmoServer
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### Microsoft.SqlServer.Management.Smo.Database
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+

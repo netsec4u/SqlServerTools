@@ -1,275 +1,364 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: Invoke-SqlClientBulkCopy
 ---
 
 # Invoke-SqlClientBulkCopy
 
 ## SYNOPSIS
-Bulk copy data table to SQL table.
+
+Use SQL Bulk copy to insert data into database table.
 
 ## SYNTAX
 
 ### ServerInstance (Default)
+
 ```
 Invoke-SqlClientBulkCopy
-	-ServerInstance <String>
-	-DatabaseName <String>
-	-TableName <String>
-	[-QueryTimeout <Int32>]
-	[-BatchSize <Int32>]
-	-DataTable <DataTable>
-	[-SqlBulkCopyOptions <SqlBulkCopyOptions>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -TableName <string>
+  -DataTable <DataTable>
+  [-QueryTimeout <int>]
+  [-BatchSize <int>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### SqlConnectionString
+
 ```
 Invoke-SqlClientBulkCopy
-	-ConnectionString <String>
-	-TableName <String>
-	[-QueryTimeout <Int32>]
-	[-BatchSize <Int32>]
-	-DataTable <DataTable>
-	[-SqlBulkCopyOptions <SqlBulkCopyOptions>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ConnectionString <string>
+  -TableName <string>
+  -DataTable <DataTable>
+  [-QueryTimeout <int>]
+  [-BatchSize <int>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### SqlConnection
+
 ```
 Invoke-SqlClientBulkCopy
-	-SqlConnection <SqlConnection>
-	-TableName <String>
-	[-QueryTimeout <Int32>]
-	[-BatchSize <Int32>]
-	-DataTable <DataTable>
-	[-SqlBulkCopyOptions <SqlBulkCopyOptions>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -SqlConnection <SqlConnection>
+  -TableName <string>
+  -DataTable <DataTable>
+  [-QueryTimeout <int>]
+  [-BatchSize <int>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Use SQL Bulk copy to insert data into database table.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 $DataTable = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 
 Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataTable
-```
 
 Perform bulk copy against AdventureWorks database.
 
 ### EXAMPLE 2
-```powershell
+
 $DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
 
 Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable" -DataTable $DataTable
-```
 
 Perform bulk copy using connection string.
 
 ### EXAMPLE 3
-```powershell
+
 $DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks
 
 Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataTable
-```
 
 Perform bulk copy using the SQL connection.
 
 ## PARAMETERS
 
 ### -BatchSize
+
 Bulk import batch size.
 
 ```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
+Type: System.Int32
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -ConnectionString
+
 SQL Server Connection string.
 
 ```yaml
-Type: String
-Parameter Sets: SqlConnectionString
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SqlConnectionString
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -DatabaseName
+
 Name of database.
 
 ```yaml
-Type: String
-Parameter Sets: ServerInstance
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: ServerInstance
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -DataTable
+
 Data table.
 
 ```yaml
-Type: DataTable
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Data.DataTable
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -QueryTimeout
+
 The length of time (in seconds) to wait for a query before terminating the query and throwing an exception.
 Default is 30 seconds.
 
 ```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: 30
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Int32
+DefaultValue: 30
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -ServerInstance
+
 SQL Server host name and instance name.
 
 ```yaml
-Type: String
-Parameter Sets: ServerInstance
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: ServerInstance
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -SqlBulkCopyOptions
+
 Bulk copy options.
 
 ```yaml
-Type: SqlBulkCopyOptions
-Parameter Sets: (All)
-Aliases:
-Accepted values: Default, KeepIdentity, CheckConstraints, TableLock, KeepNulls, FireTriggers, UseInternalTransaction, AllowEncryptedValueModifications
-
-Required: False
-Position: Named
-Default value: Default
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: Microsoft.Data.SqlClient.SqlBulkCopyOptions
+DefaultValue: Default
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -SqlConnection
+
 Specifies SQL connection object.
 
 ```yaml
-Type: SqlConnection
-Parameter Sets: SqlConnection
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: Microsoft.Data.SqlClient.SqlConnection
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SqlConnection
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -TableName
+
 Table name to insert data.
 
 ```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Confirm
-Prompts you for confirmation before running the cmdlet.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### System.Void
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+

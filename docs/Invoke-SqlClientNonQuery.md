@@ -1,181 +1,247 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: Invoke-SqlClientNonQuery
 ---
 
 # Invoke-SqlClientNonQuery
 
 ## SYNOPSIS
+
 Executes stored procedure to execute against a SQL Server database.
 
 ## SYNTAX
 
 ### DatabaseName (Default)
+
 ```
 Invoke-SqlClientNonQuery
-	-ServerInstance <String>
-	-DatabaseName <String>
-	-SqlCommandText <String>
-	[-CommandTimeout <Int32>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -SqlCommandText <string>
+  [-CommandTimeout <int>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### SqlConnection
+
 ```
 Invoke-SqlClientNonQuery
-	-SqlConnection <SqlConnection>
-	-SqlCommandText <String>
-	[-CommandTimeout <Int32>]
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -SqlConnection <SqlConnection>
+  -SqlCommandText <string>
+  [-CommandTimeout <int>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Executes stored procedure to execute against a SQL Server database.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 Invoke-SqlClientNonQuery -ServerInstance MyServer -DatabaseName AdventureWorks -SqlCommandText "EXEC SPMyProcedure;"
-```
 
 Execute SQL statement against AdventureWorks database.
 
 ### EXAMPLE 2
-```powershell
+
 $SqlConnection = Connect-SQLServerInstance -ServerInstance MyServer -DatabaseName master
 
 Invoke-SqlClientNonQuery -SqlConnection $SqlConnection -SqlCommandText "EXEC SPMyProcedure;"
-```
 
 Execute SQL statement against AdventureWorks database.
 
 ## PARAMETERS
 
 ### -CommandTimeout
+
 The length of time (in seconds) to wait for SQL command before terminating the attempt and throwing an exception.
 Default is 30 seconds.
 
 ```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: 30
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DatabaseName
-Specifies the name of the database.
-
-```yaml
-Type: String
-Parameter Sets: DatabaseName
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ServerInstance
-Specifies the name of a SQL Server instance.
-
-```yaml
-Type: String
-Parameter Sets: DatabaseName
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SqlCommandText
-Sets the Transact-SQL statement, table name or stored procedure to execute at the data source.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SqlConnection
-Specifies SQL connection object.
-
-```yaml
-Type: SqlConnection
-Parameter Sets: SqlConnection
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Int32
+DefaultValue: 30
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -Confirm
+
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+### -DatabaseName
+
+Specifies the name of the database.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerInstance
+
+Specifies the name of a SQL Server instance.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -SqlCommandText
+
+Sets the Transact-SQL statement, table name or stored procedure to execute at the data source.
+
+```yaml
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -SqlConnection
+
+Specifies SQL connection object.
+
+```yaml
+Type: Microsoft.Data.SqlClient.SqlConnection
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SqlConnection
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### System.Boolean
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+

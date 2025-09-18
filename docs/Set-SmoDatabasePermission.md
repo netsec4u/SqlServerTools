@@ -1,260 +1,366 @@
-﻿---
+---
+document type: cmdlet
 external help file: SqlServerTools-help.xml
+HelpUri: ''
+Locale: en-US
 Module Name: SqlServerTools
-online version:
-schema: 2.0.0
+ms.date: 07/29/2025
+PlatyPS schema version: 2024-05-01
+title: Set-SmoDatabasePermission
 ---
 
 # Set-SmoDatabasePermission
 
 ## SYNOPSIS
-Set Database permissions.
+
+Grant, deny, or revoke database permissions for user or role.
 
 ## SYNTAX
 
 ### DatabaseName (Default)
+
 ```
 Set-SmoDatabasePermission
-	-ServerInstance <String>
-	-DatabaseName <String>
-	-Permission <DatabasePermission>
-	-Principal <String>
-	-Action <PermissionAction>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -Permission <DatabasePermission>
+  -Principal <string>
+  -Action <PermissionAction>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### DatabaseNameWithPermissionSet
+
 ```
 Set-SmoDatabasePermission
-	-ServerInstance <String>
-	-DatabaseName <String>
-	-PermissionSet <DatabasePermissionSet>
-	-Principal <String>
-	-Action <PermissionAction>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -PermissionSet <DatabasePermissionSet>
+  -Principal <string>
+  -Action <PermissionAction>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### DatabaseObjectWithPermissionSet
+
 ```
 Set-SmoDatabasePermission
-	-DatabaseObject <Database>
-	-PermissionSet <DatabasePermissionSet>
-	-Principal <String>
-	-Action <PermissionAction>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -DatabaseObject <Database>
+  -PermissionSet <DatabasePermissionSet>
+  -Principal <string>
+  -Action <PermissionAction>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
 ### DatabaseObject
+
 ```
 Set-SmoDatabasePermission
-	-DatabaseObject <Database>
-	-Permission <DatabasePermission>
-	-Principal <String>
-	-Action <PermissionAction>
-	[-WhatIf]
-	[-Confirm]
-	[<CommonParameters>]
+  -DatabaseObject <Database>
+  -Permission <DatabasePermission>
+  -Principal <string>
+  -Action <PermissionAction>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
 ```
 
+## ALIASES
+
+This cmdlet has the following aliases:
+  None
+
 ## DESCRIPTION
+
 Grant, deny, or revoke database permissions for user or role.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```powershell
+
 Set-SmoDatabasePermission -ServerInstance MyServer -DatabaseName AdventureWorks -Permission ALTER -Principal DBUser -Action Grant
-```
 
 Sets database permission within AdventureWorks database to DBUSer.
 
 ### EXAMPLE 2
-```powershell
+
 $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
 [void]$PermissionSet.Add([Microsoft.SqlServer.Management.SMO.ObjectPermission]::ALTER)
 
 Set-SmoDatabasePermission -ServerInstance MyServer -DatabaseName AdventureWorks -PermissionSet $PermissionSet -Principal DBUser -Action Grant
-```
 
 Sets database permission within AdventureWorks database to DBUSer using specified permission set.
 
 ### EXAMPLE 3
-```powershell
+
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
 Set-SmoDatabasePermission -DatabaseObject $DatabaseObject -Permission ALTER -Principal DBUser -Action Grant
-```
 
 Sets database permission using database object to DBUSer.
 
 ### EXAMPLE 4
-```powershell
+
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
 [void]$PermissionSet.Add([Microsoft.SqlServer.Management.SMO.ObjectPermission]::ALTER)
 
 Set-SmoDatabasePermission -DatabaseObject $DatabaseObject -PermissionSet $PermissionSet -Principal DBUser -Action Grant
-```
 
 Sets database permission using database object to DBUSer using specified permission set.
 
 ## PARAMETERS
 
 ### -Action
+
 Action to perform.
 
 ```yaml
 Type: PermissionAction
-Parameter Sets: (All)
-Aliases:
-Accepted values: Grant, Deny, Revoke
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -DatabaseName
+
 Database Name.
 
 ```yaml
-Type: String
-Parameter Sets: DatabaseName, DatabaseNameWithPermissionSet
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseNameWithPermissionSet
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -DatabaseObject
+
 SMO database object.
 
 ```yaml
-Type: Database
-Parameter Sets: DatabaseObjectWithPermissionSet, DatabaseObject
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: Microsoft.SqlServer.Management.Smo.Database
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseObjectWithPermissionSet
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseObject
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -Permission
+
 Permission to grant, deny, or revoke.
 
 ```yaml
 Type: DatabasePermission
-Parameter Sets: DatabaseName, DatabaseObject
-Aliases:
-Accepted values: Alter, AlterAnyApplicationRole, AlterAnyAssembly, AlterAnyAsymmetricKey, AlterAnyCertificate, AlterAnyContract, AlterAnyDatabaseAudit, AlterAnyDatabaseDdlTrigger, AlterAnyDatabaseEventNotification, AlterAnyDataSpace, AlterAnyExternalDataSource, AlterAnyExternalFileFormat, AlterAnyFullTextCatalog, AlterAnyMask, AlterAnyMessageType, AlterAnyRemoteServiceBinding, AlterAnyRole, AlterAnyRoute, AlterAnySchema, AlterAnySecurityPolicy, AlterAnyService, AlterAnySymmetricKey, AlterAnyUser, Authenticate, BackupDatabase, BackupLog, Checkpoint, Connect, ConnectReplication, Control, CreateAggregate, CreateAssembly, CreateAsymmetricKey, CreateCertificate, CreateContract, CreateDatabase, CreateDatabaseDdlEventNotification, CreateDefault, CreateFullTextCatalog, CreateFunction, CreateMessageType, CreateProcedure, CreateQueue, CreateRemoteServiceBinding, CreateRole, CreateRoute, CreateRule, CreateSchema, CreateService, CreateSymmetricKey, CreateSynonym, CreateTable, CreateType, CreateView, CreateXmlSchemaCollection, Delete, Execute, Insert, References, Select, ShowPlan, SubscribeQueryNotifications, TakeOwnership, Unmask, Update, ViewDatabaseState, ViewDefinition
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseObject
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -PermissionSet
+
 Set of permissions to grant, deny, or revoke.
 
 ```yaml
-Type: DatabasePermissionSet
-Parameter Sets: DatabaseNameWithPermissionSet, DatabaseObjectWithPermissionSet
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: Microsoft.SqlServer.Management.Smo.DatabasePermissionSet
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseObjectWithPermissionSet
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseNameWithPermissionSet
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -Principal
+
 User or role name to grant, deny, or revoke permissions.
 
 ```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -ServerInstance
+
 SQL Server Instance Name.
 
 ```yaml
-Type: String
-Parameter Sets: DatabaseName, DatabaseNameWithPermissionSet
-Aliases: SqlServer
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Confirm
-Prompts you for confirmation before running the cmdlet.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.String
+DefaultValue: None
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: DatabaseNameWithPermissionSet
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### -WhatIf
+
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: False
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable,
+-InformationAction, -InformationVariable, -OutBuffer, -OutVariable, -PipelineVariable,
+-ProgressAction, -Verbose, -WarningAction, and -WarningVariable. For more information, see
+[about_CommonParameters](https://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
-
-### None
 
 ## OUTPUTS
 
 ### System.Void
 
+
+
 ## NOTES
 
+
+
+
 ## RELATED LINKS
+
+None.
+
