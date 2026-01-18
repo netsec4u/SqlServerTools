@@ -127,6 +127,60 @@ enum PermissionAction {
 	Deny
 	Revoke
 }
+
+<#
+Scriptable Database Objects
+	DatabaseScopedCredentials
+	ExtendedStoredProcedures
+	ExternalDataSources
+	ExternalFileFormats
+	ExternalLibraries
+	SearchPropertyLists
+	SensitivityClassifications
+#>
+
+enum ScriptableDatabaseObjectClass {
+	ApplicationRole
+	DatabaseAuditSpecification
+	Default
+	FullTextStopList
+	FullTextCatalog
+	PartitionFunction
+	PartitionScheme
+	PlanGuide
+	Role
+	Rule
+	Schema
+	SecurityPolicy
+	Sequence
+	StoredProcedure
+	SqlAssembly
+	SymmetricKey
+	Synonym
+	Table
+	Trigger
+	UserDefinedAggregate
+	UserDefinedDataType
+	UserDefinedFunction
+	UserDefinedTableType
+	UserDefinedType
+	User
+	View
+	XmlSchemaCollection
+}
+
+enum ScriptableServerObjectClass {
+	Audit
+	BackupDevice
+	Credential
+	CryptographicProvider
+	LinkedServer
+	Login
+	Role
+	ServerAuditSpecification
+	Trigger
+	UserDefinedMessage
+}
 #EndRegion
 
 #Region Classes
@@ -135,7 +189,7 @@ class TransformPath : System.Management.Automation.ArgumentTransformationAttribu
 		if ([System.IO.Path]::IsPathRooted($InputData)) {
 			return $InputData
 		} else {
-			return $(Join-Path -Path $(Get-Location) -ChildPath $InputData)
+			return [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PWD.Path, $InputData))
 		}
 
 		throw [System.InvalidOperationException]::New('Unexpected error.')
@@ -389,6 +443,23 @@ namespace SmoRestore
 		public bool IsPresent;
 		public Byte[] TDEThumbprint;
 		public string SnapshotUrl;
+	}
+}
+'@
+
+Add-Type -TypeDefinition $TypeDefinition
+
+$TypeDefinition = @'
+using System;
+namespace SqlClient
+{
+	public class DataSetResult
+	{
+		public int UnchangedRows;
+		public int InsertedRows;
+		public int UpdatedRows;
+		public int DeletedRows;
+		public int Errors;
 	}
 }
 '@
@@ -1176,6 +1247,7 @@ function Add-SmoAssembly {
 	begin {
 		$Assemblies = @(
 			'Microsoft.SqlServer.Dac.dll'
+			#'Microsoft.SqlServer.Management.XEvent.dll'
 		)
 	}
 
@@ -1407,7 +1479,7 @@ function Add-SmoDatabaseDataFile {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[System.IO.FileInfo]$DataFilePath
+		[System.IO.FileInfo][TransformPath()]$DataFilePath
 	)
 
 	begin {
@@ -1697,8 +1769,10 @@ function Add-SmoDatabaseRoleMember {
 				)
 			}
 
-			if ($PSCmdlet.ShouldProcess($RoleName, "Adding $RoleMemberName")) {
-				$DatabaseObject.Roles[$RoleName].AddMember($RoleMemberName)
+			if ($RoleMemberName -notin $DatabaseObject.Roles[$RoleName].EnumMembers()) {
+				if ($PSCmdlet.ShouldProcess($RoleName, "Adding $RoleMemberName")) {
+					$DatabaseObject.Roles[$RoleName].AddMember($RoleMemberName)
+				}
 			}
 		}
 		catch {
@@ -4008,6 +4082,468 @@ function Import-SmoServiceMasterKey {
 	}
 }
 
+function Invoke-SmoScriptDatabase {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$Path
+	)
+	
+	begin {
+		try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+	
+	process {
+		Try {
+			$DatabaseObject = $SmoServerObject.Databases[$DatabaseName]
+
+			if ($null -eq $DatabaseObject) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseName
+				)
+			}
+
+			$SmoScripter = [Microsoft.SqlServer.Management.Smo.Scripter]::New($SmoServerObject)
+
+			$ScriptingOptions = [Microsoft.SqlServer.Management.Smo.ScriptingOptions]::New()
+
+			$ScriptingOptions.ScriptBatchTerminator = $true
+			$ScriptingOptions.IncludeHeaders = $true
+			$ScriptingOptions.ExtendedProperties = $true
+			$ScriptingOptions.ToFileOnly = $true
+			$ScriptingOptions.Filename = $Path.FullName
+			$ScriptingOptions.Encoding = [System.Text.Encoding]::UTF8
+
+			$SmoScripter.Options = $ScriptingOptions
+
+			$SmoTransfer = [Microsoft.SqlServer.Management.Smo.Transfer]::New($DatabaseObject)
+
+			$ScriptingOptions = [Microsoft.SqlServer.Management.Smo.ScriptingOptions]::New()
+
+			$ScriptingOptions.ExtendedProperties = $true
+			$ScriptingOptions.DriAll = $true
+			$ScriptingOptions.Indexes = $true
+			$ScriptingOptions.Triggers = $true
+			$ScriptingOptions.ScriptBatchTerminator = $true
+			$ScriptingOptions.IncludeHeaders = $true
+			$ScriptingOptions.Permissions = $true
+			$ScriptingOptions.Statistics = $true
+			$ScriptingOptions.ToFileOnly = $true
+			$ScriptingOptions.IncludeIfNotExists = $true
+			$ScriptingOptions.FileName = $Path.FullName
+			$ScriptingOptions.AppendToFile = $true
+			$ScriptingOptions.IncludeIfNotExists = $false
+			$ScriptingOptions.Encoding = [System.Text.Encoding]::UTF8
+<#
+			if ($ContinueScriptingOnError) {
+				$ScriptingOptions.ContinueScriptingOnError = $true
+			}
+#>
+			$SmoTransfer.Options = $ScriptingOptions
+
+			if ($PSCmdlet.ShouldProcess($Urn, 'Script Database')) {
+				$SmoScripter.Script($DatabaseObject)
+
+				Add-Content -Path $Path.FullName -Value $([string]::Format("`r`nUSE [{0}];`r`nGO`r`n", $DatabaseName))
+
+				$SmoTransfer.ScriptTransfer()
+			}
+		}
+		Catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+	
+	end {
+	}
+}
+
+function Invoke-SmoScriptDatabaseObject {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ScriptableDatabaseObjectClass]$ObjectClass,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$ObjectName
+<#
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Sdk.Sfc.Urn]$Urn
+#>
+	)
+	
+	begin {
+		try {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
+			throw $_
+		}
+
+		$ObjectClassWithDependencies = @(
+			'DdlTrigger',
+			'Default',
+			'PartitionFunction',
+			'PartitionScheme',
+			'PlanGuide',
+			'Rule',
+			'SecurityPolicy',
+			'Sequence',
+			'SqlAssembly',
+			'StoredProcedure',
+			'Synonym',
+			'Table',
+			'Trigger',
+			'UnresolvedEntity',
+			'UserDefinedAggregate',
+			'UserDefinedDataType',
+			'UserDefinedFunction',
+			'UserDefinedType',
+			'UserDefinedTableType',
+			'View',
+			'XmlSchemaCollection'
+		)
+	}
+	
+	process {
+		Try {
+			$DatabaseObject = $SmoServerObject.Databases[$DatabaseName]
+
+			if ($null -eq $DatabaseObject) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Database not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$DatabaseName
+				)
+			}
+
+			$ScriptingOptions = [Microsoft.SqlServer.Management.Smo.ScriptingOptions]::New()
+
+			$ScriptingOptions.ExtendedProperties = $true
+			$ScriptingOptions.SchemaQualify = $true
+			$ScriptingOptions.DriAllConstraints = $true
+			$ScriptingOptions.Indexes = $true
+			$ScriptingOptions.Triggers = $true
+			$ScriptingOptions.ScriptBatchTerminator = $true
+			$ScriptingOptions.IncludeHeaders = $true
+			$ScriptingOptions.Permissions = $true
+			$ScriptingOptions.Statistics = $true
+			$ScriptingOptions.ToFileOnly = $true
+			$ScriptingOptions.IncludeIfNotExists = $true
+			$ScriptingOptions.FileName = $Path.FullName
+			$ScriptingOptions.AppendToFile = $true
+			$ScriptingOptions.IncludeIfNotExists = $false
+			$ScriptingOptions.Encoding = [System.Text.Encoding]::UTF8
+
+			if ($ObjectClass -in $ObjectClassWithDependencies) {
+				$ScriptingOptions.WithDependencies = $true
+			}
+
+<#
+			if ($ContinueScriptingOnError) {
+				$ScriptingOptions.ContinueScriptingOnError = $true
+			}
+#>
+
+			$SmoScripter = [Microsoft.SqlServer.Management.Smo.Scripter]::New($SmoServerObject)
+
+			$SmoScripter.Options = $ScriptingOptions
+
+			$Urn = [Microsoft.SqlServer.Management.Sdk.Sfc.Urn]::New([string]::Format("{0}/{1}[@Name='{2}']", $DatabaseObject.Urn.ToString(), $ObjectClass, $ObjectName))
+
+			if ($PSCmdlet.ShouldProcess($Urn, 'Script Database Object')) {
+				$SmoScripter.Script($Urn)
+			}
+		}
+		Catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+	
+	end {
+	}
+}
+
+function Invoke-SmoScriptServerObject {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([System.Void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePathIsValid()]
+		[System.IO.FileInfo][TransformPath()]$Path,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ScriptableServerObjectClass]$ObjectClass,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$ObjectName
+	)
+	
+	begin {
+		try {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		catch {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				if (Test-Path -Path variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+	
+	process {
+		Try {
+			$ScriptingOptions = [Microsoft.SqlServer.Management.Smo.ScriptingOptions]::New()
+
+			$ScriptingOptions.ExtendedProperties = $true
+			$ScriptingOptions.ScriptBatchTerminator = $true
+			$ScriptingOptions.IncludeHeaders = $true
+			$ScriptingOptions.Permissions = $true
+			$ScriptingOptions.ToFileOnly = $true
+			$ScriptingOptions.IncludeIfNotExists = $true
+			$ScriptingOptions.FileName = $Path.FullName
+			$ScriptingOptions.AppendToFile = $true
+			$ScriptingOptions.IncludeIfNotExists = $false
+			$ScriptingOptions.Encoding = [System.Text.Encoding]::UTF8
+
+			$SmoScripter = [Microsoft.SqlServer.Management.Smo.Scripter]::New($SmoServerObject)
+
+			$SmoScripter.Options = $ScriptingOptions
+
+			$Urn = [Microsoft.SqlServer.Management.Sdk.Sfc.Urn]::New([string]::Format("{0}/{1}[@Name='{2}']", $SmoServerObject.Urn.ToString(), $ObjectClass, $ObjectName))
+
+			if ($PSCmdlet.ShouldProcess($Urn, 'Script Server Object')) {
+				$SmoScripter.Script($Urn)
+			}
+		}
+		Catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+	
+	end {
+	}
+}
+
 function Invoke-SmoNonQuery {
 	<#
 	.EXTERNALHELP
@@ -4084,7 +4620,7 @@ function Invoke-SmoNonQuery {
 			ParameterSetName = 'DatabaseObject_InputFile'
 		)]
 		[ValidatePathExists('Leaf')]
-		[System.IO.FileInfo]$InputFile,
+		[System.IO.FileInfo][TransformPath()]$InputFile,
 
 		[Parameter(
 			Mandatory = $true,
@@ -5053,7 +5589,7 @@ function New-SmoDatabaseMasterKey {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'DatabaseObject-CertFile'
 		)]
-		[System.IO.FileInfo]$Path,
+		[System.IO.FileInfo][TransformPath()]$Path,
 
 		[Parameter(
 			Mandatory = $true,
@@ -8428,7 +8964,7 @@ function Rename-SmoDatabaseDataFile {
 
 				$ParentPath = Split-Path -Path $DataFileObject.FileName -Parent
 				$OldPath = $DataFileObject.FileName
-				$NewPath = ([System.IO.FileInfo]([IO.Path]::Combine($ParentPath, $NewPhysicalFileName))).FullName
+				$NewPath = ([System.IO.FileInfo]([System.IO.Path]::GetFullPath([System.IO.Path]::Combine($ParentPath, $NewPhysicalFileName)))).FullName
 
 				if ($ComputerName -in [System.Net.Dns]::GetHostName(), 'localhost') {
 					if (Test-Path -Path $NewPath -PathType Leaf) {
@@ -8673,7 +9209,7 @@ function Rename-SmoDatabaseLogFile {
 
 				$ParentPath = Split-Path -Path $LogFileObject.FileName -Parent
 				$OldPath = $LogFileObject.FileName
-				$NewPath = ([System.IO.FileInfo]([IO.Path]::Combine($ParentPath, $NewPhysicalFileName))).FullName
+				$NewPath = ([System.IO.FileInfo]([System.IO.Path]::GetFullPath([System.IO.Path]::Combine($ParentPath, $NewPhysicalFileName)))).FullName
 
 				if ($ComputerName -in [System.Net.Dns]::GetHostName(), 'localhost') {
 					if (Test-Path -Path $NewPath -PathType Leaf) {
@@ -10316,20 +10852,32 @@ function Set-SmoDatabaseUser {
 	process {
 		try {
 			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, "Setting database login $UserName properties.")) {
+				$IsAltered = $false
+
 				if ($PSBoundParameters.ContainsKey('NewUserName')) {
 					$UserObject.Rename($NewUserName)
+
+					$IsAltered = $true
 				}
 
 				if ($PSBoundParameters.ContainsKey('Password')) {
 					$UserObject.ChangePassword($Password)
+
+					$IsAltered = $true
 				}
 
 				if ($PSBoundParameters.ContainsKey('DefaultSchema')) {
-					$UserObject.DefaultSchema = $DefaultSchema
+					if ($UserObject.DefaultSchema -ne $DefaultSchema) {
+						$UserObject.DefaultSchema = $DefaultSchema
+
+						$IsAltered = $true
+					}
 				}
 
-				$UserObject.Alter()
-				$UserObject.Refresh()
+				if ($IsAltered) {
+					$UserObject.Alter()
+					$UserObject.Refresh()
+				}
 
 				$UserObject
 			}
@@ -11272,14 +11820,36 @@ function Get-SqlClientDataSet {
 
 			throw $_
 		}
+
+		$TableDirectFormatString = 'SELECT * FROM [{0}].[{1}];'
 	}
 
 	process {
 		try {
 			$SqlCommand = [Microsoft.Data.SqlClient.SqlCommand]::New()
 			$SqlCommand.Connection = $SqlConnection
-			$SqlCommand.CommandText = $SqlCommandText
-			$SqlCommand.CommandType = $CommandType
+
+			if ($CommandType -eq [System.Data.CommandType]::TableDirect) {
+				if ($SqlCommandText -match '^(\[?[^.\]]+\]?)\.(\[?[^.\]]+\]?)$') {
+					$SchemaName = $Matches[1].Trim('[]')
+					$TableName = $Matches[2].Trim('[]')
+				} else {
+					$SchemaName = 'dbo'
+
+					if ($SqlCommandText -match '^\[.*\]$') {
+						$TableName = $SqlCommandText.Trim('[]')
+					} else {
+						$TableName = $SqlCommandText
+					}
+				}
+
+				$SqlCommand.CommandText = [string]::Format($TableDirectFormatString, $SchemaName.Replace(']', ']]'), $TableName.Replace(']', ']]'))
+				$SqlCommand.CommandType = [System.Data.CommandType]::Text
+			} else {
+				$SqlCommand.CommandText = $SqlCommandText
+				$SqlCommand.CommandType = $CommandType
+			}
+
 			$SqlCommand.CommandTimeout = $CommandTimeout
 
 			if ($PSBoundParameters.ContainsKey('SqlParameter')) {
@@ -11365,7 +11935,7 @@ function Invoke-SqlClientBulkCopy {
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
 		ConfirmImpact = 'Low',
-		DefaultParameterSetName = 'ServerInstance'
+		DefaultParameterSetName = 'ServerInstance_DataTable'
 	)]
 
 	[OutputType([System.Void])]
@@ -11375,7 +11945,13 @@ function Invoke-SqlClientBulkCopy {
 			Mandatory = $true,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'ServerInstance'
+			ParameterSetName = 'ServerInstance_DataRow'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance_DataTable'
 		)]
 		[ValidateLength(1, 128)]
 		[Alias('SqlServer')]
@@ -11385,7 +11961,13 @@ function Invoke-SqlClientBulkCopy {
 			Mandatory = $true,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'ServerInstance'
+			ParameterSetName = 'ServerInstance_DataRow'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance_DataTable'
 		)]
 		[ValidateLength(1, 128)]
 		[string]$DatabaseName,
@@ -11394,7 +11976,13 @@ function Invoke-SqlClientBulkCopy {
 			Mandatory = $true,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'SqlConnectionString'
+			ParameterSetName = 'SqlConnectionString_DataRow'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnectionString_DataTable'
 		)]
 		[string]$ConnectionString,
 
@@ -11402,7 +11990,13 @@ function Invoke-SqlClientBulkCopy {
 			Mandatory = $true,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'SqlConnection'
+			ParameterSetName = 'SqlConnection_DataRow'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnection_DataTable'
 		)]
 		[Microsoft.Data.SqlClient.SqlConnection]$SqlConnection,
 
@@ -11413,6 +12007,80 @@ function Invoke-SqlClientBulkCopy {
 		)]
 		[ValidateLength(1, 128)]
 		[string]$TableName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance_DataRow'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnection_DataRow'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnectionString_DataRow'
+		)]
+		[System.Data.DataRow[]]$DataRow,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance_DataTable'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnection_DataTable'
+		)]
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnectionString_DataTable'
+		)]
+		[System.Data.DataTable]$DataTable,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance_DataTable'
+		)]
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnection_DataTable'
+		)]
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SqlConnectionString_DataTable'
+		)]
+		[System.Data.DataRowState]$RowState,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Collections.Generic.List[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]]$ColumnMappingCollection,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.Data.SqlClient.SqlBulkCopyOptions]$SqlBulkCopyOptions = 'Default',
 
 		[Parameter(
 			Mandatory = $false,
@@ -11431,29 +12099,61 @@ function Invoke-SqlClientBulkCopy {
 		[int]$BatchSize,
 
 		[Parameter(
-			Mandatory = $true,
+			Mandatory = $false,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[System.Data.DataTable]$DataTable,
+		[ValidateRange(0, [int]::MaxValue)]
+		[int]$NotifyAfter,
 
 		[Parameter(
 			Mandatory = $false,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[Microsoft.Data.SqlClient.SqlBulkCopyOptions]$SqlBulkCopyOptions = 'Default'
+		[switch]$EnableStreaming
 	)
 
 	begin {
-		if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+		$ServerInstanceParameterSets = @('ServerInstance_DataRow', 'ServerInstance_DataTable')
+		$SqlConnectionParameterSets = @('SqlConnection_DataRow', 'SqlConnection_DataTable')
+		$DataTableParameterSets = @('ServerInstance_DataTable', 'SqlConnection_DataTable', 'SqlConnectionString_DataTable')
+		$DataRowParameterSets = @('ServerInstance_DataRow', 'SqlConnection_DataRow', 'SqlConnectionString_DataRow')
+
+		if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 			$ConnectionString = Build-SqlClientConnectionString -ServerInstance $ServerInstance -DatabaseName $DatabaseName
+		}
+
+		$eventHandler = {
+			param(
+				$EventSender,
+				$SqlRowsCopiedEventArgs 
+			)
+
+			$ProgressParameters.Activity = 'Bulk Copy SQL Data.'
+			$ProgressParameters.Status = [string]::Format('Row {0} of {1}', $SqlRowsCopiedEventArgs.RowsCopied, $Script:TotalRows)
+			$ProgressParameters.CurrentOperation = 'Writing DataTable to server.'
+			$ProgressParameters.PercentComplete = ($SqlRowsCopiedEventArgs.RowsCopied / $Script:TotalRows) * 100
+
+			Write-Verbose $ProgressParameters.CurrentOperation
+			Write-Progress @ProgressParameters
+		}
+
+		$ProgressParameters = @{
+			'Id' = 1
+			'Activity' = 'Bulk Copy SQL Data.'
+			'Status' = [string]::Format('Row {0} of {1}', 0, 1)
+			'CurrentOperation' = 'Writing DataTable to server.'
+			'PercentComplete' = 0
 		}
 	}
 
 	process {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'SqlConnection') {
+			$Script:TotalRowsCopied = 0
+			$Script:TotalRows = $DataTable.Rows.Count
+
+			if ($PSCmdlet.ParameterSetName -in $SqlConnectionParameterSets) {
 				$SqlBulkCopy = [Microsoft.Data.SqlClient.SqlBulkCopy]::New($SqlConnection, $SqlBulkCopyOptions, $null)
 			} else {
 				$SqlBulkCopy = [Microsoft.Data.SqlClient.SqlBulkCopy]::New($ConnectionString, $SqlBulkCopyOptions)
@@ -11463,25 +12163,68 @@ function Invoke-SqlClientBulkCopy {
 			$SqlBulkCopy.BulkCopyTimeout = $QueryTimeout
 
 			if ($PSBoundParameters.ContainsKey('BatchSize')) {
+				$SqlBulkCopy.NotifyAfter = $NotifyAfter
+			} else {
+				$SqlBulkCopy.NotifyAfter = [System.Math]::Ceiling($Script:TotalRows / 20)
+			}
+
+			if ($PSBoundParameters.ContainsKey('BatchSize')) {
 				$SqlBulkCopy.BatchSize = $BatchSize
 			}
 
-			$DataTable.Columns | ForEach-Object {
-				[void]$SqlBulkCopy.ColumnMappings.Add($_.ColumnName, $_.ColumnName)
+			if ($PSBoundParameters.ContainsKey('ColumnMappingCollection')) {
+				foreach ($ColumnMapping in $ColumnMappingCollection) {
+					[void]$SqlBulkCopy.ColumnMappings.Add($ColumnMapping)
+				}
+			} else {
+				foreach ($Column in $DataTable.Columns) {
+					[void]$SqlBulkCopy.ColumnMappings.Add($Column.ColumnName, $Column.ColumnName)
+				}
 			}
 
-			Write-Verbose 'Writing to server.'
+			if ($EnableStreaming) {
+				$SqlBulkCopy.EnableStreaming = $true
+			}
+
+			$SqlBulkCopy.add_SqlRowsCopied($eventHandler)
+
+			$ProgressParameters.Activity = 'Bulk Copy SQL Data.'
+			$ProgressParameters.Status = [string]::Format('Row {0} of {1}', 0, $Script:TotalRows)
+			$ProgressParameters.CurrentOperation = 'Writing DataTable to server.'
+			$ProgressParameters.PercentComplete = (0 / $Script:TotalRows) * 100
+
+			Write-Verbose $ProgressParameters.CurrentOperation
+			Write-Progress @ProgressParameters
 
 			if ($PSCmdlet.ShouldProcess($TableName, 'Bulk insert into table')) {
-				$SqlBulkCopy.WriteToServer($DataTable)
+				switch ($PSCmdlet.ParameterSetName) {
+					{$_ -in $DataRowParameterSets} {
+						$SqlBulkCopy.WriteToServer($DataRow)
+					}
+					{$_ -in $DataTableParameterSets} {
+						if ($PSBoundParameters.ContainsKey('RowState')) {
+							$SqlBulkCopy.WriteToServer($DataTable, $RowState)
+						} else {
+							$SqlBulkCopy.WriteToServer($DataTable)
+						}
+					}
+					Default {
+						throw [System.Management.Automation.ErrorRecord]::New(
+							[Exception]::New('Unknown parameter set.'),
+							'1',
+							[System.Management.Automation.ErrorCategory]::InvalidOperation,
+							$PSCmdlet.ParameterSetName
+						)
+					}
+				}
 			}
-
-			Write-Verbose 'Bulk copy complete.'
 		}
 		catch {
 			throw $_
 		}
 		finally {
+			Write-Progress -Id 0 -Activity 'Bulk Copy SQL Data.' -Completed
+
 			if (Test-Path -Path variable:\SqlBulkCopy) {
 				$SqlBulkCopy.Close()
 				$SqlBulkCopy.Dispose()
@@ -11660,7 +12403,7 @@ function Publish-SqlDatabaseDacPac {
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[ValidatePathExists('Leaf')]
-		[System.IO.FileInfo]$DacPacPath,
+		[System.IO.FileInfo][TransformPath()]$DacPacPath,
 
 		[Parameter(
 			Mandatory = $false,
@@ -11709,7 +12452,7 @@ function Save-SqlClientDataSet {
 		ConfirmImpact = 'Low'
 	)]
 
-	[OutputType([System.Void])]
+	[OutputType([SqlClient.DataSetResult])]
 
 	param (
 		[Parameter(
@@ -11720,6 +12463,13 @@ function Save-SqlClientDataSet {
 		[System.Data.DataSet]$DataSet,
 
 		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$DataSetTableName,
+
+		[Parameter(
 			Mandatory = $false,
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
@@ -11728,10 +12478,99 @@ function Save-SqlClientDataSet {
 	)
 
 	begin {
+		$SqlRowUpdatingEventHandler = [Microsoft.Data.SqlClient.SqlRowUpdatingEventHandler]{
+			param(
+				$EventSender,
+				$SqlRowUpdatingEventArgs 
+			)
+
+			switch ($SqlRowUpdatingEventArgs.StatementType) {
+				'Insert' {
+					$Output.InsertedRows++
+				}
+				'Update' {
+					$Output.UpdatedRows++
+				}
+				'Delete' {
+					$Output.DeletedRows++
+				}
+				Default {}
+			}
+		}
+
+		$SqlRowUpdatedEventHandler = [Microsoft.Data.SqlClient.SqlRowUpdatedEventHandler]{
+			param(
+				$EventSender,
+				$SqlRowUpdatedEventArgs 
+			)
+
+			$Script:CurrentRow += $SqlRowUpdatedEventArgs.RecordsAffected
+
+			$ProgressParameters.Activity = [string]::Format('Row Number: {0}', $Script:CurrentRow)
+			$ProgressParameters.Status = [string]::Format('Row {0} of {1}', $Script:CurrentRow, $Script:TotalChangedRows)
+			$ProgressParameters.CurrentOperation = [string]::Format('Row: {0}', $Script:CurrentRow)
+			$ProgressParameters.PercentComplete = $Script:CurrentRow / $Script:TotalChangedRows * 100
+
+			Write-Verbose $ProgressParameters.CurrentOperation
+			Write-Progress @ProgressParameters
+
+			if ($null -eq $SqlRowUpdatedEventArgs.Errors) {
+				if ($SqlRowUpdatedEventArgs.RowCount -ne $SqlRowUpdatedEventArgs.RecordsAffected) {
+					$PSCmdlet.WriteError(
+						[System.Management.Automation.ErrorRecord]::New(
+							[Exception]::New("$($SqlRowUpdatedEventArgs.StatementType) resulted in fewer rows added or updated than expected."),
+							'1',
+							[System.Management.Automation.ErrorCategory]::InvalidResult,
+							$SqlRowUpdatedEventArgs.StatementType
+						)
+					)
+
+					$SqlRowUpdatedEventArgs.Status = 'ErrorsOccurred'
+				}
+			} else {
+				# To be determined...
+			}
+		}
+
+		$FillErrorEventHandler = [System.Data.FillErrorEventHandler]{
+			param(
+				$EventSender,
+				$FillErrorEventArgs 
+			)
+
+			foreach ($ErrorObject in $FillErrorEventArgs.Errors) {
+				$Output.Errors++
+
+				$PSCmdlet.WriteError(
+					$ErrorObject
+				)
+
+				foreach ($Property in $ErrorObject.PSObject.Properties) {
+					Write-Host "   $($Property.Name): $($Property.Value)" -ForegroundColor Yellow
+				}
+			}
+
+			$FillErrorEventArgs.Continue = $true
+		}
+
+		$ProgressParameters = @{
+			'Id' = 1
+			'ParentId' = 0
+			'Activity' = 'Saving dataset.'
+			'Status' = [string]::Format('Row {0} of {1}', 0, 1)
+			'CurrentOperation' = ''
+			'PercentComplete' = 0
+		}
 	}
 
 	process {
 		try {
+			$Output = [SqlClient.DataSetResult]::New()
+			$Output.UnchangedRows = $DataSet.Tables[$DataSetTableName].Rows.where({$_.RowState -eq 'Unchanged'}).Count
+
+			$Script:CurrentRow = 0
+			$Script:TotalChangedRows = $DataSet.Tables[$DataSetTableName].Rows.Count - $Output.UnchangedRows
+
 			if (-not $PSBoundParameters.ContainsKey('SqlDataAdapter')) {
 				$SqlCommandBuilder = [Microsoft.Data.SqlClient.SqlCommandBuilder]::New($SqlDataAdapter)
 
@@ -11742,20 +12581,32 @@ function Save-SqlClientDataSet {
 				$SqlDataAdapter.DeleteCommand = $SqlCommandBuilder.GetDeleteCommand()
 			}
 
+			$SqlDataAdapter.add_RowUpdating($SqlRowUpdatingEventHandler)
+			$SqlDataAdapter.add_RowUpdated($SqlRowUpdatedEventHandler)
+			$SqlDataAdapter.add_FillError($FillErrorEventHandler)
+
+			$SqlDataAdapter.ContinueUpdateOnError = $true
+
 			if ($PSCmdlet.ShouldProcess($DataSet.ExtendedProperties['SqlConnection'].Database, 'Save dataset')) {
-				[void]$SqlDataAdapter.Update($DataSet)
+				[void]$SqlDataAdapter.Update($DataSet, $DataSetTableName)
 			}
+
+			$Output
 		}
 		catch {
 			throw $_
 		}
 		finally {
+			Write-Progress -Id 1 -Activity 'Import SQL Data.' -Completed
+
 			if (Test-Path -Path variable:\SqlCommandBuilder) {
 				$SqlCommandBuilder.Dispose()
 			}
 
-			if (Test-Path -Path variable:\SqlDataAdapter) {
-				$SqlDataAdapter.Dispose()
+			if (-not $PSBoundParameters.ContainsKey('SqlDataAdapter')) {
+				if (Test-Path -Path variable:\SqlDataAdapter) {
+					$SqlDataAdapter.Dispose()
+				}
 			}
 		}
 	}

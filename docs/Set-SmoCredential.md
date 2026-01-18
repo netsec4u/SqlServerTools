@@ -56,7 +56,7 @@ Alter credential.
 
 ### EXAMPLE 1
 
-Set-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Get-Credential).Password
+Set-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
 
 Updates SQL credential.
 
@@ -64,7 +64,7 @@ Updates SQL credential.
 
 $SmoServerObject = Connect-SmoServer -ServerInstance .
 
-Set-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Get-Credential).Password
+Set-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
 
 Update SQL credential using SMO object.
 

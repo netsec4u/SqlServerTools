@@ -59,7 +59,7 @@ Imports database master key from file.
 
 ### Example 1
 
-Import-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password -EncryptionPassword $(Get-Credential Encrypt).Password
+Import-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString) -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Imports database master key from specified file into AdventureWorks database.
 
@@ -67,7 +67,7 @@ Imports database master key from specified file into AdventureWorks database.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Import-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password -EncryptionPassword $(Get-Credential Encrypt).Password
+Import-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString) -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Imports database master key from specified file into the database object.
 

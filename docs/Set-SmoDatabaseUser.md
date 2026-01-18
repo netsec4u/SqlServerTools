@@ -65,7 +65,7 @@ Sets database user properties within the AdventureWorks database.
 
 ### EXAMPLE 2
 
-Set-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Get-Credential).Password -DefaultSchema dbo
+Set-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -DefaultSchema dbo
 
 Sets contained user DBUser user properties.
 

@@ -57,7 +57,7 @@ Sets database asymmetric key properties.
 
 ### Example 1
 
-Set-SmoDatabaseAsymmetricKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password
+Set-SmoDatabaseAsymmetricKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)
 
 Sets new key password for private key in AdventureWorks database for MyKey.
 
@@ -65,7 +65,7 @@ Sets new key password for private key in AdventureWorks database for MyKey.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Set-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password
+Set-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)
 
 Sets new key password for private key for MyKey using the database object.
 

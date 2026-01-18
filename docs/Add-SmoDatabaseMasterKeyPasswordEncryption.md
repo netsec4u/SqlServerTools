@@ -43,7 +43,7 @@ Adds password encryption to database master key.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Add-SmoDatabaseMasterKeyPasswordEncryption 	-DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password
+Add-SmoDatabaseMasterKeyPasswordEncryption 	-DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Adds key password encryption encryption to database master key with specified password using the database object.
 

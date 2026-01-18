@@ -80,13 +80,13 @@ Creates database master key.
 
 ### Example 1
 
-New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Get-Credential Encrypt).Password
+New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Creates new database master key and encrypt with specified password.
 
 ### Example 2
 
-New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Get-Credential Encrypt).Password -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password
+New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString) -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
 
 Creates new database master key and encrypt with specified password from file.
 
@@ -94,7 +94,7 @@ Creates new database master key and encrypt with specified password from file.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password
+New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString) -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
 
 Creates new database master key and encrypt with specified password from file using the database object.
 
@@ -102,7 +102,7 @@ Creates new database master key and encrypt with specified password from file us
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password
+New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Creates new database master key and encrypt with specified password using the database object.
 

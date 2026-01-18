@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.6.1.2'
+ModuleVersion = '3.6.2.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -98,6 +98,9 @@ FunctionsToExport = @(
 	'Import-SmoDatabaseMasterKey',
 	'Import-SmoServiceMasterKey',
 	'Invoke-SmoNonQuery',
+	'Invoke-SmoScriptDatabase',
+	'Invoke-SmoScriptDatabaseObject',
+	'Invoke-SmoScriptServerObject',
 	'New-SmoCredential',
 	'New-SmoDatabaseAsymmetricKey',
 	'New-SmoDatabaseCertificate',

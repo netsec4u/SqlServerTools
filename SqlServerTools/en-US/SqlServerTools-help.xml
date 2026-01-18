@@ -172,7 +172,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -347,7 +352,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Add-SmoDatabaseAsymmetricKeyPrivateKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential PrivateKey).Password</maml:para>
+          <maml:para>Add-SmoDatabaseAsymmetricKeyPrivateKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Adds private key to MyKey in the AdventureWorks database.</maml:para>
         </maml:introduction>
@@ -359,7 +364,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Add-SmoDatabaseAsymmetricKeyPrivateKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential PrivateKey).Password</maml:para>
+          <maml:para>Add-SmoDatabaseAsymmetricKeyPrivateKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Adds private key to MyKey using the database object.</maml:para>
         </maml:introduction>
@@ -367,7 +372,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -630,7 +640,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -732,7 +747,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Add-SmoDatabaseMasterKeyPasswordEncryption 	-DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>Add-SmoDatabaseMasterKeyPasswordEncryption 	-DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Adds key password encryption encryption to database master key with specified password using the database object.</maml:para>
         </maml:introduction>
@@ -740,7 +755,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -836,7 +856,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -1031,7 +1056,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -1169,7 +1199,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -1350,7 +1385,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -1892,7 +1932,12 @@ When not specified, the server name from the Data Source is used for certificate
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -1958,7 +2003,12 @@ When not specified, the server name from the Data Source is used for certificate
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -2038,7 +2088,12 @@ When not specified, the server name from the Data Source is used for certificate
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -2394,7 +2449,12 @@ If you do not specify a network and you use a remote server, the one of the conf
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -2578,7 +2638,12 @@ If you do not specify a network and you use a remote server, the one of the conf
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -2731,7 +2796,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -2797,7 +2867,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -2863,7 +2938,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3016,7 +3096,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3209,7 +3294,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Export-SmoDatabaseCertificate -ServerInstance MyServer -DatabaseName AdventureWorks -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Get-Credential Encryption).Password</maml:para>
+          <maml:para>Export-SmoDatabaseCertificate -ServerInstance MyServer -DatabaseName AdventureWorks -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Read-Host -Prompt "Enter private key encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Exports database certificate in the AdventureWorks database to specified files.</maml:para>
         </maml:introduction>
@@ -3221,7 +3306,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Export-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Get-Credential Encryption).Password</maml:para>
+          <maml:para>Export-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Read-Host -Prompt "Enter private key encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Exports database certificate within the database object to specified files.</maml:para>
         </maml:introduction>
@@ -3229,7 +3314,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3359,7 +3449,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Export-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -EncryptionPassword $(Get-Credential Encryption).Password</maml:para>
+          <maml:para>Export-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Exports database master key in the AdventureWorks database to the specified file.</maml:para>
         </maml:introduction>
@@ -3371,7 +3461,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Export-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -EncryptionPassword $(Get-Credential Encryption).Password</maml:para>
+          <maml:para>Export-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Exports database master key within the database object to the specified file.</maml:para>
         </maml:introduction>
@@ -3379,7 +3469,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3540,7 +3635,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Export-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -EncryptionPassword $(Get-Credential Encryption).Password</maml:para>
+          <maml:para>Export-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Exports service master key to the specified file.</maml:para>
         </maml:introduction>
@@ -3552,7 +3647,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$SmoServerObject = Connect-SmoServer -ServerInstance .</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Export-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.SMK -EncryptionPassword $(Get-Credential Encryption).Password</maml:para>
+          <maml:para>Export-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.SMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Exports service master key to the specified file using the specified SMO server object.</maml:para>
         </maml:introduction>
@@ -3560,7 +3655,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3673,7 +3773,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3788,7 +3893,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -3903,7 +4013,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4032,7 +4147,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4161,7 +4281,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4269,7 +4394,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4377,7 +4507,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4480,7 +4615,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4609,7 +4749,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -4964,7 +5109,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -5181,7 +5331,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Import-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>Import-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString) -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Imports database master key from specified file into AdventureWorks database.</maml:para>
         </maml:introduction>
@@ -5193,7 +5343,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Import-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>Import-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString) -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Imports database master key from specified file into the database object.</maml:para>
         </maml:introduction>
@@ -5201,7 +5351,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -5362,7 +5517,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Import-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -DecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>Import-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Imports service master key from specified file into AdventureWorks database.</maml:para>
         </maml:introduction>
@@ -5374,7 +5529,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$SmoServerObject = Connect-SmoServer -ServerInstance .</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Import-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>Import-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Imports service master key from specified file using Smo server connection.</maml:para>
         </maml:introduction>
@@ -5382,7 +5537,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -5646,7 +5806,621 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Invoke-SmoScriptDatabase</command:name>
+      <maml:description>
+        <maml:para>Script a SQL Server database to a file.</maml:para>
+      </maml:description>
+      <command:verb>Invoke</command:verb>
+      <command:noun>SmoScriptDatabase</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Script a SQL Server database to a file using SQL Server Management Objects (SMO).</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-SmoScriptDatabase
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DatabaseName</maml:name>
+          <maml:description>
+            <maml:para>The name of the database to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The file path to save the scripted database.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ServerInstance</maml:name>
+          <maml:description>
+            <maml:para>The name of the SQL Server instance.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Invoke-SmoScriptDatabase
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DatabaseName</maml:name>
+          <maml:description>
+            <maml:para>The name of the database to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The file path to save the scripted database.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SmoServerObject</maml:name>
+          <maml:description>
+            <maml:para>The SMO Server object.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">Microsoft.SqlServer.Management.Smo.Server</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>DatabaseName</maml:name>
+        <maml:description>
+          <maml:para>The name of the database to script.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>The file path to save the scripted database.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ServerInstance</maml:name>
+        <maml:description>
+          <maml:para>The name of the SQL Server instance.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>SmoServerObject</maml:name>
+        <maml:description>
+          <maml:para>The SMO Server object.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">Microsoft.SqlServer.Management.Smo.Server</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Void</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>Invoke-SmoScriptDatabase -ServerInstance . -DatabaseName AdventureWorks -Path "C:\Scripts\MyDatabase.sql"</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Scripts the "AdventureWorks" database from the local SQL Server instance to the "C:\Scripts\MyDatabase.sql" file.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>$smoServer = Connect-SmoServer -ServerInstance .
+Invoke-SmoScriptDatabase -SmoServerObject $smoServer -DatabaseName AdventureWorks -Path "C:\Scripts\MyDatabase.sql"</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Scripts the "AdventureWorks" database from the provided SMO Server object to the "C:\Scripts\MyDatabase.sql" file.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Invoke-SmoScriptDatabaseObject</command:name>
+      <maml:description>
+        <maml:para>Script a specific database object to a file.</maml:para>
+      </maml:description>
+      <command:verb>Invoke</command:verb>
+      <command:noun>SmoScriptDatabaseObject</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Script a specific database object to a file.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-SmoScriptDatabaseObject
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DatabaseName</maml:name>
+          <maml:description>
+            <maml:para>The name of the database.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectClass</maml:name>
+          <maml:description>
+            <maml:para>The class of the database object to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">ScriptableDatabaseObjectClass</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectName</maml:name>
+          <maml:description>
+            <maml:para>The name of the database object to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The file path to script the database object to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ServerInstance</maml:name>
+          <maml:description>
+            <maml:para>The name of the SQL Server instance.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Invoke-SmoScriptDatabaseObject
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DatabaseName</maml:name>
+          <maml:description>
+            <maml:para>The name of the database.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectClass</maml:name>
+          <maml:description>
+            <maml:para>The class of the database object to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">ScriptableDatabaseObjectClass</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectName</maml:name>
+          <maml:description>
+            <maml:para>The name of the database object to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The file path to script the database object to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SmoServerObject</maml:name>
+          <maml:description>
+            <maml:para>The SMO Server object.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">Microsoft.SqlServer.Management.Smo.Server</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>DatabaseName</maml:name>
+        <maml:description>
+          <maml:para>The name of the database.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ObjectClass</maml:name>
+        <maml:description>
+          <maml:para>The class of the database object to script.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">ScriptableDatabaseObjectClass</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ObjectName</maml:name>
+        <maml:description>
+          <maml:para>The name of the database object to script.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>The file path to script the database object to.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ServerInstance</maml:name>
+        <maml:description>
+          <maml:para>The name of the SQL Server instance.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>SmoServerObject</maml:name>
+        <maml:description>
+          <maml:para>The SMO Server object.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">Microsoft.SqlServer.Management.Smo.Server</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Void</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>Invoke-SmoScriptDatabaseObject -ServerInstance . -DatabaseName 'TestDB' -Path 'C:\Scripts\TestDB_Object.sql' -ObjectClass 'Table' -ObjectName 'MyTable'</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Scripts the specified table 'MyTable' from the 'TestDB' database on the local SQL Server instance to the specified file path.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>$server = Connect-SmoServer -ServerInstance .
+	Invoke-SmoScriptDatabaseObject -SmoServerObject $server -DatabaseName 'TestDB' -Path 'C:\Scripts\TestDB_Object.sql' -ObjectClass 'View' -ObjectName 'MyView'</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Scripts the specified view 'MyView' from the 'TestDB' database using the provided SMO Server object to the specified file path.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Invoke-SmoScriptServerObject</command:name>
+      <maml:description>
+        <maml:para>Script a SQL Server object to a file.</maml:para>
+      </maml:description>
+      <command:verb>Invoke</command:verb>
+      <command:noun>SmoScriptServerObject</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Script a SQL Server object to a file using SQL Server Management Objects (SMO).</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Invoke-SmoScriptServerObject
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectClass</maml:name>
+          <maml:description>
+            <maml:para>The class of the SQL Server object to script (e.g., 'Login', 'Database', 'ServerRole').</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">ScriptableServerObjectClass</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectName</maml:name>
+          <maml:description>
+            <maml:para>The name of the SQL Server object to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The file path to save the scripted object to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ServerInstance</maml:name>
+          <maml:description>
+            <maml:para>The name of the SQL Server instance to connect to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Invoke-SmoScriptServerObject
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectClass</maml:name>
+          <maml:description>
+            <maml:para>The class of the SQL Server object to script (e.g., 'Login', 'Database', 'ServerRole').</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">ScriptableServerObjectClass</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ObjectName</maml:name>
+          <maml:description>
+            <maml:para>The name of the SQL Server object to script.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>The file path to save the scripted object to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SmoServerObject</maml:name>
+          <maml:description>
+            <maml:para>An existing SMO Server object to use for the connection.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">Microsoft.SqlServer.Management.Smo.Server</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ObjectClass</maml:name>
+        <maml:description>
+          <maml:para>The class of the SQL Server object to script (e.g., 'Login', 'Database', 'ServerRole').</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">ScriptableServerObjectClass</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ObjectName</maml:name>
+        <maml:description>
+          <maml:para>The name of the SQL Server object to script.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>The file path to save the scripted object to.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.IO.FileInfo</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ServerInstance</maml:name>
+        <maml:description>
+          <maml:para>The name of the SQL Server instance to connect to.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>SmoServerObject</maml:name>
+        <maml:description>
+          <maml:para>An existing SMO Server object to use for the connection.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">Microsoft.SqlServer.Management.Smo.Server</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Void</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>Invoke-SmoScriptServerObject -ServerInstance . -Path 'C:\Scripts\Login.sql' -ObjectClass 'Login' -ObjectName 'MyLogin'</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Scripts the login 'MyLogin' from the local SQL Server instance to the specified file.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- Example 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>$server = Connect-SmoServer -ServerInstance .
+Invoke-SmoScriptServerObject -SmoServerObject $server -Path 'C:\Scripts\ServerRole.sql' -ObjectClass 'ServerRole' -ObjectName 'MyServerRole'</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Scripts the server role 'MyServerRole' using an existing SMO Server object.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -5672,6 +6446,13 @@ The cmdlet is not run.</maml:para>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ColumnMappingCollection</maml:name>
+          <maml:description>
+            <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>Confirm</maml:name>
           <maml:description>
             <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
@@ -5688,9 +6469,123 @@ The cmdlet is not run.</maml:para>
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>DataTable</maml:name>
           <maml:description>
-            <maml:para>Data table.</maml:para>
+            <maml:para>Specifies Data table.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="true">System.Data.DataTable</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>EnableStreaming</maml:name>
+          <maml:description>
+            <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NotifyAfter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>QueryTimeout</maml:name>
+          <maml:description>
+            <maml:para>The length of time (in seconds) to wait for a query before terminating the query and throwing an exception.
+Default is 30 seconds.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>RowState</maml:name>
+          <maml:description>
+            <maml:para>Specifies only the rows matching the row state are copied to the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Data.DataRowState</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ServerInstance</maml:name>
+          <maml:description>
+            <maml:para>SQL Server host name and instance name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SqlBulkCopyOptions</maml:name>
+          <maml:description>
+            <maml:para>Bulk copy options.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">Microsoft.Data.SqlClient.SqlBulkCopyOptions</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>TableName</maml:name>
+          <maml:description>
+            <maml:para>Table name to insert data.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>
+Invoke-SqlClientBulkCopy
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>BatchSize</maml:name>
+          <maml:description>
+            <maml:para>Bulk import batch size.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ColumnMappingCollection</maml:name>
+          <maml:description>
+            <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DatabaseName</maml:name>
+          <maml:description>
+            <maml:para>Name of database.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DataRow</maml:name>
+          <maml:description>
+            <maml:para>Specifies data row.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.Data.DataRow[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>EnableStreaming</maml:name>
+          <maml:description>
+            <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NotifyAfter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>QueryTimeout</maml:name>
@@ -5741,6 +6636,13 @@ The cmdlet is not run.</maml:para>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ColumnMappingCollection</maml:name>
+          <maml:description>
+            <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>Confirm</maml:name>
           <maml:description>
             <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
@@ -5757,9 +6659,115 @@ The cmdlet is not run.</maml:para>
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>DataTable</maml:name>
           <maml:description>
-            <maml:para>Data table.</maml:para>
+            <maml:para>Specifies Data table.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="true">System.Data.DataTable</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>EnableStreaming</maml:name>
+          <maml:description>
+            <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NotifyAfter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>QueryTimeout</maml:name>
+          <maml:description>
+            <maml:para>The length of time (in seconds) to wait for a query before terminating the query and throwing an exception.
+Default is 30 seconds.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>RowState</maml:name>
+          <maml:description>
+            <maml:para>Specifies only the rows matching the row state are copied to the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Data.DataRowState</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SqlBulkCopyOptions</maml:name>
+          <maml:description>
+            <maml:para>Bulk copy options.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">Microsoft.Data.SqlClient.SqlBulkCopyOptions</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>TableName</maml:name>
+          <maml:description>
+            <maml:para>Table name to insert data.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Invoke-SqlClientBulkCopy
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>BatchSize</maml:name>
+          <maml:description>
+            <maml:para>Bulk import batch size.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ColumnMappingCollection</maml:name>
+          <maml:description>
+            <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ConnectionString</maml:name>
+          <maml:description>
+            <maml:para>SQL Server Connection string.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DataRow</maml:name>
+          <maml:description>
+            <maml:para>Specifies data row.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.Data.DataRow[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>EnableStreaming</maml:name>
+          <maml:description>
+            <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NotifyAfter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>QueryTimeout</maml:name>
@@ -5803,6 +6811,13 @@ The cmdlet is not run.</maml:para>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ColumnMappingCollection</maml:name>
+          <maml:description>
+            <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>Confirm</maml:name>
           <maml:description>
             <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
@@ -5812,9 +6827,115 @@ The cmdlet is not run.</maml:para>
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>DataTable</maml:name>
           <maml:description>
-            <maml:para>Data table.</maml:para>
+            <maml:para>Specifies Data table.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="true">System.Data.DataTable</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>EnableStreaming</maml:name>
+          <maml:description>
+            <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NotifyAfter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>QueryTimeout</maml:name>
+          <maml:description>
+            <maml:para>The length of time (in seconds) to wait for a query before terminating the query and throwing an exception.
+Default is 30 seconds.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>RowState</maml:name>
+          <maml:description>
+            <maml:para>Specifies only the rows matching the row state are copied to the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Data.DataRowState</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SqlBulkCopyOptions</maml:name>
+          <maml:description>
+            <maml:para>Bulk copy options.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">Microsoft.Data.SqlClient.SqlBulkCopyOptions</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>SqlConnection</maml:name>
+          <maml:description>
+            <maml:para>Specifies SQL connection object.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">Microsoft.Data.SqlClient.SqlConnection</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>TableName</maml:name>
+          <maml:description>
+            <maml:para>Table name to insert data.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs.
+The cmdlet is not run.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Invoke-SqlClientBulkCopy
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>BatchSize</maml:name>
+          <maml:description>
+            <maml:para>Bulk import batch size.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ColumnMappingCollection</maml:name>
+          <maml:description>
+            <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DataRow</maml:name>
+          <maml:description>
+            <maml:para>Specifies data row.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.Data.DataRow[]</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>EnableStreaming</maml:name>
+          <maml:description>
+            <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NotifyAfter</maml:name>
+          <maml:description>
+            <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>QueryTimeout</maml:name>
@@ -5864,6 +6985,13 @@ The cmdlet is not run.</maml:para>
         <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
       </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ColumnMappingCollection</maml:name>
+        <maml:description>
+          <maml:para>Specifies column mappings to define the relationships between columns in the data source and columns in the destination.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>Confirm</maml:name>
         <maml:description>
           <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
@@ -5885,11 +7013,33 @@ The cmdlet is not run.</maml:para>
         <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
       </command:parameter>
       <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>DataRow</maml:name>
+        <maml:description>
+          <maml:para>Specifies data row.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.Data.DataRow[]</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>DataTable</maml:name>
         <maml:description>
-          <maml:para>Data table.</maml:para>
+          <maml:para>Specifies Data table.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="true">System.Data.DataTable</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>EnableStreaming</maml:name>
+        <maml:description>
+          <maml:para>Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>NotifyAfter</maml:name>
+        <maml:description>
+          <maml:para>Specifies the number of rows to be processed before generating a notification event.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
       </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>QueryTimeout</maml:name>
@@ -5898,6 +7048,13 @@ The cmdlet is not run.</maml:para>
 Default is 30 seconds.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>RowState</maml:name>
+        <maml:description>
+          <maml:para>Specifies only the rows matching the row state are copied to the destination.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Data.DataRowState</command:parameterValue>
       </command:parameter>
       <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>ServerInstance</maml:name>
@@ -5960,13 +7117,25 @@ The cmdlet is not run.</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataTable</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Perform bulk copy against AdventureWorks database.</maml:para>
+          <maml:para>Perform bulk copy against AdventureWorks database using the specified data table.</maml:para>
         </maml:introduction>
         <dev:code />
         <dev:remarks />
       </command:example>
       <command:example>
         <maml:title>--------- EXAMPLE 2 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>$DataRow = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataRow</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Perform bulk copy against AdventureWorks database using specified data row.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 3 ---------</maml:title>
         <maml:introduction>
           <maml:para>$DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'</maml:para>
@@ -5979,7 +7148,20 @@ $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Sec
         <dev:remarks />
       </command:example>
       <command:example>
-        <maml:title>--------- EXAMPLE 3 ---------</maml:title>
+        <maml:title>--------- Example 4 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>$DataRow = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
+$ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable" -DataTable $DataRow</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Perform bulk copy against AdventureWorks database using specified data row.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 5 ---------</maml:title>
         <maml:introduction>
           <maml:para>$DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks</maml:para>
@@ -5991,8 +7173,26 @@ $SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName Adven
         <dev:code />
         <dev:remarks />
       </command:example>
+      <command:example>
+        <maml:title>--------- EXAMPLE 6 ---------</maml:title>
+        <maml:introduction>
+          <maml:para>$DataRow = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
+$SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataRow</maml:para>
+          <maml:para>&#x80;</maml:para>
+          <maml:para>Perform bulk copy using the SQL connection.</maml:para>
+        </maml:introduction>
+        <dev:code />
+        <dev:remarks />
+      </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -6190,7 +7390,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -6372,7 +7577,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- EXAMPLE 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Get-Credential).Password</maml:para>
+          <maml:para>New-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Create SQL credential.</maml:para>
         </maml:introduction>
@@ -6384,7 +7589,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$SmoServerObject = Connect-SmoServer -ServerInstance .</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Get-Credential).Password</maml:para>
+          <maml:para>New-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Create SQL credential using SMO object.</maml:para>
         </maml:introduction>
@@ -6392,7 +7597,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -6759,7 +7969,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -7216,7 +8431,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 2 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Read-Host -Prompt "Enter private key decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates database certificate within the AdventureWorks database from certificate file and key.</maml:para>
         </maml:introduction>
@@ -7250,7 +8465,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Read-Host -Prompt "Enter private key decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates database certificate from certificate file and key using database object.</maml:para>
         </maml:introduction>
@@ -7270,7 +8485,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -7486,7 +8706,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -7660,7 +8885,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -7929,7 +9159,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates new database master key and encrypt with specified password.</maml:para>
         </maml:introduction>
@@ -7939,7 +9169,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 2 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Get-Credential Encrypt).Password -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>New-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString) -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates new database master key and encrypt with specified password from file.</maml:para>
         </maml:introduction>
@@ -7951,7 +9181,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password -Path C:\AdventureWorks.DMK -DecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString) -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates new database master key and encrypt with specified password from file using the database object.</maml:para>
         </maml:introduction>
@@ -7963,7 +9193,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>New-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates new database master key and encrypt with specified password using the database object.</maml:para>
         </maml:introduction>
@@ -7971,7 +9201,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -8166,7 +9401,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -8361,7 +9601,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -8745,7 +9990,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 2 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoDatabaseSymmetricKey -ServerInstance . -DatabaseName AdventureWorks -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Get-Credential KeyPassword).Password</maml:para>
+          <maml:para>New-SmoDatabaseSymmetricKey -ServerInstance . -DatabaseName AdventureWorks -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Read-Host -Prompt "Enter pass phrase" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates symmetric key in AdventureWorks database with pass phrase.</maml:para>
         </maml:introduction>
@@ -8757,7 +10002,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MyKey&gt; -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Get-Credential KeyPassword).Password</maml:para>
+          <maml:para>New-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MyKey&gt; -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Read-Host -Prompt "Enter pass phrase" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates symmetric key with pass phrase using the database object.</maml:para>
         </maml:introduction>
@@ -8777,7 +10022,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -9004,7 +10254,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- EXAMPLE 2 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Get-Credential).Password -DefaultSchema dbo</maml:para>
+          <maml:para>New-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -DefaultSchema dbo</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Create contained user DBUser within the AdventureWorks database.</maml:para>
         </maml:introduction>
@@ -9024,7 +10274,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -9205,7 +10460,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -9534,7 +10794,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- EXAMPLE 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password</maml:para>
+          <maml:para>New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates SQL login on MyServer SQL instance.</maml:para>
         </maml:introduction>
@@ -9546,7 +10806,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$SmoServerObject = Connect-SmoServer -ServerInstance .</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Get-Credential).Password</maml:para>
+          <maml:para>New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates SQL login using SMO server object.</maml:para>
         </maml:introduction>
@@ -9556,7 +10816,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- EXAMPLE 3 ---------</maml:title>
         <maml:introduction>
-          <maml:para>New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid '0x615C96F6296B18438C6DF0304CD56CE0'</maml:para>
+          <maml:para>New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -Sid '0x615C96F6296B18438C6DF0304CD56CE0'</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Creates SQL login using specified SID.</maml:para>
         </maml:introduction>
@@ -9568,7 +10828,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$SqlLogin = Get-SqlLogin -ServerInstance SomeServer -LoginName MyLogin</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid $SqlLogin.Sid</maml:para>
+          <maml:para>New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -Sid $SqlLogin.Sid</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Create SQL login using SID retrieved from Get-SqlLogin.</maml:para>
         </maml:introduction>
@@ -9576,7 +10836,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -9648,7 +10913,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Open-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -DecryptionPassword $(Get-Credential Decrypt).Password</maml:para>
+          <maml:para>Open-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Opens database master key using the database object.</maml:para>
         </maml:introduction>
@@ -9656,7 +10921,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -9820,7 +11090,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MySymmetricKey -DEcryptionPassword $(Get-Credential KeyPassword).Password</maml:para>
+          <maml:para>Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MySymmetricKey -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Opens symmetric key with a password using the database object.</maml:para>
         </maml:introduction>
@@ -9852,7 +11122,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -10057,7 +11332,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -10231,7 +11511,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -10391,7 +11676,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -10586,7 +11876,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -10760,7 +12055,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -10934,7 +12234,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -11087,7 +12392,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -11240,7 +12550,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -11394,7 +12709,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Remove-SmoDatabaseMasterKeyPasswordEncryption -ServerInstance . -DatabaseName AdventureWorks -DecryptionPassword $(Get-Credential DecryptPassword).Password</maml:para>
+          <maml:para>Remove-SmoDatabaseMasterKeyPasswordEncryption -ServerInstance . -DatabaseName AdventureWorks -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Removes password encryption from master key in the AdventureWorks database.</maml:para>
         </maml:introduction>
@@ -11406,7 +12721,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Remove-SmoDatabaseMasterKeyPasswordEncryption -DatabaseObject $DatabaseObject -DecryptionPassword $(Get-Credential DecryptPassword).Password</maml:para>
+          <maml:para>Remove-SmoDatabaseMasterKeyPasswordEncryption -DatabaseObject $DatabaseObject -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Removes password encryption from master key using the database object.</maml:para>
         </maml:introduction>
@@ -11414,7 +12729,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -11567,7 +12887,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -11741,7 +13066,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -11936,7 +13266,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -12110,7 +13445,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -12305,7 +13645,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -12521,7 +13866,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -12695,7 +14045,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -12855,7 +14210,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -13036,7 +14396,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -13196,7 +14561,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -13500,7 +14870,12 @@ $FileGroupObject = $DatabaseObject.FileGroups['PRIMARY']</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -13776,7 +15151,12 @@ $LogFileObject = $DatabaseObject.LogFiles</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -13958,7 +15338,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -14136,7 +15521,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Reset-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>Reset-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Regenerates database master key in the AdventureWorks database using the specified password.</maml:para>
         </maml:introduction>
@@ -14148,7 +15533,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Reset-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password</maml:para>
+          <maml:para>Reset-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Regenerates database master key using the database object.</maml:para>
         </maml:introduction>
@@ -14156,7 +15541,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -14319,7 +15709,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -14350,6 +15745,13 @@ The cmdlet is not run.</maml:para>
             <maml:para>Data set object.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="true">System.Data.DataSet</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>DataSetTableName</maml:name>
+          <maml:description>
+            <maml:para>Specifies data table name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>SqlDataAdapter</maml:name>
@@ -14383,6 +15785,13 @@ The cmdlet is not run.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="true">System.Data.DataSet</command:parameterValue>
       </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>DataSetTableName</maml:name>
+        <maml:description>
+          <maml:para>Specifies data table name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>SqlDataAdapter</maml:name>
         <maml:description>
@@ -14409,6 +15818,14 @@ The cmdlet is not run.</maml:para>
           <maml:para />
         </maml:description>
       </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>SqlClient.DataSetResult</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
@@ -14429,7 +15846,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -14611,7 +16033,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- EXAMPLE 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Set-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Get-Credential).Password</maml:para>
+          <maml:para>Set-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Updates SQL credential.</maml:para>
         </maml:introduction>
@@ -14623,7 +16045,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$SmoServerObject = Connect-SmoServer -ServerInstance .</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Set-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Get-Credential).Password</maml:para>
+          <maml:para>Set-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Update SQL credential using SMO object.</maml:para>
         </maml:introduction>
@@ -14631,7 +16053,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -14827,7 +16254,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Set-SmoDatabaseAsymmetricKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password</maml:para>
+          <maml:para>Set-SmoDatabaseAsymmetricKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Sets new key password for private key in AdventureWorks database for MyKey.</maml:para>
         </maml:introduction>
@@ -14839,7 +16266,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Set-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password</maml:para>
+          <maml:para>Set-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Sets new key password for private key for MyKey using the database object.</maml:para>
         </maml:introduction>
@@ -14847,7 +16274,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -15043,7 +16475,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- Example 1 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Set-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password</maml:para>
+          <maml:para>Set-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Sets private key password for MyCert certificate in the AdventureWorks database.</maml:para>
         </maml:introduction>
@@ -15055,7 +16487,7 @@ The cmdlet is not run.</maml:para>
         <maml:introduction>
           <maml:para>$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks</maml:para>
           <maml:para>&#x80;</maml:para>
-          <maml:para>Set-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password</maml:para>
+          <maml:para>Set-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Sets private key password for MyCert certificate using the database object.</maml:para>
         </maml:introduction>
@@ -15063,7 +16495,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -15258,7 +16695,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -15679,7 +17121,12 @@ $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -16030,7 +17477,12 @@ $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -16225,7 +17677,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -16420,7 +17877,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -16647,7 +18109,7 @@ The cmdlet is not run.</maml:para>
       <command:example>
         <maml:title>--------- EXAMPLE 2 ---------</maml:title>
         <maml:introduction>
-          <maml:para>Set-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Get-Credential).Password -DefaultSchema dbo</maml:para>
+          <maml:para>Set-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -DefaultSchema dbo</maml:para>
           <maml:para>&#x80;</maml:para>
           <maml:para>Sets contained user DBUser user properties.</maml:para>
         </maml:introduction>
@@ -16667,7 +18129,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -16848,7 +18315,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -17134,7 +18606,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -17268,7 +18745,12 @@ The cmdlet is not run.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command>
     <command:details>
@@ -17426,6 +18908,11 @@ Default is 15 seconds.</maml:para>
         <dev:remarks />
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri />
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
 </helpItems>

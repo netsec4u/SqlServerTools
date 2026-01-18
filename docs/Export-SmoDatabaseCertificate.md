@@ -57,7 +57,7 @@ Exports database certificate and private key to files.
 
 ### Example 1
 
-Export-SmoDatabaseCertificate -ServerInstance MyServer -DatabaseName AdventureWorks -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Get-Credential Encryption).Password
+Export-SmoDatabaseCertificate -ServerInstance MyServer -DatabaseName AdventureWorks -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Read-Host -Prompt "Enter private key encryption password" -AsSecureString)
 
 Exports database certificate in the AdventureWorks database to specified files.
 
@@ -65,7 +65,7 @@ Exports database certificate in the AdventureWorks database to specified files.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Export-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Get-Credential Encryption).Password
+Export-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Read-Host -Prompt "Enter private key encryption password" -AsSecureString)
 
 Exports database certificate within the database object to specified files.
 

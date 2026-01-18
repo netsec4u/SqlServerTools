@@ -63,7 +63,7 @@ Opens database symmetric key.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MySymmetricKey -DEcryptionPassword $(Get-Credential KeyPassword).Password
+Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MySymmetricKey -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
 
 Opens symmetric key with a password using the database object.
 

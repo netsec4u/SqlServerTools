@@ -56,7 +56,7 @@ Create credential.
 
 ### EXAMPLE 1
 
-New-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Get-Credential).Password
+New-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
 
 Create SQL credential.
 
@@ -64,7 +64,7 @@ Create SQL credential.
 
 $SmoServerObject = Connect-SmoServer -ServerInstance .
 
-New-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Get-Credential).Password
+New-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
 
 Create SQL credential using SMO object.
 

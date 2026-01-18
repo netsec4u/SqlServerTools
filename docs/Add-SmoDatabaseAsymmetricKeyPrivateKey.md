@@ -55,7 +55,7 @@ Adds private key to asymmetric key.
 
 ### Example 1
 
-Add-SmoDatabaseAsymmetricKeyPrivateKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential PrivateKey).Password
+Add-SmoDatabaseAsymmetricKeyPrivateKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString)
 
 Adds private key to MyKey in the AdventureWorks database.
 
@@ -63,7 +63,7 @@ Adds private key to MyKey in the AdventureWorks database.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Add-SmoDatabaseAsymmetricKeyPrivateKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Get-Credential PrivateKey).Password
+Add-SmoDatabaseAsymmetricKeyPrivateKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString)
 
 Adds private key to MyKey using the database object.
 

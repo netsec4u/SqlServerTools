@@ -54,7 +54,7 @@ Exports service master key to a file.
 
 ### Example 1
 
-Export-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -EncryptionPassword $(Get-Credential Encryption).Password
+Export-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Exports service master key to the specified file.
 
@@ -62,7 +62,7 @@ Exports service master key to the specified file.
 
 $SmoServerObject = Connect-SmoServer -ServerInstance .
 
-Export-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.SMK -EncryptionPassword $(Get-Credential Encryption).Password
+Export-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.SMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Exports service master key to the specified file using the specified SMO server object.
 

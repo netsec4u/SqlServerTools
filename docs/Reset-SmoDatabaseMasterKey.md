@@ -55,7 +55,7 @@ Regenerate new database master key.
 
 ### Example 1
 
-Reset-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Get-Credential Encrypt).Password
+Reset-SmoDatabaseMasterKey -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Regenerates database master key in the AdventureWorks database using the specified password.
 
@@ -63,7 +63,7 @@ Regenerates database master key in the AdventureWorks database using the specifi
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Reset-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Get-Credential Encrypt).Password
+Reset-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
 
 Regenerates database master key using the database object.
 

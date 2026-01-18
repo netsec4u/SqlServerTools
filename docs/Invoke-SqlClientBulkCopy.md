@@ -17,7 +17,7 @@ Use SQL Bulk copy to insert data into database table.
 
 ## SYNTAX
 
-### ServerInstance (Default)
+### ServerInstance_DataTable (Default)
 
 ```
 Invoke-SqlClientBulkCopy
@@ -25,39 +25,107 @@ Invoke-SqlClientBulkCopy
   -DatabaseName <string>
   -TableName <string>
   -DataTable <DataTable>
+  [-RowState <DataRowState>]
+  [-ColumnMappingCollection <List`1[SqlBulkCopyColumnMapping]>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
   [-QueryTimeout <int>]
   [-BatchSize <int>]
-  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-NotifyAfter <int>]
+  [-EnableStreaming]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
 ```
 
-### SqlConnectionString
+### ServerInstance_DataRow
+
+```
+
+Invoke-SqlClientBulkCopy
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -TableName <string>
+  -DataRow <DataRow[]>
+  [-ColumnMappingCollection <List`1[SqlBulkCopyColumnMapping]>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-QueryTimeout <int>]
+  [-BatchSize <int>]
+  [-NotifyAfter <int>]
+  [-EnableStreaming]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### SqlConnectionString_DataTable
 
 ```
 Invoke-SqlClientBulkCopy
   -ConnectionString <string>
   -TableName <string>
   -DataTable <DataTable>
+  [-RowState <DataRowState>]
+  [-ColumnMappingCollection <List`1[SqlBulkCopyColumnMapping]>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
   [-QueryTimeout <int>]
   [-BatchSize <int>]
-  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-NotifyAfter <int>]
+  [-EnableStreaming]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
 ```
 
-### SqlConnection
+### SqlConnectionString_DataRow
+
+```
+Invoke-SqlClientBulkCopy
+  -ConnectionString <string>
+  -TableName <string>
+  -DataRow <DataRow[]>
+  [-ColumnMappingCollection <List`1[SqlBulkCopyColumnMapping]>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-QueryTimeout <int>]
+  [-BatchSize <int>]
+  [-NotifyAfter <int>]
+  [-EnableStreaming]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### SqlConnection_DataTable
 
 ```
 Invoke-SqlClientBulkCopy
   -SqlConnection <SqlConnection>
   -TableName <string>
   -DataTable <DataTable>
+  [-RowState <DataRowState>]
+  [-ColumnMappingCollection <List`1[SqlBulkCopyColumnMapping]>]
+  [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
   [-QueryTimeout <int>]
   [-BatchSize <int>]
+  [-NotifyAfter <int>]
+  [-EnableStreaming]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### SqlConnection_DataRow
+
+```
+Invoke-SqlClientBulkCopy
+  -SqlConnection <SqlConnection>
+  -TableName <string>
+  -DataRow <DataRow[]>
+  [-ColumnMappingCollection <List`1[SqlBulkCopyColumnMapping]>]
   [-SqlBulkCopyOptions <SqlBulkCopyOptions>]
+  [-QueryTimeout <int>]
+  [-BatchSize <int>]
+  [-NotifyAfter <int>]
+  [-EnableStreaming]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -80,9 +148,17 @@ $DataTable = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName Adve
 
 Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataTable
 
-Perform bulk copy against AdventureWorks database.
+Perform bulk copy against AdventureWorks database using the specified data table.
 
 ### EXAMPLE 2
+
+$DataRow = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
+
+Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataRow
+
+Perform bulk copy against AdventureWorks database using specified data row.
+
+### EXAMPLE 3
 
 $DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
@@ -91,12 +167,30 @@ Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable
 
 Perform bulk copy using connection string.
 
-### EXAMPLE 3
+### Example 4
+
+$DataRow = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
+$ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
+
+Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable" -DataTable $DataRow
+
+Perform bulk copy against AdventureWorks database using specified data row.
+
+### EXAMPLE 5
 
 $DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks
 
 Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataTable
+
+Perform bulk copy using the SQL connection.
+
+### EXAMPLE 6
+
+$DataRow = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
+$SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks
+
+Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataRow
 
 Perform bulk copy using the SQL connection.
 
@@ -122,6 +216,28 @@ DontShow: false
 AcceptedValues: []
 HelpMessage: ''
 ```
+
+### -ColumnMappingCollection
+
+Specifies column mappings to define the relationships between columns in the data source and columns in the destination.
+
+```yaml
+Type: System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 
 ### -Confirm
 
@@ -155,7 +271,13 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: SqlConnectionString
+- Name: SqlConnectionString_DataTable
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: SqlConnectionString_DataRow
   Position: Named
   IsRequired: true
   ValueFromPipeline: false
@@ -176,7 +298,46 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: ServerInstance
+- Name: ServerInstance_DataTable
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_DataRow
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -DataRow
+
+Specifies data row.
+
+```yaml
+Type: System.Data.DataRow[]
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SqlConnectionString_DataRow
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: SqlConnection_DataRow
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_DataRow
   Position: Named
   IsRequired: true
   ValueFromPipeline: false
@@ -189,7 +350,7 @@ HelpMessage: ''
 
 ### -DataTable
 
-Data table.
+Specifies Data table.
 
 ```yaml
 Type: System.Data.DataTable
@@ -197,9 +358,64 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SqlConnectionString_DataTable
   Position: Named
   IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: SqlConnection_DataTable
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_DataTable
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -EnableStreaming
+
+Enables streaming.
+Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX), NVARCHAR(MAX), and XML)
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -NotifyAfter
+
+Specifies the number of rows to be processed before generating a notification event.
+
+```yaml
+Type: System.Int32
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
   ValueFromPipeline: false
   ValueFromPipelineByPropertyName: false
   ValueFromRemainingArguments: false
@@ -230,6 +446,38 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
+### -RowState
+
+Specifies only the rows matching the row state are copied to the destination.
+
+```yaml
+Type: System.Data.DataRowState
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SqlConnectionString_DataTable
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: SqlConnection_DataTable
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_DataTable
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
 ### -ServerInstance
 
 SQL Server host name and instance name.
@@ -241,7 +489,13 @@ SupportsWildcards: false
 Aliases:
 - SqlServer
 ParameterSets:
-- Name: ServerInstance
+- Name: ServerInstance_DataTable
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_DataRow
   Position: Named
   IsRequired: true
   ValueFromPipeline: false
@@ -283,7 +537,13 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: SqlConnection
+- Name: SqlConnection_DataTable
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: SqlConnection_DataRow
   Position: Named
   IsRequired: true
   ValueFromPipeline: false

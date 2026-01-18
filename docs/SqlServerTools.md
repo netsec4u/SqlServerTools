@@ -64,7 +64,7 @@ Closes database symmetric key.
 
 ### [Connect-SmoServer](Connect-SmoServer.md)
 
-Connect to SQL Server.
+Connect to SQL Server using SQL Management Object.
 
 ### [Connect-SqlServerInstance](Connect-SqlServerInstance.md)
 

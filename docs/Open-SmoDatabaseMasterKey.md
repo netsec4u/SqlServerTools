@@ -41,7 +41,7 @@ Opens database master key.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Open-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -DecryptionPassword $(Get-Credential Decrypt).Password
+Open-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
 
 Opens database master key using the database object.
 

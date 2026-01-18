@@ -53,7 +53,7 @@ Removes password encryption from database master key.
 
 ### Example 1
 
-Remove-SmoDatabaseMasterKeyPasswordEncryption -ServerInstance . -DatabaseName AdventureWorks -DecryptionPassword $(Get-Credential DecryptPassword).Password
+Remove-SmoDatabaseMasterKeyPasswordEncryption -ServerInstance . -DatabaseName AdventureWorks -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
 
 Removes password encryption from master key in the AdventureWorks database.
 
@@ -61,7 +61,7 @@ Removes password encryption from master key in the AdventureWorks database.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Remove-SmoDatabaseMasterKeyPasswordEncryption -DatabaseObject $DatabaseObject -DecryptionPassword $(Get-Credential DecryptPassword).Password
+Remove-SmoDatabaseMasterKeyPasswordEncryption -DatabaseObject $DatabaseObject -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
 
 Removes password encryption from master key using the database object.
 

@@ -65,7 +65,7 @@ Create database user within the AdventureWorks database.
 
 ### EXAMPLE 2
 
-New-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Get-Credential).Password -DefaultSchema dbo
+New-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -DefaultSchema dbo
 
 Create contained user DBUser within the AdventureWorks database.
 

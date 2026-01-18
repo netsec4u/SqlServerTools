@@ -70,7 +70,7 @@ Create SQL login.
 
 ### EXAMPLE 1
 
-New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password
+New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
 
 Creates SQL login on MyServer SQL instance.
 
@@ -78,13 +78,13 @@ Creates SQL login on MyServer SQL instance.
 
 $SmoServerObject = Connect-SmoServer -ServerInstance .
 
-New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Get-Credential).Password
+New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
 
 Creates SQL login using SMO server object.
 
 ### EXAMPLE 3
 
-New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid '0x615C96F6296B18438C6DF0304CD56CE0'
+New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -Sid '0x615C96F6296B18438C6DF0304CD56CE0'
 
 Creates SQL login using specified SID.
 
@@ -92,7 +92,7 @@ Creates SQL login using specified SID.
 
 $SqlLogin = Get-SqlLogin -ServerInstance SomeServer -LoginName MyLogin
 
-New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Get-Credential).Password -Sid $SqlLogin.Sid
+New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -Sid $SqlLogin.Sid
 
 Create SQL login using SID retrieved from Get-SqlLogin.
 

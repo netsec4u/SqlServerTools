@@ -121,7 +121,7 @@ Creates database certificate within the AdventureWorks database.
 
 ### Example 2
 
-New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Get-Credential Decrypt).Password
+New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Read-Host -Prompt "Enter private key decryption password" -AsSecureString)
 
 Creates database certificate within the AdventureWorks database from certificate file and key.
 
@@ -143,7 +143,7 @@ Creates database certificate Using the database object.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Get-Credential Decrypt).Password
+New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Read-Host -Prompt "Enter private key decryption password" -AsSecureString)
 
 Creates database certificate from certificate file and key using database object.
 

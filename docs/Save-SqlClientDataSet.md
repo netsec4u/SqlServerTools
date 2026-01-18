@@ -22,6 +22,7 @@ Save dataset to data adapter.
 ```
 Save-SqlClientDataSet
   -DataSet <DataSet>
+  -DataSetTableName <string>
   [-SqlDataAdapter <SqlDataAdapter>]
   [-WhatIf]
   [-Confirm]
@@ -77,6 +78,27 @@ Data set object.
 
 ```yaml
 Type: System.Data.DataSet
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -DataSetTableName
+
+Specifies data table name.
+
+```yaml
+Type: System.String
 DefaultValue: None
 SupportsWildcards: false
 Aliases: []
@@ -148,6 +170,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Void
+
+
+
+### SqlClient.DataSetResult
 
 
 

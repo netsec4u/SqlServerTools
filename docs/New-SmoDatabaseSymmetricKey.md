@@ -98,7 +98,7 @@ Creates symmetric key in AdventureWorks database.
 
 ### Example 2
 
-New-SmoDatabaseSymmetricKey -ServerInstance . -DatabaseName AdventureWorks -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Get-Credential KeyPassword).Password
+New-SmoDatabaseSymmetricKey -ServerInstance . -DatabaseName AdventureWorks -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Read-Host -Prompt "Enter pass phrase" -AsSecureString)
 
 Creates symmetric key in AdventureWorks database with pass phrase.
 
@@ -106,7 +106,7 @@ Creates symmetric key in AdventureWorks database with pass phrase.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-New-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MyKey> -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Get-Credential KeyPassword).Password
+New-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MyKey> -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Read-Host -Prompt "Enter pass phrase" -AsSecureString)
 
 Creates symmetric key with pass phrase using the database object.
 

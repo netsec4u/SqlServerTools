@@ -4,26 +4,27 @@ external help file: SqlServerTools-help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 01/07/2026
 PlatyPS schema version: 2024-05-01
-title: Import-SmoServiceMasterKey
+title: Invoke-SmoScriptServerObject
 ---
 
-# Import-SmoServiceMasterKey
+# Invoke-SmoScriptServerObject
 
 ## SYNOPSIS
 
-Imports service master key from file.
+Script a SQL Server object to a file.
 
 ## SYNTAX
 
 ### ServerInstance (Default)
 
 ```
-Import-SmoServiceMasterKey
+Invoke-SmoScriptServerObject
   -ServerInstance <string>
   -Path <FileInfo>
-  -DecryptionPassword <securestring>
+  -ObjectClass <ScriptableServerObjectClass>
+  -ObjectName <string>
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -32,10 +33,11 @@ Import-SmoServiceMasterKey
 ### SmoServer
 
 ```
-Import-SmoServiceMasterKey
+Invoke-SmoScriptServerObject
   -SmoServerObject <Server>
   -Path <FileInfo>
-  -DecryptionPassword <securestring>
+  -ObjectClass <ScriptableServerObjectClass>
+  -ObjectName <string>
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -48,23 +50,22 @@ This cmdlet has the following aliases:
 
 ## DESCRIPTION
 
-Imports service master key from file.
+Script a SQL Server object to a file using SQL Server Management Objects (SMO).
 
 ## EXAMPLES
 
 ### Example 1
 
-Import-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
+Invoke-SmoScriptServerObject -ServerInstance . -Path 'C:\Scripts\Login.sql' -ObjectClass 'Login' -ObjectName 'MyLogin'
 
-Imports service master key from specified file into AdventureWorks database.
+Scripts the login 'MyLogin' from the local SQL Server instance to the specified file.
 
 ### Example 2
 
-$SmoServerObject = Connect-SmoServer -ServerInstance .
+$server = Connect-SmoServer -ServerInstance .
+Invoke-SmoScriptServerObject -SmoServerObject $server -Path 'C:\Scripts\ServerRole.sql' -ObjectClass 'ServerRole' -ObjectName 'MyServerRole'
 
-Import-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.DMK -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
-
-Imports service master key from specified file using Smo server connection.
+Scripts the server role 'MyServerRole' using an existing SMO Server object.
 
 ## PARAMETERS
 
@@ -74,7 +75,7 @@ Prompts you for confirmation before running the cmdlet.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-DefaultValue: False
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - cf
@@ -90,13 +91,34 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
-### -DecryptionPassword
+### -ObjectClass
 
-Specifies the decryption password from file to import.
+The class of the SQL Server object to script (e.g., 'Login', 'Database', 'ServerRole').
 
 ```yaml
-Type: System.Security.SecureString
-DefaultValue: None
+Type: ScriptableServerObjectClass
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ObjectName
+
+The name of the SQL Server object to script.
+
+```yaml
+Type: System.String
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -113,11 +135,11 @@ HelpMessage: ''
 
 ### -Path
 
-Path to service master key to import.
+The file path to save the scripted object to.
 
 ```yaml
 Type: System.IO.FileInfo
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -134,11 +156,11 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer
@@ -156,11 +178,11 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object to use for the connection.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -177,12 +199,11 @@ HelpMessage: ''
 
 ### -WhatIf
 
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
+Runs the command in a mode that only reports what would happen without performing the actions.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-DefaultValue: False
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - wi
@@ -217,8 +238,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 
 
-
 ## RELATED LINKS
 
-None.
+None
 

@@ -57,7 +57,7 @@ Sets database certificate properties.
 
 ### Example 1
 
-Set-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password
+Set-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)
 
 Sets private key password for MyCert certificate in the AdventureWorks database.
 
@@ -65,7 +65,7 @@ Sets private key password for MyCert certificate in the AdventureWorks database.
 
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 
-Set-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -PrivateKeyPassword $(Get-Credential KeyPassword).Password -NewPrivateKeyPassword $(Get-Credential NewKeyPassword).Password
+Set-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)
 
 Sets private key password for MyCert certificate using the database object.
 

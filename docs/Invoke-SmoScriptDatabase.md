@@ -4,37 +4,40 @@ external help file: SqlServerTools-help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 01/07/2026
 PlatyPS schema version: 2024-05-01
-title: Export-SmoDatabaseMasterKey
+title: Invoke-SmoScriptDatabase
 ---
 
-# Export-SmoDatabaseMasterKey
+# Invoke-SmoScriptDatabase
 
 ## SYNOPSIS
 
-Exports database master key to a file.
+Script a SQL Server database to a file.
 
 ## SYNTAX
 
 ### DatabaseName (Default)
 
 ```
-Export-SmoDatabaseMasterKey
+Invoke-SmoScriptDatabase
   -ServerInstance <string>
   -DatabaseName <string>
   -Path <FileInfo>
-  -EncryptionPassword <securestring>
+  [-WhatIf]
+  [-Confirm]
   [<CommonParameters>]
 ```
 
-### DatabaseObject
+### SmoServer
 
 ```
-Export-SmoDatabaseMasterKey
-  -DatabaseObject <Database>
+Invoke-SmoScriptDatabase
+  -SmoServerObject <Server>
+  -DatabaseName <string>
   -Path <FileInfo>
-  -EncryptionPassword <securestring>
+  [-WhatIf]
+  [-Confirm]
   [<CommonParameters>]
 ```
 
@@ -45,75 +48,54 @@ This cmdlet has the following aliases:
 
 ## DESCRIPTION
 
-Exports database master key to a file.
+Script a SQL Server database to a file using SQL Server Management Objects (SMO).
 
 ## EXAMPLES
 
 ### Example 1
 
-Export-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+Invoke-SmoScriptDatabase -ServerInstance . -DatabaseName AdventureWorks -Path "C:\Scripts\MyDatabase.sql"
 
-Exports database master key in the AdventureWorks database to the specified file.
+Scripts the "AdventureWorks" database from the local SQL Server instance to the "C:\Scripts\MyDatabase.sql" file.
 
 ### Example 2
 
-$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
+$smoServer = Connect-SmoServer -ServerInstance .
+Invoke-SmoScriptDatabase -SmoServerObject $smoServer -DatabaseName AdventureWorks -Path "C:\Scripts\MyDatabase.sql"
 
-Export-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
-
-Exports database master key within the database object to the specified file.
+Scripts the "AdventureWorks" database from the provided SMO Server object to the "C:\Scripts\MyDatabase.sql" file.
 
 ## PARAMETERS
 
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: ''
+SupportsWildcards: false
+Aliases:
+- cf
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -DatabaseName
 
-Name of database.
+The name of the database to script.
 
 ```yaml
 Type: System.String
-DefaultValue: None
-SupportsWildcards: false
-Aliases: []
-ParameterSets:
-- Name: DatabaseName
-  Position: Named
-  IsRequired: true
-  ValueFromPipeline: false
-  ValueFromPipelineByPropertyName: false
-  ValueFromRemainingArguments: false
-DontShow: false
-AcceptedValues: []
-HelpMessage: ''
-```
-
-### -DatabaseObject
-
-SMO database object.
-
-```yaml
-Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
-SupportsWildcards: false
-Aliases: []
-ParameterSets:
-- Name: DatabaseObject
-  Position: Named
-  IsRequired: true
-  ValueFromPipeline: false
-  ValueFromPipelineByPropertyName: false
-  ValueFromRemainingArguments: false
-DontShow: false
-AcceptedValues: []
-HelpMessage: ''
-```
-
-### -EncryptionPassword
-
-Specifies the password to encrypt exported database master key.
-
-```yaml
-Type: System.Security.SecureString
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -130,11 +112,11 @@ HelpMessage: ''
 
 ### -Path
 
-Specifies the path and file name to store the database master key.
+The file path to save the scripted database.
 
 ```yaml
 Type: System.IO.FileInfo
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -151,11 +133,11 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer
@@ -163,6 +145,49 @@ ParameterSets:
 - Name: DatabaseName
   Position: Named
   IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -SmoServerObject
+
+The SMO Server object.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.Server
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: SmoServer
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -WhatIf
+
+Runs the command in a mode that only reports what would happen without performing the actions.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+DefaultValue: ''
+SupportsWildcards: false
+Aliases:
+- wi
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
   ValueFromPipeline: false
   ValueFromPipelineByPropertyName: false
   ValueFromRemainingArguments: false
@@ -190,8 +215,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 
 
-
 ## RELATED LINKS
 
-None.
+None
 
