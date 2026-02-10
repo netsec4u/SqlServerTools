@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -39,9 +39,10 @@ Closes database symmetric key.
 
 ### Example 1
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Close-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MySymmetricKey
+```
 
 Closes database symmetric key within the database object.
 
@@ -49,7 +50,7 @@ Closes database symmetric key within the database object.
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database

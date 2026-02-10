@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -57,15 +57,18 @@ Exports database certificate and private key to files.
 
 ### Example 1
 
+```powershell
 Export-SmoDatabaseCertificate -ServerInstance MyServer -DatabaseName AdventureWorks -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Read-Host -Prompt "Enter private key encryption password" -AsSecureString)
+```
 
 Exports database certificate in the AdventureWorks database to specified files.
 
 ### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Export-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCertificate -CertificatePath C:\certificate.cer -PrivateKeyPath C:\certificate.key -PrivateKeyEncryptionPassword $(Read-Host -Prompt "Enter private key encryption password" -AsSecureString)
+```
 
 Exports database certificate within the database object to specified files.
 
@@ -136,7 +139,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -222,7 +225,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

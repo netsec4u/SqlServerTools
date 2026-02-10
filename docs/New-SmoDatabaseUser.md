@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -57,23 +57,28 @@ Add database user to database.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 New-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -DefaultSchema dbo
+```
 
 Create database user within the AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 New-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -DefaultSchema dbo
+```
 
 Create contained user DBUser within the AdventureWorks database.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance MyServer -DatabaseName AdventureWorks
-
 New-SmoDatabaseUser -DatabaseObject $DatabaseObject -UserName DBUser -DefaultSchema dbo
+```
 
 Create database user using the database object.
 
@@ -124,7 +129,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to add database login.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -187,7 +192,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

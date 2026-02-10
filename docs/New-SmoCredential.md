@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -54,17 +54,20 @@ Create credential.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 New-SmoCredential -ServerInstance MyServer -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
+```
 
 Create SQL credential.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 New-SmoCredential -SmoServerObject $SmoServerObject -Name MyCredential -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
+```
 
 Create SQL credential using SMO object.
 
@@ -157,7 +160,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -179,7 +182,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -115,43 +115,52 @@ Creates database certificate.
 
 ### Example 1
 
+```powershell
 New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -Subject MyCert
+```
 
 Creates database certificate within the AdventureWorks database.
 
 ### Example 2
 
+```powershell
 New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Read-Host -Prompt "Enter private key decryption password" -AsSecureString)
+```
 
 Creates database certificate within the AdventureWorks database from certificate file and key.
 
 ### Example 3
 
+```powershell
 New-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -CertificatePath C:\MyCert.cer
+```
 
 Creates database certificate within the AdventureWorks database from certificate file.
 
 ### Example 4
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -DatabaseName AdventureWorks -CertificateName MyCert -Subject MyCert
+```
 
 Creates database certificate Using the database object.
 
 ### Example 5
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -CertificateName MyCert -CertificatePath C:\MyCert.cer -PrivateKeyPath C:\MyCert.key -PrivateKeyDecryptionPassword $(Read-Host -Prompt "Enter private key decryption password" -AsSecureString)
+```
 
 Creates database certificate from certificate file and key using database object.
 
 ### Example 6
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -CertificatePath C:\MyCert.cer
+```
 
 Creates database certificate from certificate file using database object.
 
@@ -274,7 +283,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -384,7 +393,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

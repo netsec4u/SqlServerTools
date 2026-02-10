@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -92,29 +92,35 @@ Creates database symmetric key.
 
 ### Example 1
 
+```powershell
 New-SmoDatabaseSymmetricKey -ServerInstance . -DatabaseName AdventureWorks -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256
+```
 
 Creates symmetric key in AdventureWorks database.
 
 ### Example 2
 
+```powershell
 New-SmoDatabaseSymmetricKey -ServerInstance . -DatabaseName AdventureWorks -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Read-Host -Prompt "Enter pass phrase" -AsSecureString)
+```
 
 Creates symmetric key in AdventureWorks database with pass phrase.
 
 ### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MyKey> -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256 -PassPhrase $(Read-Host -Prompt "Enter pass phrase" -AsSecureString)
+```
 
 Creates symmetric key with pass phrase using the database object.
 
 ### Example 4
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName MyKey -KeyEncryptionType Certificate -KeyEncryptionValue MyCertificate -KeyEncryptionAlgorithm Aes256
+```
 
 Creates symmetric key in AdventureWorks database using the database object.
 
@@ -171,7 +177,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -315,7 +321,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

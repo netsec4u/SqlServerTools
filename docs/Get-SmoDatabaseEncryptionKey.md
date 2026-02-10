@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -45,17 +45,20 @@ Gets database encryption key.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Get-SmoDatabaseEncryptionKey -ServerInstance MyServer -DatabaseName AdventureWorks
+```
 
 Gets database encryption key from AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Get-SmoDatabaseEncryptionKey -DatabaseObject $DatabaseObject
+```
 
 Gets database encryption key using the database object.
 
@@ -84,7 +87,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to add database encryption key.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -105,7 +108,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

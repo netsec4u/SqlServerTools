@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -67,17 +67,20 @@ Add data file to database file group.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Add-SmoDatabaseDataFile -ServerInstance MyServer -DatabaseName AdventureWorks -FileGroupName HL7FG -DataFileName HL7 -DataFilePath D:\MSSQL12.MSSQLSERVER\Data\AdventureWorks.ndf
+```
 
 Add data file to AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Add-SmoDatabaseDataFile -DatabaseObject $DatabaseObject -FileGroupName HL7FG -DataFileName HL7 -DataFilePath D:\MSSQL12.MSSQLSERVER\Data\AdventureWorks.ndf
+```
 
 Add data file to database object.
 
@@ -128,7 +131,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to add data file.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -239,7 +242,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

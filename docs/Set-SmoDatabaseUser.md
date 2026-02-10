@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -57,23 +57,28 @@ Set database login properties.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Set-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -DefaultSchema dbo
+```
 
 Sets database user properties within the AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 Set-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName DBUser -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -DefaultSchema dbo
+```
 
 Sets contained user DBUser user properties.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Set-SmoDatabaseUser -DatabaseObject $DatabaseObject -UserName DBUser -DefaultSchema dbo
+```
 
 Sets database user properties using database object.
 
@@ -124,7 +129,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to add database login.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -208,7 +213,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

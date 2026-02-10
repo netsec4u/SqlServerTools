@@ -863,7 +863,7 @@ function Rename-CIMFile {
 function Test-SqlBrowserConnection {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -966,7 +966,7 @@ function Test-SqlBrowserConnection {
 function Test-SqlConnection {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1120,7 +1120,7 @@ function Test-SqlConnection {
 function Add-SmoAvailabilityDatabase {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1280,7 +1280,7 @@ function Add-SmoAssembly {
 function Add-SmoDatabaseAsymmetricKeyPrivateKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1401,7 +1401,7 @@ function Add-SmoDatabaseAsymmetricKeyPrivateKey {
 function Add-SmoDatabaseDataFile {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1479,6 +1479,7 @@ function Add-SmoDatabaseDataFile {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidatePathIsValid()]
 		[System.IO.FileInfo][TransformPath()]$DataFilePath
 	)
 
@@ -1550,7 +1551,7 @@ function Add-SmoDatabaseDataFile {
 function Add-SmoDatabaseMasterKeyPasswordEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1558,7 +1559,8 @@ function Add-SmoDatabaseMasterKeyPasswordEncryption {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Medium'
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
 	)]
 
 	[OutputType([System.Void])]
@@ -1567,7 +1569,27 @@ function Add-SmoDatabaseMasterKeyPasswordEncryption {
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
 		)]
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
 
@@ -1581,6 +1603,29 @@ function Add-SmoDatabaseMasterKeyPasswordEncryption {
 	)
 
 	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
 	}
 
 	process {
@@ -1603,6 +1648,11 @@ function Add-SmoDatabaseMasterKeyPasswordEncryption {
 		catch {
 			throw $_
 		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
 	}
 
 	end {
@@ -1612,7 +1662,7 @@ function Add-SmoDatabaseMasterKeyPasswordEncryption {
 function Add-SmoDatabaseMasterKeyServiceKeyEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1620,7 +1670,8 @@ function Add-SmoDatabaseMasterKeyServiceKeyEncryption {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Medium'
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
 	)]
 
 	[OutputType([System.Void])]
@@ -1629,12 +1680,55 @@ function Add-SmoDatabaseMasterKeyServiceKeyEncryption {
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
 		)]
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject
 	)
 
 	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
 	}
 
 	process {
@@ -1657,6 +1751,11 @@ function Add-SmoDatabaseMasterKeyServiceKeyEncryption {
 		catch {
 			throw $_
 		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
 	}
 
 	end {
@@ -1666,7 +1765,7 @@ function Add-SmoDatabaseMasterKeyServiceKeyEncryption {
 function Add-SmoDatabaseRoleMember {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1792,7 +1891,7 @@ function Add-SmoDatabaseRoleMember {
 function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1800,7 +1899,8 @@ function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 	[CmdletBinding(
 		PositionalBinding = $false,
 		SupportsShouldProcess = $true,
-		ConfirmImpact = 'Medium'
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'DatabaseName'
 	)]
 
 	[OutputType([System.Void])]
@@ -1809,7 +1909,27 @@ function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 		[Parameter(
 			Mandatory = $true,
 			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
 		)]
 		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
 
@@ -1837,6 +1957,29 @@ function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 	)
 
 	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
 	}
 
 	process {
@@ -1873,6 +2016,11 @@ function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 		catch {
 			throw $_
 		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
 	}
 
 	end {
@@ -1882,7 +2030,7 @@ function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 function Add-SmoServerRoleMember {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -1999,7 +2147,7 @@ function Add-SmoServerRoleMember {
 function Close-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2049,7 +2197,7 @@ function Close-SmoDatabaseMasterKey {
 function Close-SmoDatabaseSymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2109,7 +2257,7 @@ function Close-SmoDatabaseSymmetricKey {
 function Connect-SmoServer {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2372,7 +2520,7 @@ function Connect-SmoServer {
 function Disable-SmoTransparentDatabaseEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2468,7 +2616,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 function Disconnect-SmoServer {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2513,7 +2661,7 @@ function Disconnect-SmoServer {
 function Enable-SmoTransparentDatabaseEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2605,7 +2753,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 function Export-SmoDatabaseCertificate {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2758,7 +2906,7 @@ function Export-SmoDatabaseCertificate {
 function Export-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2874,7 +3022,7 @@ function Export-SmoDatabaseMasterKey {
 function Export-SmoServiceMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -2966,7 +3114,7 @@ function Export-SmoServiceMasterKey {
 function Get-SmoAvailabilityGroup {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3068,7 +3216,7 @@ function Get-SmoAvailabilityGroup {
 function Get-SmoBackupFileList {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3165,7 +3313,7 @@ function Get-SmoBackupFileList {
 function Get-SmoBackupHeader {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3262,7 +3410,7 @@ function Get-SmoBackupHeader {
 function Get-SmoDatabaseAsymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3362,7 +3510,7 @@ function Get-SmoDatabaseAsymmetricKey {
 function Get-SmoDatabaseCertificate {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3462,7 +3610,7 @@ function Get-SmoDatabaseCertificate {
 function Get-SmoDatabaseEncryptionKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3559,7 +3707,7 @@ function Get-SmoDatabaseEncryptionKey {
 function Get-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3649,7 +3797,7 @@ function Get-SmoDatabaseMasterKey {
 function Get-SmoDatabaseObject {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3760,7 +3908,7 @@ function Get-SmoDatabaseObject {
 function Get-SmoDatabaseSymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3860,7 +4008,7 @@ function Get-SmoDatabaseSymmetricKey {
 function Import-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -3994,7 +4142,7 @@ function Import-SmoDatabaseMasterKey {
 function Import-SmoServiceMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4085,7 +4233,7 @@ function Import-SmoServiceMasterKey {
 function Invoke-SmoScriptDatabase {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4134,7 +4282,7 @@ function Invoke-SmoScriptDatabase {
 		[ValidatePathIsValid()]
 		[System.IO.FileInfo][TransformPath()]$Path
 	)
-	
+
 	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
@@ -4158,7 +4306,7 @@ function Invoke-SmoScriptDatabase {
 			throw $_
 		}
 	}
-	
+
 	process {
 		Try {
 			$DatabaseObject = $SmoServerObject.Databases[$DatabaseName]
@@ -4227,7 +4375,7 @@ function Invoke-SmoScriptDatabase {
 			}
 		}
 	}
-	
+
 	end {
 	}
 }
@@ -4235,7 +4383,7 @@ function Invoke-SmoScriptDatabase {
 function Invoke-SmoScriptDatabaseObject {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4307,7 +4455,7 @@ function Invoke-SmoScriptDatabaseObject {
 		[Microsoft.SqlServer.Management.Sdk.Sfc.Urn]$Urn
 #>
 	)
-	
+
 	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
@@ -4355,7 +4503,7 @@ function Invoke-SmoScriptDatabaseObject {
 			'XmlSchemaCollection'
 		)
 	}
-	
+
 	process {
 		Try {
 			$DatabaseObject = $SmoServerObject.Databases[$DatabaseName]
@@ -4416,7 +4564,7 @@ function Invoke-SmoScriptDatabaseObject {
 			}
 		}
 	}
-	
+
 	end {
 	}
 }
@@ -4424,7 +4572,7 @@ function Invoke-SmoScriptDatabaseObject {
 function Invoke-SmoScriptServerObject {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4480,7 +4628,7 @@ function Invoke-SmoScriptServerObject {
 		[ValidateLength(1, 128)]
 		[string]$ObjectName
 	)
-	
+
 	begin {
 		try {
 			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
@@ -4504,7 +4652,7 @@ function Invoke-SmoScriptServerObject {
 			throw $_
 		}
 	}
-	
+
 	process {
 		Try {
 			$ScriptingOptions = [Microsoft.SqlServer.Management.Smo.ScriptingOptions]::New()
@@ -4539,7 +4687,7 @@ function Invoke-SmoScriptServerObject {
 			}
 		}
 	}
-	
+
 	end {
 	}
 }
@@ -4547,7 +4695,7 @@ function Invoke-SmoScriptServerObject {
 function Invoke-SmoNonQuery {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4709,7 +4857,7 @@ function Invoke-SmoNonQuery {
 function New-SmoCredential {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -4817,7 +4965,7 @@ function New-SmoCredential {
 function New-SmoDatabaseAsymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5024,7 +5172,7 @@ function New-SmoDatabaseAsymmetricKey {
 function New-SmoDatabaseCertificate {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5192,7 +5340,7 @@ function New-SmoDatabaseCertificate {
 	)
 
 	begin {
-		Try {
+		try {
 			$DatabaseNameParameterSets = @('DatabaseName', 'DatabaseName-CertFile', 'DatabaseName-CertFileWithKey')
 			$CertFileParameterSets = @('DatabaseName-CertFile', 'DatabaseName-CertFileWithKey', 'DatabaseObject-CertFile', 'DatabaseObject-CertFileWithKey')
 
@@ -5205,7 +5353,7 @@ function New-SmoDatabaseCertificate {
 				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
 			}
 		}
-		Catch {
+		catch {
 			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
@@ -5276,7 +5424,7 @@ function New-SmoDatabaseCertificate {
 function New-SmoDatabaseEncryptionKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5399,7 +5547,7 @@ function New-SmoDatabaseEncryptionKey {
 function New-SmoDatabaseFileGroup {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5509,7 +5657,7 @@ function New-SmoDatabaseFileGroup {
 function New-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5589,6 +5737,7 @@ function New-SmoDatabaseMasterKey {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'DatabaseObject-CertFile'
 		)]
+		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo][TransformPath()]$Path,
 
 		[Parameter(
@@ -5684,7 +5833,7 @@ function New-SmoDatabaseMasterKey {
 function New-SmoDatabaseRole {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5804,7 +5953,7 @@ function New-SmoDatabaseRole {
 function New-SmoDatabaseSchema {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -5924,7 +6073,7 @@ function New-SmoDatabaseSchema {
 function New-SmoDatabaseSymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6130,7 +6279,7 @@ function New-SmoDatabaseSymmetricKey {
 function New-SmoDatabaseUser {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6303,7 +6452,7 @@ function New-SmoDatabaseUser {
 function New-SmoServerRole {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6404,7 +6553,7 @@ function New-SmoServerRole {
 function New-SmoSqlLogin {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6592,7 +6741,7 @@ function New-SmoSqlLogin {
 function Open-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6651,7 +6800,7 @@ function Open-SmoDatabaseMasterKey {
 function Open-SmoDatabaseSymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6785,7 +6934,7 @@ function Open-SmoDatabaseSymmetricKey {
 function Remove-SmoAvailabilityDatabase {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6888,7 +7037,7 @@ function Remove-SmoAvailabilityDatabase {
 function Remove-SmoCredential {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -6988,7 +7137,7 @@ function Remove-SmoCredential {
 function Remove-SmoDatabaseAsymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7104,7 +7253,7 @@ function Remove-SmoDatabaseAsymmetricKey {
 function Remove-SmoDatabaseAsymmetricKeyPrivateKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7215,7 +7364,7 @@ function Remove-SmoDatabaseAsymmetricKeyPrivateKey {
 function Remove-SmoDatabaseCertificate {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7324,7 +7473,7 @@ function Remove-SmoDatabaseCertificate {
 function Remove-SmoDatabaseEncryptionKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7450,7 +7599,7 @@ function Remove-SmoDatabaseEncryptionKey {
 function Remove-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7549,7 +7698,7 @@ function Remove-SmoDatabaseMasterKey {
 function Remove-SmoDatabaseMasterKeyPasswordEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7663,7 +7812,7 @@ function Remove-SmoDatabaseMasterKeyPasswordEncryption {
 function Remove-SmoDatabaseMasterKeyServiceKeyEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7766,7 +7915,7 @@ function Remove-SmoDatabaseMasterKeyServiceKeyEncryption {
 function Remove-SmoDatabaseRole {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7873,7 +8022,7 @@ function Remove-SmoDatabaseRole {
 function Remove-SmoDatabaseRoleMember {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -7998,7 +8147,7 @@ function Remove-SmoDatabaseRoleMember {
 function Remove-SmoDatabaseSchema {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8107,7 +8256,7 @@ function Remove-SmoDatabaseSchema {
 function Remove-SmoDatabaseSymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8223,7 +8372,7 @@ function Remove-SmoDatabaseSymmetricKey {
 function Remove-SmoDatabaseSymmetricKeyKeyEncryption {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8350,7 +8499,7 @@ function Remove-SmoDatabaseSymmetricKeyKeyEncryption {
 function Remove-SmoDatabaseUser {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8457,7 +8606,7 @@ function Remove-SmoDatabaseUser {
 function Remove-SmoServerRole {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8557,7 +8706,7 @@ function Remove-SmoServerRole {
 function Remove-SmoServerRoleMember {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8665,7 +8814,7 @@ function Remove-SmoServerRoleMember {
 function Remove-SmoSqlLogin {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -8765,7 +8914,7 @@ function Remove-SmoSqlLogin {
 function Rename-SmoDatabaseDataFile {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[OutputType([System.Void])]
@@ -9029,7 +9178,7 @@ function Rename-SmoDatabaseDataFile {
 function Rename-SmoDatabaseLogFile {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9275,7 +9424,7 @@ function Rename-SmoDatabaseLogFile {
 function Reset-SmoDatabaseEncryptionKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9375,7 +9524,7 @@ function Reset-SmoDatabaseEncryptionKey {
 function Reset-SmoDatabaseMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9492,7 +9641,7 @@ function Reset-SmoDatabaseMasterKey {
 function Reset-SmoServiceMasterKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9576,7 +9725,7 @@ function Reset-SmoServiceMasterKey {
 function Set-SmoCredential {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9696,7 +9845,7 @@ function Set-SmoCredential {
 function Set-SmoDatabaseAsymmetricKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9825,7 +9974,7 @@ function Set-SmoDatabaseAsymmetricKey {
 function Set-SmoDatabaseCertificate {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -9954,7 +10103,7 @@ function Set-SmoDatabaseCertificate {
 function Set-SmoDatabaseEncryptionKey {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -10062,7 +10211,7 @@ function Set-SmoDatabaseEncryptionKey {
 function Set-SmoDatabaseObjectPermission {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -10311,7 +10460,7 @@ function Set-SmoDatabaseObjectPermission {
 function Set-SmoDatabasePermission {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -10487,7 +10636,7 @@ function Set-SmoDatabasePermission {
 function Set-SmoDatabaseRole {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -10608,7 +10757,7 @@ function Set-SmoDatabaseRole {
 function Set-SmoDatabaseSchema {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -10729,7 +10878,7 @@ function Set-SmoDatabaseSchema {
 function Set-SmoDatabaseUser {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -10899,7 +11048,7 @@ function Set-SmoDatabaseUser {
 function Set-SmoServerRole {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -11011,7 +11160,7 @@ function Set-SmoServerRole {
 function Set-SmoSqlLogin {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -11231,7 +11380,7 @@ function Add-SqlClientAssembly {
 function Build-SqlClientConnectionString {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -11481,7 +11630,7 @@ function Build-SqlClientConnectionString {
 function Connect-SqlServerInstance {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -11641,7 +11790,7 @@ function Connect-SqlServerInstance {
 function Disconnect-SqlServerInstance {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -11683,7 +11832,7 @@ function Disconnect-SqlServerInstance {
 function Get-SqlClientDataSet {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -11822,6 +11971,26 @@ function Get-SqlClientDataSet {
 		}
 
 		$TableDirectFormatString = 'SELECT * FROM [{0}].[{1}];'
+
+		$FillErrorEventHandler = [System.Data.FillErrorEventHandler]{
+			param(
+				$EventSender,
+				$FillErrorEventArgs
+			)
+
+			foreach ($ErrorObject in $FillErrorEventArgs.Errors) {
+				$PSCmdlet.WriteError(
+					$ErrorObject
+				)
+
+				foreach ($Property in $ErrorObject.PSObject.Properties) {
+					Write-Error "   $($Property.Name): $($Property.Value)"
+				}
+			}
+
+			$FillErrorEventArgs.Continue = $true
+		}
+
 	}
 
 	process {
@@ -11870,6 +12039,8 @@ function Get-SqlClientDataSet {
 				}
 			} else {
 				$SqlDataAdapter = [Microsoft.Data.SqlClient.SqlDataAdapter]::New($SqlCommand)
+
+				$SqlDataAdapter.add_FillError($FillErrorEventHandler)
 
 				$OutputDataset = [System.Data.DataSet]::New()
 				$OutputDataset.DataSetName = $DataSetName
@@ -11926,7 +12097,7 @@ function Get-SqlClientDataSet {
 function Invoke-SqlClientBulkCopy {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -12127,7 +12298,7 @@ function Invoke-SqlClientBulkCopy {
 		$eventHandler = {
 			param(
 				$EventSender,
-				$SqlRowsCopiedEventArgs 
+				$SqlRowsCopiedEventArgs
 			)
 
 			$ProgressParameters.Activity = 'Bulk Copy SQL Data.'
@@ -12152,6 +12323,12 @@ function Invoke-SqlClientBulkCopy {
 		try {
 			$Script:TotalRowsCopied = 0
 			$Script:TotalRows = $DataTable.Rows.Count
+
+			if ($Script:TotalRows -eq 0) {
+				Write-Verbose 'No rows to copy in data table. Exiting bulk copy operation.'
+
+				return
+			}
 
 			if ($PSCmdlet.ParameterSetName -in $SqlConnectionParameterSets) {
 				$SqlBulkCopy = [Microsoft.Data.SqlClient.SqlBulkCopy]::New($SqlConnection, $SqlBulkCopyOptions, $null)
@@ -12239,7 +12416,7 @@ function Invoke-SqlClientBulkCopy {
 function Invoke-SqlClientNonQuery {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -12356,7 +12533,7 @@ function Invoke-SqlClientNonQuery {
 function Publish-SqlDatabaseDacPac {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -12441,7 +12618,7 @@ function Publish-SqlDatabaseDacPac {
 function Save-SqlClientDataSet {
 	<#
 	.EXTERNALHELP
-	SqlServerTools-help.xml
+	SqlServerTools-Help.xml
 	#>
 
 	[System.Diagnostics.DebuggerStepThrough()]
@@ -12481,7 +12658,7 @@ function Save-SqlClientDataSet {
 		$SqlRowUpdatingEventHandler = [Microsoft.Data.SqlClient.SqlRowUpdatingEventHandler]{
 			param(
 				$EventSender,
-				$SqlRowUpdatingEventArgs 
+				$SqlRowUpdatingEventArgs
 			)
 
 			switch ($SqlRowUpdatingEventArgs.StatementType) {
@@ -12501,7 +12678,7 @@ function Save-SqlClientDataSet {
 		$SqlRowUpdatedEventHandler = [Microsoft.Data.SqlClient.SqlRowUpdatedEventHandler]{
 			param(
 				$EventSender,
-				$SqlRowUpdatedEventArgs 
+				$SqlRowUpdatedEventArgs
 			)
 
 			$Script:CurrentRow += $SqlRowUpdatedEventArgs.RecordsAffected
@@ -12528,29 +12705,15 @@ function Save-SqlClientDataSet {
 					$SqlRowUpdatedEventArgs.Status = 'ErrorsOccurred'
 				}
 			} else {
-				# To be determined...
-			}
-		}
-
-		$FillErrorEventHandler = [System.Data.FillErrorEventHandler]{
-			param(
-				$EventSender,
-				$FillErrorEventArgs 
-			)
-
-			foreach ($ErrorObject in $FillErrorEventArgs.Errors) {
-				$Output.Errors++
-
 				$PSCmdlet.WriteError(
-					$ErrorObject
+					[System.Management.Automation.ErrorRecord]::New(
+						$SqlRowUpdatedEventArgs.Errors,
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidResult,
+						$SqlRowUpdatedEventArgs.StatementType
+					)
 				)
-
-				foreach ($Property in $ErrorObject.PSObject.Properties) {
-					Write-Host "   $($Property.Name): $($Property.Value)" -ForegroundColor Yellow
-				}
 			}
-
-			$FillErrorEventArgs.Continue = $true
 		}
 
 		$ProgressParameters = @{
@@ -12583,12 +12746,37 @@ function Save-SqlClientDataSet {
 
 			$SqlDataAdapter.add_RowUpdating($SqlRowUpdatingEventHandler)
 			$SqlDataAdapter.add_RowUpdated($SqlRowUpdatedEventHandler)
-			$SqlDataAdapter.add_FillError($FillErrorEventHandler)
 
 			$SqlDataAdapter.ContinueUpdateOnError = $true
 
 			if ($PSCmdlet.ShouldProcess($DataSet.ExtendedProperties['SqlConnection'].Database, 'Save dataset')) {
 				[void]$SqlDataAdapter.Update($DataSet, $DataSetTableName)
+			}
+
+			foreach ($DataRow in $DataSet.Tables[$DataSetTableName].GetErrors()) {
+				$Output.Errors++
+
+				switch ($DataRow.RowState) {
+					'Added' {
+						$Output.InsertedRows--
+					}
+					'Modified' {
+						$Output.UpdatedRows--
+					}
+					'Deleted' {
+						$Output.DeletedRows--
+					}
+					Default {}
+				}
+
+				$PSCmdlet.WriteError(
+					[System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New("Row error: $($DataRow.RowError)"),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidResult,
+						$DataRow
+					)
+				)
 			}
 
 			$Output

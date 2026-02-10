@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -90,36 +90,41 @@ Grant, deny, or revoke database object permissions to user or role.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Set-SmoDatabaseObjectPermission -ServerInstance MyServer -DatabaseName AdventureWorks -ObjectClass Schema -ObjectName dbo -Permission ALTER -Principal DBUser -Action Grant
+```
 
 Sets dbo Schema object permission within the AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
 [void]$PermissionSet.Add([Microsoft.SqlServer.Management.SMO.ObjectPermission]::ALTER)
-
 Set-SmoDatabaseObjectPermission -ServerInstance MyServer -DatabaseName AdventureWorks -ObjectClass Schema -ObjectName dbo -PermissionSet $PermissionSet -Principal DBUser -Action Grant
+```
 
 Sets dbo Schema object permission within the AdventureWorks database with the specified permission set.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Set-SmoDatabaseObjectPermission -DatabaseObject $DatabaseObject -ObjectClass Schema -ObjectName dbo -Permission ALTER -Principal DBUser -Action Grant
+```
 
 Sets dbo Schema object permission within using the SMO database object.
 
-### EXAMPLE 4
+### Example 4
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
 [void]$PermissionSet.Add([Microsoft.SqlServer.Management.SMO.ObjectPermission]::ALTER)
-
 Set-SmoDatabaseObjectPermission -DatabaseObject $DatabaseObject -ObjectClass Schema -ObjectName dbo -PermissionSet $PermissionSet -Principal DBUser -Action Grant
+```
 
 Sets dbo Schema object permission within using the SMO database object with specified permission set.
 
@@ -197,7 +202,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -341,7 +346,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server Instance Name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

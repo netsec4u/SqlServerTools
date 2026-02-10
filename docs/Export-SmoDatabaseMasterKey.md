@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -51,15 +51,18 @@ Exports database master key to a file.
 
 ### Example 1
 
+```powershell
 Export-SmoDatabaseMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.DMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+```
 
 Exports database master key in the AdventureWorks database to the specified file.
 
 ### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Export-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -Path C:\AdventureWorks.DMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+```
 
 Exports database master key within the database object to the specified file.
 
@@ -88,7 +91,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -151,7 +154,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

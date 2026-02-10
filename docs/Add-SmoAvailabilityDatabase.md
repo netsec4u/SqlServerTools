@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -51,17 +51,21 @@ Add database to Availability Group.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Add-SmoAvailabilityDatabase -ServerInstance MyServer -AvailabilityGroupName MyAG -DatabaseName AdventureWorks
+```
 
 Add AdventureWorks database to MyAG availability group.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $AGObject = Get-SmoAvailabilityGroup -ServerInstance AZ-SQL-P01-N01 -AvailabilityGroupName AZ-SQL-P01-A01
 
 Add-SmoAvailabilityDatabase -AvailabilityGroupObject $AGObject -DatabaseName AdventureWorks
+```
 
 Add AdventureWorks database using availability group object.
 
@@ -160,7 +164,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

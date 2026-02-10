@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -52,15 +52,18 @@ Regenerate service master key.
 
 ### Example 1
 
+```powershell
 Reset-SmoServiceMasterKey -ServerInstance .
+```
 
 Resets service master key for local SQL instance.
 
-### Example 1
+### Example 2
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 Reset-SmoServiceMasterKey -SmoServerObject $SmoServerObject
+```
 
 Resets service master key using the specified SMO server object.
 
@@ -112,7 +115,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -134,7 +137,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

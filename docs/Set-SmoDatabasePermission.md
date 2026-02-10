@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -82,36 +82,41 @@ Grant, deny, or revoke database permissions for user or role.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Set-SmoDatabasePermission -ServerInstance MyServer -DatabaseName AdventureWorks -Permission ALTER -Principal DBUser -Action Grant
+```
 
 Sets database permission within AdventureWorks database to DBUSer.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
 [void]$PermissionSet.Add([Microsoft.SqlServer.Management.SMO.ObjectPermission]::ALTER)
-
 Set-SmoDatabasePermission -ServerInstance MyServer -DatabaseName AdventureWorks -PermissionSet $PermissionSet -Principal DBUser -Action Grant
+```
 
 Sets database permission within AdventureWorks database to DBUSer using specified permission set.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Set-SmoDatabasePermission -DatabaseObject $DatabaseObject -Permission ALTER -Principal DBUser -Action Grant
+```
 
 Sets database permission using database object to DBUSer.
 
-### EXAMPLE 4
+### Example 4
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 $PermissionSet = [Microsoft.SqlServer.Management.Smo.ObjectPermissionSet]::New()
 [void]$PermissionSet.Add([Microsoft.SqlServer.Management.SMO.ObjectPermission]::ALTER)
-
 Set-SmoDatabasePermission -DatabaseObject $DatabaseObject -PermissionSet $PermissionSet -Principal DBUser -Action Grant
+```
 
 Sets database permission using database object to DBUSer using specified permission set.
 
@@ -189,7 +194,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -291,7 +296,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server Instance Name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

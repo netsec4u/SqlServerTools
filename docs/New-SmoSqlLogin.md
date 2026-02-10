@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -68,31 +68,37 @@ Create SQL login.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
+```
 
 Creates SQL login on MyServer SQL instance.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 New-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString)
+```
 
 Creates SQL login using SMO server object.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -Sid '0x615C96F6296B18438C6DF0304CD56CE0'
+```
 
 Creates SQL login using specified SID.
 
-### EXAMPLE 4
+### Example 4
 
+```powershell
 $SqlLogin = Get-SqlLogin -ServerInstance SomeServer -LoginName MyLogin
-
 New-SmoSqlLogin -ServerInstance MyServer -LoginName MyLogin -Password $(Read-Host -Prompt "Enter password" -AsSecureString) -Sid $SqlLogin.Sid
+```
 
 Create SQL login using SID retrieved from Get-SqlLogin.
 
@@ -311,7 +317,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -354,7 +360,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

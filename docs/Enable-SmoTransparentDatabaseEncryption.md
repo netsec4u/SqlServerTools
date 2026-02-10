@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -49,17 +49,20 @@ Enable transparent database encryption.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Enable-SmoTransparentDatabaseEncryption -ServerInstance MyServer -DatabaseName AdventureWorks
+```
 
 Enable Transparent Database Encryption (TDE) for database AdventureWorks.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Enable-SmoTransparentDatabaseEncryption -DatabaseObject $DatabaseObject
+```
 
 Enable Transparent Database Encryption (TDE) for database object.
 
@@ -110,7 +113,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to enable transparent database encryption.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -131,7 +134,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

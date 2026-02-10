@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -57,15 +57,18 @@ Sets database certificate properties.
 
 ### Example 1
 
+```powershell
 Set-SmoDatabaseCertificate -ServerInstance . -DatabaseName AdventureWorks -CertificateName MyCert -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)
+```
 
 Sets private key password for MyCert certificate in the AdventureWorks database.
 
 ### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Set-SmoDatabaseCertificate -DatabaseObject $DatabaseObject -CertificateName MyCert -PrivateKeyPassword $(Read-Host -Prompt "Enter private key password" -AsSecureString) -NewPrivateKeyPassword $(Read-Host -Prompt "Enter new private key password" -AsSecureString)
+```
 
 Sets private key password for MyCert certificate using the database object.
 
@@ -137,7 +140,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -200,7 +203,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

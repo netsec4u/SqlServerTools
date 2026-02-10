@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -74,23 +74,28 @@ Invoke sql script.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Invoke-SmoNonQuery -ServerInstance MyServer -DatabaseName AdventureWorks -InputFile C:\files\script.sql
+```
 
 Execute SQL Script against AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 Invoke-SmoNonQuery -ServerInstance MyServer -DatabaseName AdventureWorks -SqlCommandText "EXEC SPMyProcedure;"
+```
 
 Execute SQL statement against AdventureWorks database.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance MyServer -DatabaseName AdventureWorks
-
 Invoke-SmoNonQuery -DatabaseObject $DatabaseObject -SqlCommandText "EXEC SPMyProcedure;"
+```
 
 Execute SQL statement against AdventureWorks database.
 
@@ -147,7 +152,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -201,7 +206,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

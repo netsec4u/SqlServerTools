@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -54,15 +54,18 @@ Exports service master key to a file.
 
 ### Example 1
 
+```powershell
 Export-SmoServiceMasterKey -ServerInstance MyServer -DatabaseName AdventureWorks -Path C:\AdventureWorks.SMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+```
 
 Exports service master key to the specified file.
 
 ### Example 2
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 Export-SmoServiceMasterKey -SmoServerObject $SmoServerObject -Path C:\AdventureWorks.SMK -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+```
 
 Exports service master key to the specified file using the specified SMO server object.
 
@@ -134,7 +137,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -156,7 +159,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

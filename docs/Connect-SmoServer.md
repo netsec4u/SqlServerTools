@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -72,23 +72,29 @@ Connect to SQL Server using SQL Management Object.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Connect-SmoServer -ServerInstance MyServer -DatabaseName AdventureWorks
+```
 
-Connect ot SQL Management Objects in the context of the AdventureWorks database.
+Connect to SQL Management Objects in the context of the AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 Connect-SmoServer -ServerInstance MyServer -DatabaseName AdventureWorks -Credential $(Get-Credential)
+```
 
-Connect ot SQL Management Objects in the context of the AdventureWorks database with specified credentials.
+Connect to SQL Management Objects in the context of the AdventureWorks database with specified credentials.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 Connect-SmoServer -ServerInstance MyServer -DatabaseName AdventureWorks -AuthenticationMode AsUser -Credential $(Get-Credential)
+```
 
-Connect ot SQL Management Objects in the context of the AdventureWorks database with specified credentials.
+Connect to SQL Management Objects in the context of the AdventureWorks database with specified credentials.
 
 ## PARAMETERS
 
@@ -302,7 +308,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -330,7 +336,7 @@ HelpMessage: ''
 
 ### -SqlConnection
 
-Use SqlConnection object to create connection.
+An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection

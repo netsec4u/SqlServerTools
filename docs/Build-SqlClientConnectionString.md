@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -82,15 +82,19 @@ Builds connection strings for a SQL Server database.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Build-SqlClientConnectionString -ServerInstance MyServer -DatabaseName master
+```
 
 Creates SQL Client connection string.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 Build-SqlClientConnectionString -ServerInstance MyServer -DatabaseName AdventureWorks -Credential $(Get-Credential)
+```
 
 Creates SQL Client connection string with credential.
 
@@ -504,7 +508,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-Specifies the name or network address of the instance of SQL Server to connect to.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

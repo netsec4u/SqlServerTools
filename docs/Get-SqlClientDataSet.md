@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -66,17 +66,20 @@ Executes Transact-SQL statement against a SQL Server database.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Get-SqlClientDataSet -ServerInstance MyServer -DatabaseName master -SqlCommandText "SELECT * FROM sys.tables;"
+```
 
 Gets data set from query.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $SqlConnection = Connect-SQLServerInstance -ServerInstance MyServer -DatabaseName master
-
 Get-SqlClientDataSet -SqlConnection $SqlConnection -SqlCommandText "SELECT * FROM sys.tables;"
+```
 
 Gets data set from query using the specified connection.
 
@@ -260,7 +263,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-Specifies the name of a SQL Server instance.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -303,7 +306,7 @@ HelpMessage: ''
 
 ### -SqlConnection
 
-Specifies SQL connection object.
+An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection

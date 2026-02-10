@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -56,14 +56,18 @@ Script a SQL Server object to a file using SQL Server Management Objects (SMO).
 
 ### Example 1
 
+```powershell
 Invoke-SmoScriptServerObject -ServerInstance . -Path 'C:\Scripts\Login.sql' -ObjectClass 'Login' -ObjectName 'MyLogin'
+```
 
 Scripts the login 'MyLogin' from the local SQL Server instance to the specified file.
 
 ### Example 2
 
+```powershell
 $server = Connect-SmoServer -ServerInstance .
 Invoke-SmoScriptServerObject -SmoServerObject $server -Path 'C:\Scripts\ServerRole.sql' -ObjectClass 'ServerRole' -ObjectName 'MyServerRole'
+```
 
 Scripts the server role 'MyServerRole' using an existing SMO Server object.
 
@@ -178,7 +182,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-An existing SMO Server object to use for the connection.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

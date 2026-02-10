@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -86,29 +86,35 @@ Create a database asymmetric key.
 
 ### Example 1
 
+```powershell
 New-SmoDatabaseAsymmetricKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -EncryptionAlgorithm Rsa4096
+```
 
 Creates asymmetric key in the AdventureWorks.
 
 ### Example 2
 
+```powershell
 New-SmoDatabaseAsymmetricKey -ServerInstance . -DatabaseName AdventureWorks -AsymmetricKeyName MyKey -SourceType File -KeySource C:\MyKey.key
+```
 
 Creates asymmetric key in the AdventureWorks from key file provided.
 
 ### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -SourceType File -KeySource C:\MyKey.key
+```
 
 Creates asymmetric key in the AdventureWorks from key file provided using the database object.
 
 ### Example 4
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 New-SmoDatabaseAsymmetricKey -DatabaseObject $DatabaseObject -AsymmetricKeyName MyKey -EncryptionAlgorithm Rsa4096
+```
 
 Creates asymmetric key in the AdventureWorks using the database object.
 
@@ -186,7 +192,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -288,7 +294,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

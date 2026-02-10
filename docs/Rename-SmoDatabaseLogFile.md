@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -67,26 +67,30 @@ Rename log file.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Rename-SmoDatabaseLogFile -ServerInstance MyServer -DatabaseName AdventureWorks -LogicalFileName Log -NewLogicalFileName AdventureWorks_Log -NewPhysicalFileName AdventureWorks_log.ldf
+```
 
 Renames AdventureWorks log file logical and physical name.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Rename-SmoDatabaseLogFile -DatabaseObject $DatabaseObject -LogicalFileName Log -NewLogicalFileName AdventureWorks_Log -NewPhysicalFileName AdventureWorks_log.ldf
+```
 
 Renames log file logical and physical name using SMO database object.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 $LogFileObject = $DatabaseObject.LogFiles
-
 Rename-SmoDatabaseLogFile -LogFileObject $LogFileObject -NewLogicalFileName AdventureWorks_Log -NewPhysicalFileName AdventureWorks_log.ldf
+```
 
 Renames log file logical and physical name using SMO log file object object.
 
@@ -137,7 +141,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -248,7 +252,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

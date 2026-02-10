@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -51,17 +51,20 @@ Creates database file group in database.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 New-SmoDatabaseFileGroup -ServerInstance MyServer -DatabaseName AdventureWorks -FileGroupName Interface
+```
 
 Creates file group within the AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance MyServer -DatabaseName AdventureWorks
-
 New-SmoDatabaseFileGroup -DatabaseObject $DatabaseObject -FileGroupName Interface
+```
 
 Creates file group using database object.
 
@@ -112,7 +115,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to add file group.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -154,7 +157,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

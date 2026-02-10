@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -53,17 +53,20 @@ Add database principal to database role.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Add-SmoDatabaseRoleMember -ServerInstance MyServer -DatabaseName AdventureWorks -RoleName db_Interface -RoleMemberName JSmith
+```
 
 Add JSmith to database role db_Interface within the AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Add-SmoDatabaseRoleMember -DatabaseObject $DatabaseObject -RoleName db_Interface -RoleMemberName JSmith
+```
 
 Add JSmith to database role db_Interface within the database object.
 
@@ -114,7 +117,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -177,7 +180,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

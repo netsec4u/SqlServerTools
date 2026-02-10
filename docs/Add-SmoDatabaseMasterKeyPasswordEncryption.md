@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -17,7 +17,19 @@ Adds password encryption to database master key.
 
 ## SYNTAX
 
-### __AllParameterSets
+### DatabaseName (Default)
+
+```
+Add-SmoDatabaseMasterKeyPasswordEncryption
+  -ServerInstance <string>
+  -DatabaseName <string>
+  -EncryptionPassword <securestring>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### DatabaseObject
 
 ```
 Add-SmoDatabaseMasterKeyPasswordEncryption
@@ -41,9 +53,18 @@ Adds password encryption to database master key.
 
 ### Example 1
 
-$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
+```powershell
+Add-SmoDatabaseMasterKeyPasswordEncryption -ServerInstance . -DatabaseName AdventureWorks -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+```
 
-Add-SmoDatabaseMasterKeyPasswordEncryption 	-DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+Adds key password encryption encryption to database master key with specified password in the AdventureWorks database.
+
+### Example 2
+
+```powershell
+$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
+Add-SmoDatabaseMasterKeyPasswordEncryption -DatabaseObject $DatabaseObject -EncryptionPassword $(Read-Host -Prompt "Enter encryption password" -AsSecureString)
+```
 
 Adds key password encryption encryption to database master key with specified password using the database object.
 
@@ -71,9 +92,30 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
+### -DatabaseName
+
+Name of database.
+
+```yaml
+Type: System.String
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -81,7 +123,7 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: DatabaseObject
   Position: Named
   IsRequired: true
   ValueFromPipeline: false
@@ -103,6 +145,28 @@ SupportsWildcards: false
 Aliases: []
 ParameterSets:
 - Name: (All)
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerInstance
+
+The name of the SQL Server instance to connect to.
+
+```yaml
+Type: System.String
+DefaultValue: ''
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: DatabaseName
   Position: Named
   IsRequired: true
   ValueFromPipeline: false

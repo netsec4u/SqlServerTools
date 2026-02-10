@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -53,17 +53,20 @@ Executes stored procedure to execute against a SQL Server database.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Invoke-SqlClientNonQuery -ServerInstance MyServer -DatabaseName AdventureWorks -SqlCommandText "EXEC SPMyProcedure;"
+```
 
 Execute SQL statement against AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $SqlConnection = Connect-SQLServerInstance -ServerInstance MyServer -DatabaseName master
-
 Invoke-SqlClientNonQuery -SqlConnection $SqlConnection -SqlCommandText "EXEC SPMyProcedure;"
+```
 
 Execute SQL statement against AdventureWorks database.
 
@@ -136,7 +139,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-Specifies the name of a SQL Server instance.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -179,7 +182,7 @@ HelpMessage: ''
 
 ### -SqlConnection
 
-Specifies SQL connection object.
+An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection

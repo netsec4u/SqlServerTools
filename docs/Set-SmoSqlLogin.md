@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -64,15 +64,18 @@ Set SQL login properties.
 
 ### Example 1
 
+```powershell
 Set-SmoSqlLogin -ServerInstance MyServer -LoginName DBUser -LoginDisabled $false
+```
 
 Sets SQL login properties with the specified values.
 
 ### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance .
-
 Set-SmoSqlLogin -DatabaseObject $DatabaseObject -LoginName DBUser -LoginDisabled $false
+```
 
 Sets SQL login properties using database object.
 
@@ -249,7 +252,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -271,7 +274,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -52,17 +52,20 @@ Alter server role.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Set-SmoServerRole -ServerInstance MyServer -ServerRoleName MyServerRole -ServerRoleOwner sa
+```
 
 Create server role in SQL instance MyServer.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 Set-SmoServerRole -SmoServerObject $SmoServerObject -ServerRoleName MyServerRole -ServerRoleOwner sa
+```
 
 Create server role using SMO server object.
 
@@ -92,7 +95,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -156,7 +159,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

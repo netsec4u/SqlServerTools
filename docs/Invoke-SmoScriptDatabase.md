@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -54,14 +54,18 @@ Script a SQL Server database to a file using SQL Server Management Objects (SMO)
 
 ### Example 1
 
+```powershell
 Invoke-SmoScriptDatabase -ServerInstance . -DatabaseName AdventureWorks -Path "C:\Scripts\MyDatabase.sql"
+```
 
 Scripts the "AdventureWorks" database from the local SQL Server instance to the "C:\Scripts\MyDatabase.sql" file.
 
 ### Example 2
 
+```powershell
 $smoServer = Connect-SmoServer -ServerInstance .
 Invoke-SmoScriptDatabase -SmoServerObject $smoServer -DatabaseName AdventureWorks -Path "C:\Scripts\MyDatabase.sql"
+```
 
 Scripts the "AdventureWorks" database from the provided SMO Server object to the "C:\Scripts\MyDatabase.sql" file.
 
@@ -133,7 +137,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-The name of the SQL Server instance.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -155,7 +159,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-The SMO Server object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

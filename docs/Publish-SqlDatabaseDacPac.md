@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -53,23 +53,28 @@ Publish DacPac to SQL Server.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Publish-SqlDatabaseDacPac -ServerInstance MyServer -DatabaseName AdventureWorks -DacPacPath C:\Database.dacpac
+```
 
 Publishes DacPac to AdventureWorks.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
-
 Publish-SqlDatabaseDacPac -ConnectionString $ConnectionString -DacPacPath C:\Database.dacpac
+```
 
 Publishes DacPac to AdventureWorks.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 Publish-SqlDatabaseDacPac -ServerInstance MyServer -DatabaseName AdventureWorks -Credential $(Get-Credential) -DacPacPath C:\Database.dacpac
+```
 
 Publishes DacPac to AdventureWorks using credential.
 
@@ -183,7 +188,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

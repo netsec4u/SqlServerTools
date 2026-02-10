@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -58,16 +58,20 @@ Script a specific database object to a file.
 
 ### Example 1
 
+```powershell
 Invoke-SmoScriptDatabaseObject -ServerInstance . -DatabaseName 'TestDB' -Path 'C:\Scripts\TestDB_Object.sql' -ObjectClass 'Table' -ObjectName 'MyTable'
+```
 
 Scripts the specified table 'MyTable' from the 'TestDB' database on the local SQL Server instance to the specified file path.
 
 ### Example 2
 
-	$server = Connect-SmoServer -ServerInstance .
-	Invoke-SmoScriptDatabaseObject -SmoServerObject $server -DatabaseName 'TestDB' -Path 'C:\Scripts\TestDB_Object.sql' -ObjectClass 'View' -ObjectName 'MyView'
+```powershell
+$server = Connect-SmoServer -ServerInstance .
+Invoke-SmoScriptDatabaseObject -SmoServerObject $server -DatabaseName 'TestDB' -Path 'C:\Scripts\TestDB_Object.sql' -ObjectClass 'View' -ObjectName 'MyView'
+```
 
-	Scripts the specified view 'MyView' from the 'TestDB' database using the provided SMO Server object to the specified file path.
+Scripts the specified view 'MyView' from the 'TestDB' database using the provided SMO Server object to the specified file path.
 
 ## PARAMETERS
 
@@ -179,7 +183,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-The name of the SQL Server instance.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -201,7 +205,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-The SMO Server object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

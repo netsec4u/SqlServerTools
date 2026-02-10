@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -36,11 +36,12 @@ Disconnect from SQL Management Objects.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 Disconnect-SmoServer -SmoServerObject $SmoServerObject
+```
 
 Disconnects from SQL Management Objects.
 
@@ -48,7 +49,7 @@ Disconnects from SQL Management Objects.
 
 ### -SmoServerObject
 
-SMO Server object
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -51,17 +51,20 @@ Remove database user.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Remove-SmoDatabaseUser -ServerInstance MyServer -DatabaseName AdventureWorks -UserName dbUSer
+```
 
 Removes database user dbUser from AdventureWorks database.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Remove-SmoDatabaseUser -DatabaseObject $DatabaseObject -UserName dbUSer
+```
 
 Removes database user dbUser using database object.
 
@@ -112,7 +115,7 @@ HelpMessage: ''
 
 ### -DatabaseObject
 
-SMO database object to remove database user.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -133,7 +136,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String

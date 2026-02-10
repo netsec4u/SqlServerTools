@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -142,55 +142,61 @@ Use SQL Bulk copy to insert data into database table.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 $DataTable = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
-
 Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataTable
+```
 
 Perform bulk copy against AdventureWorks database using the specified data table.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $DataRow = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
-
 Invoke-SqlClientBulkCopy -ServerInstance "MySQLServer" -DatabaseName AdventureWorks -TableName "MyTable" -DataTable $DataRow
+```
 
 Perform bulk copy against AdventureWorks database using specified data row.
 
-### EXAMPLE 3
+### Example 3
 
+```powershell
 $DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
-
 Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable" -DataTable $DataTable
+```
 
 Perform bulk copy using connection string.
 
 ### Example 4
 
+```powershell
 $DataRow = $DataTableGet-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
 $ConnectionString = 'Data Source=.;Initial Catalog=AdventureWorks;Integrated Security=True;'
-
 Invoke-SqlClientBulkCopy -ConnectionString $ConnectionString -TableName "MyTable" -DataTable $DataRow
+```
 
 Perform bulk copy against AdventureWorks database using specified data row.
 
-### EXAMPLE 5
+### Example 5
 
+```powershell
 $DataTable = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataTable
 $SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks
-
 Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataTable
+```
 
 Perform bulk copy using the SQL connection.
 
-### EXAMPLE 6
+### Example 6
 
+```powershell
 $DataRow = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText 'SELECT * FROM sys.tables;*' -OutputAs DataRow
 $SqlConnection = Connect-SqlServerInstance -ServerInstance . -DatabaseName AdventureWorks
-
 Invoke-SqlClientBulkCopy -SqlConnection $SqlConnection -TableName "MyTable" -DataTable $DataRow
+```
 
 Perform bulk copy using the SQL connection.
 
@@ -480,7 +486,7 @@ HelpMessage: ''
 ```
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -529,7 +535,7 @@ HelpMessage: ''
 
 ### -SqlConnection
 
-Specifies SQL connection object.
+An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection

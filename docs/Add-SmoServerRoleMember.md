@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -52,17 +52,20 @@ Add member to server role.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Add-SmoServerRoleMember -ServerInstance MyServer -ServerRoleName MyServerRole -ServerRoleMemberName JSmith
+```
 
 Add JSmith to server role MyServerRole.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 $SmoServerObject = Connect-SmoServer -ServerInstance .
-
 Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole -ServerRoleMemberName JSmith
+```
 
 Add JSmith to server role MyServerRole using Smo Server Object.
 
@@ -92,7 +95,7 @@ HelpMessage: ''
 
 ### -ServerInstance
 
-SQL Server host name and instance name.
+The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
@@ -156,7 +159,7 @@ HelpMessage: ''
 
 ### -SmoServerObject
 
-SQL Server Management Object.
+An existing SMO Server object representing the SQL Server instance.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Server

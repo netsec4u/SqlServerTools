@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -39,9 +39,10 @@ Opens database master key.
 
 ### Example 1
 
+```powershell
 $DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
-
 Open-SmoDatabaseMasterKey -DatabaseObject $DatabaseObject -DecryptionPassword $(Read-Host -Prompt "Enter decryption password" -AsSecureString)
+```
 
 Opens database master key using the database object.
 
@@ -49,7 +50,7 @@ Opens database master key using the database object.
 
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database

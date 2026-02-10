@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -40,11 +40,12 @@ Save dataset to SQL Server.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 $DataSet = Get-SqlClientDataSet -ServerInstance . -DatabaseName AdventureWorks -SqlCommandText "SELECT * FROM dbo.Customers;"
-
 Save-SqlClientDataSet -DataSet $DataSet
+```
 
 Saves specified dataset to data adapter.
 

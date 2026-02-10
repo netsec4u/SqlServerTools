@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -50,15 +50,19 @@ Test SQL Server connectivity.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Test-SqlConnection -Computer MyServer
+```
 
 Tests SQL connectivity to MyServer.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 Test-SqlConnection -IPAddress 10.0.0.5
+```
 
 Tests SQL connectivity via IP address.
 

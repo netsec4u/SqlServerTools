@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -48,15 +48,19 @@ Test SQL Browser connectivity.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 Test-SqlBrowserConnection -Computer MyServer
+```
 
 Tests browser connectivity to MyServer.
 
-### EXAMPLE 2
+### Example 2
 
+```powershell
 Test-SqlBrowserConnection -IPAddress 10.0.0.5
+```
 
 Tests browser connectivity to specified IP address.
 

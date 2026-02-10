@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -36,11 +36,12 @@ Disconnects connections to SQL Server.
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
 
+```powershell
 $SqlServerConnection = Connect-SQLServerInstance -ServerInstance MyServer -DatabaseName master
-
 Disconnect-SqlServerInstance -SqlConnection $SqlServerConnection
+```
 
 Disconnect from SQL client connection to SQL SErver.
 
@@ -48,7 +49,7 @@ Disconnect from SQL client connection to SQL SErver.
 
 ### -SqlConnection
 
-SqlConnection object.
+An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection

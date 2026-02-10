@@ -1,6 +1,6 @@
 ---
 document type: cmdlet
-external help file: SqlServerTools-help.xml
+external help file: SqlServerTools-Help.xml
 HelpUri: ''
 Locale: en-US
 Module Name: SqlServerTools
@@ -17,7 +17,18 @@ Adds service key encryption to database master key.
 
 ## SYNTAX
 
-### __AllParameterSets
+### DatabaseName (Default)
+
+```
+Add-SmoDatabaseMasterKeyServiceKeyEncryption
+  -ServerInstance <string>
+  -DatabaseName <string>
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### DatabaseObject
 
 ```
 Add-SmoDatabaseMasterKeyServiceKeyEncryption
@@ -40,9 +51,18 @@ Adds service key encryption to database master key.
 
 ### Example 1
 
-$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
+```powershell
+Add-SmoDatabaseMasterKeyServiceKeyEncryption -ServerInstance . -DatabaseName AdventureWorks
+```
 
+Adds service key encryption encryption to database master key in the AdventureWorks database.
+
+### Example 2
+
+```powershell
+$DatabaseObject = Get-SmoDatabaseObject -ServerInstance . -DatabaseName AdventureWorks
 Add-SmoDatabaseMasterKeyServiceKeyEncryption -DatabaseObject $DatabaseObject
+```
 
 Adds service key encryption encryption to database master key using the database object.
 
@@ -70,9 +90,30 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
+### -DatabaseName
+
+Name of database.
+
+```yaml
+Type: System.String
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: DatabaseName
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -DatabaseObject
 
-SMO database object.
+An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
@@ -80,7 +121,29 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: DatabaseObject
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -ServerInstance
+
+The name of the SQL Server instance to connect to.
+
+```yaml
+Type: System.String
+DefaultValue: ''
+SupportsWildcards: false
+Aliases:
+- SqlServer
+ParameterSets:
+- Name: DatabaseName
   Position: Named
   IsRequired: true
   ValueFromPipeline: false
