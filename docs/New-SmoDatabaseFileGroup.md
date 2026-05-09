@@ -1,10 +1,10 @@
 ---
 document type: cmdlet
 external help file: SqlServerTools-Help.xml
-HelpUri: ''
+HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/New-SmoDatabaseFileGroup.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: New-SmoDatabaseFileGroup
 ---
@@ -24,6 +24,7 @@ New-SmoDatabaseFileGroup
   -ServerInstance <string>
   -DatabaseName <string>
   -FileGroupName <string>
+  [-FileGroupType <FileGroupType>]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -35,6 +36,7 @@ New-SmoDatabaseFileGroup
 New-SmoDatabaseFileGroup
   -DatabaseObject <Database>
   -FileGroupName <string>
+  [-FileGroupType <FileGroupType>]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -155,6 +157,27 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
+### -FileGroupType
+
+Type of file group to create.
+
+```yaml
+Type: Microsoft.SqlServer.Management.Smo.FileGroupType
+DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -ServerInstance
 
 The name of the SQL Server instance to connect to.
@@ -179,8 +202,7 @@ HelpMessage: ''
 
 ### -WhatIf
 
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
+Runs the command in a mode that only reports what would happen without performing the actions.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -221,6 +243,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 
 ## RELATED LINKS
-
-None.
 

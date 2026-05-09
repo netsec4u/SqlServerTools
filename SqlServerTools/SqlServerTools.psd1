@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.6.3.1'
+ModuleVersion = '3.7.0.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -68,33 +68,45 @@ FormatsToProcess = @(
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-	'Add-SmoAvailabilityDatabase',
 	'Add-SmoDatabaseAsymmetricKeyPrivateKey',
-#	'Add-SmoDatabaseCertificatePrivateKey',
+	'Add-SmoDatabaseCertificatePrivateKey',
 	'Add-SmoDatabaseDataFile',
 	'Add-SmoDatabaseMasterKeyPasswordEncryption',
 	'Add-SmoDatabaseMasterKeyServiceKeyEncryption',
 	'Add-SmoDatabaseRoleMember',
 	'Add-SmoDatabaseSymmetricKeyKeyEncryption',
 	'Add-SmoServerRoleMember',
+	'Clear-SmoDatabaseQueryStore',
 	'Close-SmoDatabaseMasterKey',
 	'Close-SmoDatabaseSymmetricKey',
 	'Connect-SmoServer',
+	'Disable-SmoDatabaseQueryStore',
 	'Disable-SmoTransparentDatabaseEncryption',
 	'Disconnect-SmoServer',
+	'Enable-SmoDatabaseQueryStore',
 	'Enable-SmoTransparentDatabaseEncryption',
 	'Export-SmoDatabaseCertificate',
 	'Export-SmoDatabaseMasterKey',
 	'Export-SmoServiceMasterKey',
-	'Get-SmoAvailabilityGroup',
 	'Get-SmoBackupFileList',
 	'Get-SmoBackupHeader',
 	'Get-SmoDatabaseAsymmetricKey',
 	'Get-SmoDatabaseCertificate',
+	'Get-SmoDatabaseDataFile',
 	'Get-SmoDatabaseEncryptionKey',
+	'Get-SmoDatabaseFileGroup',
 	'Get-SmoDatabaseMasterKey',
 	'Get-SmoDatabaseObject',
+	'Get-SmoDatabaseQueryStore',
+	'Get-SmoDatabaseRole',
+	'Get-SmoDatabaseRoleMember',
+	'Get-SmoDatabaseSchema',
 	'Get-SmoDatabaseSymmetricKey',
+	'Get-SmoDatabaseSymmetricKeyKeyEncryption',
+	'Get-SmoDatabaseUser',
+	'Get-SmoServerRole',
+	'Get-SmoServerRoleMember',
+	'Get-SmoSqlLogin',
 	'Import-SmoDatabaseMasterKey',
 	'Import-SmoServiceMasterKey',
 	'Invoke-SmoNonQuery',
@@ -115,12 +127,13 @@ FunctionsToExport = @(
 	'New-SmoSqlLogin',
 	'Open-SmoDatabaseMasterKey',
 	'Open-SmoDatabaseSymmetricKey'
-	'Remove-SmoAvailabilityDatabase',
 	'Remove-SmoCredential',
 	'Remove-SmoDatabaseAsymmetricKey',
 	'Remove-SmoDatabaseAsymmetricKeyPrivateKey',
 	'Remove-SmoDatabaseCertificate',
+	'Remove-SmoDatabaseDataFile',
 	'Remove-SmoDatabaseEncryptionKey',
+	'Remove-SmoDatabaseFileGroup',
 	'Remove-SmoDatabaseMasterKey',
 	'Remove-SmoDatabaseMasterKeyPasswordEncryption',
 	'Remove-SmoDatabaseMasterKeyServiceKeyEncryption',
@@ -141,9 +154,12 @@ FunctionsToExport = @(
 	'Set-SmoCredential',
 	'Set-SmoDatabaseAsymmetricKey',
 	'Set-SmoDatabaseCertificate',
+	'Set-SmoDatabaseDataFile',
 	'Set-SmoDatabaseEncryptionKey',
+	'Set-SmoDatabaseFileGroup',
 	'Set-SmoDatabaseObjectPermission',
 	'Set-SmoDatabasePermission',
+	'Set-SmoDatabaseQueryStore',
 	'Set-SmoDatabaseRole',
 	'Set-SmoDatabaseSchema',
 	'Set-SmoDatabaseUser',
@@ -224,7 +240,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-HelpInfoURI = 'https://github.com/netsec4u/SqlServerTools/blob/main/docs/SqlServerTools.md'
+HelpInfoURI = 'https://netsec4u.github.io/Help/SqlServerTools/'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''

@@ -1,10 +1,10 @@
 ---
 document type: cmdlet
 external help file: SqlServerTools-Help.xml
-HelpUri: ''
+HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/Export-SmoDatabaseCertificate.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: Export-SmoDatabaseCertificate
 ---
@@ -266,6 +266,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 
 ## RELATED LINKS
-
-None.
 

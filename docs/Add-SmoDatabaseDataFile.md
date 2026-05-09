@@ -1,10 +1,10 @@
 ---
 document type: cmdlet
 external help file: SqlServerTools-Help.xml
-HelpUri: ''
+HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/Add-SmoDatabaseDataFile.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: Add-SmoDatabaseDataFile
 ---
@@ -264,8 +264,7 @@ HelpMessage: ''
 
 ### -WhatIf
 
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
+Runs the command in a mode that only reports what would happen without performing the actions.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -306,6 +305,4 @@ DataFilePath needs validation that functions for local and remote.
 
 
 ## RELATED LINKS
-
-None.
 

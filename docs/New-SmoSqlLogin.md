@@ -1,10 +1,10 @@
 ---
 document type: cmdlet
 external help file: SqlServerTools-Help.xml
-HelpUri: ''
+HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/New-SmoSqlLogin.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: New-SmoSqlLogin
 ---
@@ -22,6 +22,40 @@ Create SQL login.
 ```
 New-SmoSqlLogin
   -ServerInstance <string>
+  -LoginName <string>
+  -LoginType <LoginType>
+  [-DefaultDatabase <string>]
+  [-LoginDisabled <bool>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### ServerInstance_SqlLogin
+
+```
+New-SmoSqlLogin
+  -ServerInstance <string>
+  -LoginName <string>
+  -Password <securestring>
+  -LoginType <LoginType>
+  [-PasswordIsHashed]
+  [-DefaultDatabase <string>]
+  [-Sid <byte[]>]
+  [-PasswordExpirationEnabled <bool>]
+  [-PasswordPolicyEnforced <bool>]
+  [-LoginDisabled <bool>]
+  [-MustChangePassword <bool>]
+  [-WhatIf]
+  [-Confirm]
+  [<CommonParameters>]
+```
+
+### SmoServer_SqlLogin
+
+```
+New-SmoSqlLogin
+  -SmoServerObject <Server>
   -LoginName <string>
   -Password <securestring>
   -LoginType <LoginType>
@@ -43,15 +77,9 @@ New-SmoSqlLogin
 New-SmoSqlLogin
   -SmoServerObject <Server>
   -LoginName <string>
-  -Password <securestring>
   -LoginType <LoginType>
-  [-PasswordIsHashed]
   [-DefaultDatabase <string>]
-  [-Sid <byte[]>]
-  [-PasswordExpirationEnabled <bool>]
-  [-PasswordPolicyEnforced <bool>]
   [-LoginDisabled <bool>]
-  [-MustChangePassword <bool>]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -220,7 +248,13 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_SqlLogin
   Position: Named
   IsRequired: false
   ValueFromPipeline: false
@@ -241,7 +275,13 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_SqlLogin
   Position: Named
   IsRequired: true
   ValueFromPipeline: false
@@ -262,7 +302,13 @@ DefaultValue: True
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_SqlLogin
   Position: Named
   IsRequired: false
   ValueFromPipeline: false
@@ -283,7 +329,13 @@ DefaultValue: False
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_SqlLogin
   Position: Named
   IsRequired: false
   ValueFromPipeline: false
@@ -304,7 +356,13 @@ DefaultValue: True
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_SqlLogin
   Position: Named
   IsRequired: false
   ValueFromPipeline: false
@@ -326,6 +384,12 @@ SupportsWildcards: false
 Aliases:
 - SqlServer
 ParameterSets:
+- Name: ServerInstance_SqlLogin
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
 - Name: ServerInstance
   Position: Named
   IsRequired: true
@@ -347,7 +411,13 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: ServerInstance_SqlLogin
   Position: Named
   IsRequired: false
   ValueFromPipeline: false
@@ -368,6 +438,12 @@ DefaultValue: None
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
+- Name: SmoServer_SqlLogin
+  Position: Named
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
 - Name: SmoServer
   Position: Named
   IsRequired: true
@@ -381,8 +457,7 @@ HelpMessage: ''
 
 ### -WhatIf
 
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
+Runs the command in a mode that only reports what would happen without performing the actions.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -423,6 +498,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 
 ## RELATED LINKS
-
-None.
 

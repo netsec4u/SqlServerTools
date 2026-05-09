@@ -1,10 +1,10 @@
 ---
 document type: cmdlet
 external help file: SqlServerTools-Help.xml
-HelpUri: ''
+HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/Build-SqlClientConnectionString.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: Build-SqlClientConnectionString
 ---
@@ -605,6 +605,4 @@ The following connection string options are not implemented:
 
 
 ## RELATED LINKS
-
-None.
 

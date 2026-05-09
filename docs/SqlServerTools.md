@@ -1,11 +1,11 @@
 ---
 document type: module
 Help Version: 2.0.0.0
-HelpInfoUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/SqlServerTools.md
+HelpInfoUri: https://netsec4u.github.io/Help/SqlServerTools/
 Locale: en-US
 Module Guid: 0dbb8289-ae5b-4633-afc8-dfaf0acbe06c
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: SqlServerTools Module
 ---
@@ -18,13 +18,13 @@ Module provides SQL Server Client and SQL Management Object (SMO) functions.
 
 ## SqlServerTools
 
-### [Add-SmoAvailabilityDatabase](Add-SmoAvailabilityDatabase.md)
-
-Add database to Availability Group.
-
 ### [Add-SmoDatabaseAsymmetricKeyPrivateKey](Add-SmoDatabaseAsymmetricKeyPrivateKey.md)
 
 Adds private key to asymmetric key.
+
+### [Add-SmoDatabaseCertificatePrivateKey](Add-SmoDatabaseCertificatePrivateKey.md)
+
+Adds a private key to a database certificate.
 
 ### [Add-SmoDatabaseDataFile](Add-SmoDatabaseDataFile.md)
 
@@ -54,6 +54,10 @@ Add member to server role.
 
 Builds connection strings for a SQL Server database.
 
+### [Clear-SmoDatabaseQueryStore](Clear-SmoDatabaseQueryStore.md)
+
+Clears data in query store.
+
 ### [Close-SmoDatabaseMasterKey](Close-SmoDatabaseMasterKey.md)
 
 Closes database master key.
@@ -70,6 +74,10 @@ Connect to SQL Server using SQL Management Object.
 
 Connect to SQL Instance.
 
+### [Disable-SmoDatabaseQueryStore](Disable-SmoDatabaseQueryStore.md)
+
+Disables query store.
+
 ### [Disable-SmoTransparentDatabaseEncryption](Disable-SmoTransparentDatabaseEncryption.md)
 
 Disable transparent database encryption.
@@ -81,6 +89,10 @@ Disconnect from SQL Management Objects.
 ### [Disconnect-SqlServerInstance](Disconnect-SqlServerInstance.md)
 
 Disconnects connections to SQL Server.
+
+### [Enable-SmoDatabaseQueryStore](Enable-SmoDatabaseQueryStore.md)
+
+Enables query store.
 
 ### [Enable-SmoTransparentDatabaseEncryption](Enable-SmoTransparentDatabaseEncryption.md)
 
@@ -98,10 +110,6 @@ Exports database master key to a file.
 
 Exports service master key to a file.
 
-### [Get-SmoAvailabilityGroup](Get-SmoAvailabilityGroup.md)
-
-Get SQL Availability Group.
-
 ### [Get-SmoBackupFileList](Get-SmoBackupFileList.md)
 
 Returns backup file information.
@@ -118,9 +126,17 @@ Returns a database asymmetric key.
 
 Returns a database certificates.
 
+### [Get-SmoDatabaseDataFile](Get-SmoDatabaseDataFile.md)
+
+Gets the data file for a SQL Server database.
+
 ### [Get-SmoDatabaseEncryptionKey](Get-SmoDatabaseEncryptionKey.md)
 
 Gets database encryption key.
+
+### [Get-SmoDatabaseFileGroup](Get-SmoDatabaseFileGroup.md)
+
+Gets the file groups for a SQL Server database.
 
 ### [Get-SmoDatabaseMasterKey](Get-SmoDatabaseMasterKey.md)
 
@@ -130,9 +146,45 @@ Gets database master key.
 
 Get database object.
 
+### [Get-SmoDatabaseQueryStore](Get-SmoDatabaseQueryStore.md)
+
+Gets the query store properties.
+
+### [Get-SmoDatabaseRole](Get-SmoDatabaseRole.md)
+
+Gets the database roles.
+
+### [Get-SmoDatabaseRoleMember](Get-SmoDatabaseRoleMember.md)
+
+Retrieves the members of a database role.
+
+### [Get-SmoDatabaseSchema](Get-SmoDatabaseSchema.md)
+
+Retrieves the schema of a SQL Server database.
+
 ### [Get-SmoDatabaseSymmetricKey](Get-SmoDatabaseSymmetricKey.md)
 
 Returns a database symmetric key.
+
+### [Get-SmoDatabaseSymmetricKeyKeyEncryption](Get-SmoDatabaseSymmetricKeyKeyEncryption.md)
+
+Gets the key encryption information for a symmetric key in a SQL Server database.
+
+### [Get-SmoDatabaseUser](Get-SmoDatabaseUser.md)
+
+Retrieves information about a database user in SQL Server.
+
+### [Get-SmoServerRole](Get-SmoServerRole.md)
+
+Retrieves the server roles from a SQL Server instance.
+
+### [Get-SmoServerRoleMember](Get-SmoServerRoleMember.md)
+
+Retrieves the members of a specified server role from a SQL Server instance.
+
+### [Get-SmoSqlLogin](Get-SmoSqlLogin.md)
+
+Gets SQL login properties.
 
 ### [Get-SqlClientDataSet](Get-SqlClientDataSet.md)
 
@@ -149,6 +201,18 @@ Imports service master key from file.
 ### [Invoke-SmoNonQuery](Invoke-SmoNonQuery.md)
 
 Invoke sql script.
+
+### [Invoke-SmoScriptDatabase](Invoke-SmoScriptDatabase.md)
+
+Script a SQL Server database to a file.
+
+### [Invoke-SmoScriptDatabaseObject](Invoke-SmoScriptDatabaseObject.md)
+
+Script a specific database object to a file.
+
+### [Invoke-SmoScriptServerObject](Invoke-SmoScriptServerObject.md)
+
+Script a SQL Server object to a file.
 
 ### [Invoke-SqlClientBulkCopy](Invoke-SqlClientBulkCopy.md)
 
@@ -218,10 +282,6 @@ Opens database symmetric key.
 
 Publish DacPac to SQL Server.
 
-### [Remove-SmoAvailabilityDatabase](Remove-SmoAvailabilityDatabase.md)
-
-Remove database from Availability Group.
-
 ### [Remove-SmoCredential](Remove-SmoCredential.md)
 
 Remove credential.
@@ -238,9 +298,17 @@ Removes private key from asymmetric key.
 
 Removes database certificate.
 
+### [Remove-SmoDatabaseDataFile](Remove-SmoDatabaseDataFile.md)
+
+Removes a data file from a SQL Server database.
+
 ### [Remove-SmoDatabaseEncryptionKey](Remove-SmoDatabaseEncryptionKey.md)
 
 Remove database encryption key.
+
+### [Remove-SmoDatabaseFileGroup](Remove-SmoDatabaseFileGroup.md)
+
+Removes a filegroup from a SQL Server database.
 
 ### [Remove-SmoDatabaseMasterKey](Remove-SmoDatabaseMasterKey.md)
 
@@ -326,9 +394,17 @@ Sets database asymmetric key properties.
 
 Sets database certificate properties.
 
+### [Set-SmoDatabaseDataFile](Set-SmoDatabaseDataFile.md)
+
+Sets properties of a data file in a SQL Server database.
+
 ### [Set-SmoDatabaseEncryptionKey](Set-SmoDatabaseEncryptionKey.md)
 
 Sets database encryption key properties.
+
+### [Set-SmoDatabaseFileGroup](Set-SmoDatabaseFileGroup.md)
+
+Sets properties of a filegroup in a SQL Server database.
 
 ### [Set-SmoDatabaseObjectPermission](Set-SmoDatabaseObjectPermission.md)
 
@@ -337,6 +413,10 @@ Grant, deny, or revoke database object permissions to user or role.
 ### [Set-SmoDatabasePermission](Set-SmoDatabasePermission.md)
 
 Grant, deny, or revoke database permissions for user or role.
+
+### [Set-SmoDatabaseQueryStore](Set-SmoDatabaseQueryStore.md)
+
+Sets query store properties.
 
 ### [Set-SmoDatabaseRole](Set-SmoDatabaseRole.md)
 

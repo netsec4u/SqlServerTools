@@ -1,10 +1,10 @@
 ---
 document type: cmdlet
 external help file: SqlServerTools-Help.xml
-HelpUri: ''
+HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/Set-SmoSqlLogin.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 07/29/2025
+ms.date: 05/07/2026
 PlatyPS schema version: 2024-05-01
 title: Set-SmoSqlLogin
 ---
@@ -73,11 +73,11 @@ Sets SQL login properties with the specified values.
 ### Example 2
 
 ```powershell
-$DatabaseObject = Get-SmoDatabaseObject -ServerInstance .
-Set-SmoSqlLogin -DatabaseObject $DatabaseObject -LoginName DBUser -LoginDisabled $false
+$SmoServerObject = Connect-SmoServer -ServerInstance .
+Set-SmoSqlLogin -SmoServerObject $SmoServerObject -LoginName DBUser -LoginDisabled $false
 ```
 
-Sets SQL login properties using database object.
+Sets SQL login properties using SMO Server object.
 
 ## PARAMETERS
 
@@ -295,8 +295,7 @@ HelpMessage: ''
 
 ### -WhatIf
 
-Shows what would happen if the cmdlet runs.
-The cmdlet is not run.
+Runs the command in a mode that only reports what would happen without performing the actions.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -337,6 +336,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 
 ## RELATED LINKS
-
-None.
 
