@@ -1417,7 +1417,9 @@ function Add-SmoDatabaseDataFile {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -1443,7 +1445,7 @@ function Add-SmoDatabaseDataFile {
 			$FileGroupObject.Refresh()
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -1470,7 +1472,7 @@ function Add-SmoDatabaseDataFile {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -1758,7 +1760,9 @@ function Add-SmoDatabaseRoleMember {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -1777,7 +1781,7 @@ function Add-SmoDatabaseRoleMember {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -1810,7 +1814,7 @@ function Add-SmoDatabaseRoleMember {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -2163,7 +2167,9 @@ function Add-SmoServerRoleMember {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -2182,7 +2188,7 @@ function Add-SmoServerRoleMember {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -2215,7 +2221,7 @@ function Add-SmoServerRoleMember {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -2273,7 +2279,9 @@ function Clear-SmoDatabaseQueryStore {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -2283,7 +2291,7 @@ function Clear-SmoDatabaseQueryStore {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -2307,7 +2315,7 @@ function Clear-SmoDatabaseQueryStore {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -2738,7 +2746,9 @@ function Disable-SmoDatabaseQueryStore {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -2748,7 +2758,7 @@ function Disable-SmoDatabaseQueryStore {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -2778,7 +2788,7 @@ function Disable-SmoDatabaseQueryStore {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -2836,7 +2846,9 @@ function Disable-SmoTransparentDatabaseEncryption {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -2846,7 +2858,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -2874,7 +2886,7 @@ function Disable-SmoTransparentDatabaseEncryption {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -2977,7 +2989,9 @@ function Enable-SmoDatabaseQueryStore {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -2987,7 +3001,7 @@ function Enable-SmoDatabaseQueryStore {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3026,7 +3040,7 @@ function Enable-SmoDatabaseQueryStore {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -3084,7 +3098,9 @@ function Enable-SmoTransparentDatabaseEncryption {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -3094,7 +3110,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3118,7 +3134,7 @@ function Enable-SmoTransparentDatabaseEncryption {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -3217,7 +3233,9 @@ function Export-SmoDatabaseCertificate {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -3227,7 +3245,7 @@ function Export-SmoDatabaseCertificate {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3271,7 +3289,7 @@ function Export-SmoDatabaseCertificate {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -3345,7 +3363,9 @@ function Export-SmoDatabaseMasterKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -3355,7 +3375,7 @@ function Export-SmoDatabaseMasterKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3387,7 +3407,7 @@ function Export-SmoDatabaseMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -3452,7 +3472,9 @@ function Export-SmoServiceMasterKey {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -3479,7 +3501,7 @@ function Export-SmoServiceMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -3535,14 +3557,14 @@ function Get-SmoBackupFileList {
 
 	begin {
 		try {
-			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+			$ServerInstanceParameterSets = @('ServerInstance')
 
-			if ($PSCmdlet.ParameterSetName -in ('ServerInstance')) {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerObject = Connect-SmoServer -ServerInstance $ServerInstance
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -3556,6 +3578,8 @@ function Get-SmoBackupFileList {
 
 	process {
 		try {
+			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+
 			$SmoRestore.Devices.AddDevice((Resolve-Path -Path $DatabaseBackupPath).ProviderPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
 
 			$FileList = $SmoRestore.ReadFileList($SmoServerObject)
@@ -3576,7 +3600,7 @@ function Get-SmoBackupFileList {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -in ('ServerInstance')) {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -3632,14 +3656,14 @@ function Get-SmoBackupHeader {
 
 	begin {
 		try {
-			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+			$ServerInstanceParameterSets = @('ServerInstance')
 
-			if ($PSCmdlet.ParameterSetName -in ('ServerInstance')) {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerObject = Connect-SmoServer -ServerInstance $ServerInstance
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -3653,6 +3677,8 @@ function Get-SmoBackupHeader {
 
 	process {
 		try {
+			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+
 			$SmoRestore.Devices.AddDevice((Resolve-Path -Path $DatabaseBackupPath).ProviderPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
 
 			$BackupHeaders = $SmoRestore.ReadBackupHeader($SmoServerObject)
@@ -3673,7 +3699,7 @@ function Get-SmoBackupHeader {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -in ('ServerInstance')) {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -3739,7 +3765,9 @@ function Get-SmoDatabaseAsymmetricKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -3749,7 +3777,7 @@ function Get-SmoDatabaseAsymmetricKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3773,7 +3801,7 @@ function Get-SmoDatabaseAsymmetricKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -3839,7 +3867,9 @@ function Get-SmoDatabaseCertificate {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -3849,7 +3879,7 @@ function Get-SmoDatabaseCertificate {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3873,7 +3903,7 @@ function Get-SmoDatabaseCertificate {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -3948,7 +3978,9 @@ function Get-SmoDatabaseDataFile {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -3958,7 +3990,7 @@ function Get-SmoDatabaseDataFile {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -3993,7 +4025,7 @@ function Get-SmoDatabaseDataFile {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4051,7 +4083,9 @@ function Get-SmoDatabaseEncryptionKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4061,7 +4095,7 @@ function Get-SmoDatabaseEncryptionKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4090,7 +4124,7 @@ function Get-SmoDatabaseEncryptionKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4156,7 +4190,9 @@ function Get-SmoDatabaseFileGroup {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4166,7 +4202,7 @@ function Get-SmoDatabaseFileGroup {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4190,7 +4226,7 @@ function Get-SmoDatabaseFileGroup {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4248,7 +4284,9 @@ function Get-SmoDatabaseMasterKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4258,7 +4296,7 @@ function Get-SmoDatabaseMasterKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4280,7 +4318,7 @@ function Get-SmoDatabaseMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4344,7 +4382,10 @@ function Get-SmoDatabaseObject {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+			$SmoServerParameterSets = @('SmoServer')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -4353,14 +4394,14 @@ function Get-SmoDatabaseObject {
 				$SmoServerObject = Connect-SmoServer @SmoServerParameters
 			}
 
-			if ($PSCmdlet.ParameterSetName -eq 'SmoServer') {
+			if ($PSCmdlet.ParameterSetName -in $SmoServerParameterSets) {
 				if (-not $PSBoundParameters.ContainsKey('DatabaseName')) {
 					$DatabaseName = $SmoServerObject.ConnectionContext.CurrentDatabase
 				}
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -4391,7 +4432,7 @@ function Get-SmoDatabaseObject {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -4449,7 +4490,9 @@ function Get-SmoDatabaseQueryStore {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4459,7 +4502,7 @@ function Get-SmoDatabaseQueryStore {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4479,7 +4522,7 @@ function Get-SmoDatabaseQueryStore {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4545,7 +4588,9 @@ function Get-SmoDatabaseRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4555,7 +4600,7 @@ function Get-SmoDatabaseRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4579,7 +4624,7 @@ function Get-SmoDatabaseRole {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4645,7 +4690,9 @@ function Get-SmoDatabaseRoleMember {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4655,7 +4702,7 @@ function Get-SmoDatabaseRoleMember {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4703,7 +4750,7 @@ function Get-SmoDatabaseRoleMember {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4769,7 +4816,9 @@ function Get-SmoDatabaseSchema {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4779,7 +4828,7 @@ function Get-SmoDatabaseSchema {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4803,7 +4852,7 @@ function Get-SmoDatabaseSchema {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4869,7 +4918,9 @@ function Get-SmoDatabaseSymmetricKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4879,7 +4930,7 @@ function Get-SmoDatabaseSymmetricKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -4903,7 +4954,7 @@ function Get-SmoDatabaseSymmetricKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -4969,7 +5020,9 @@ function Get-SmoDatabaseSymmetricKeyKeyEncryption {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -4979,7 +5032,7 @@ function Get-SmoDatabaseSymmetricKeyKeyEncryption {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -5010,215 +5063,9 @@ function Get-SmoDatabaseSymmetricKeyKeyEncryption {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
-		}
-	}
-
-	end {
-	}
-}
-
-function Get-SmoServerRole {
-	<#
-	.EXTERNALHELP
-	SqlServerTools-Help.xml
-	#>
-
-	[System.Diagnostics.DebuggerStepThrough()]
-
-	[CmdletBinding(
-		PositionalBinding = $false,
-		SupportsShouldProcess = $false,
-		ConfirmImpact = 'Low',
-		DefaultParameterSetName = 'ServerInstance'
-	)]
-
-	[OutputType([Microsoft.SqlServer.Management.Smo.ServerRole])]
-
-	param (
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'ServerInstance'
-		)]
-		[ValidateLength(1, 128)]
-		[Alias('SqlServer')]
-		[string]$ServerInstance,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'SmoServer'
-		)]
-		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
-
-		[Parameter(
-			Mandatory = $false,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateLength(1, 128)]
-		[string]$RoleName
-	)
-
-	begin {
-		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
-				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance
-					'DatabaseName' = 'master'
-				}
-
-				$SmoServerObject = Connect-SmoServer @SmoServerParameters
-			}
-		}
-		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
-				if (Test-Path -Path Variable:\SmoServerObject) {
-					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
-						Disconnect-SmoServer -SmoServerObject $SmoServerObject
-					}
-				}
-			}
-
-			throw $_
-		}
-	}
-
-	process {
-		try {
-			if ($PSBoundParameters.ContainsKey('RoleName')) {
-				$ServerRoles = $SmoServerObject.Roles[$RoleName]
-			} else {
-				$ServerRoles = $SmoServerObject.Roles
-			}
-
-			$ServerRoles
-		}
-		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
-				Disconnect-SmoServer -SmoServerObject $SmoServerObject
-			}
-
-			throw $_
-		}
-	}
-
-	end {
-	}
-}
-
-function Get-SmoServerRoleMember {
-	<#
-	.EXTERNALHELP
-	SqlServerTools-Help.xml
-	#>
-
-	[System.Diagnostics.DebuggerStepThrough()]
-
-	[CmdletBinding(
-		PositionalBinding = $false,
-		SupportsShouldProcess = $false,
-		ConfirmImpact = 'Low',
-		DefaultParameterSetName = 'ServerInstance'
-	)]
-
-	[OutputType([SqlServerTools.ServerRoleMember])]
-
-	param (
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'ServerInstance'
-		)]
-		[ValidateLength(1, 128)]
-		[Alias('SqlServer')]
-		[string]$ServerInstance,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false,
-			ParameterSetName = 'SmoServer'
-		)]
-		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
-
-		[Parameter(
-			Mandatory = $true,
-			ValueFromPipeline = $false,
-			ValueFromPipelineByPropertyName = $false
-		)]
-		[ValidateLength(1, 128)]
-		[string]$RoleName
-	)
-
-	begin {
-		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
-				$SmoServerParameters = @{
-					'ServerInstance' = $ServerInstance
-					'DatabaseName' = 'master'
-				}
-
-				$SmoServerObject = Connect-SmoServer @SmoServerParameters
-			}
-		}
-		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
-				if (Test-Path -Path Variable:\SmoServerObject) {
-					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
-						Disconnect-SmoServer -SmoServerObject $SmoServerObject
-					}
-				}
-			}
-
-			throw $_
-		}
-	}
-
-	process {
-		try {
-			$ServerRole = $SmoServerObject.Roles[$RoleName]
-
-			if ($null -ne $ServerRole) {
-				$RoleMembers = $ServerRole.EnumMemberNames()
-			}
-			else {
-				throw [System.Management.Automation.ErrorRecord]::New(
-					[Exception]::New('Server role not found.'),
-					'1',
-					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
-					$RoleName
-				)
-			}
-
-			foreach ($RoleMember in $RoleMembers) {
-				$ServerRoleMember = [SqlServerTools.ServerRoleMember]::New()
-
-				$ServerRoleMember.Principal = $RoleMember
-
-				if ($SmoServerObject.Logins[$RoleMember] -is [Microsoft.SqlServer.Management.Smo.Login]) {
-					$ServerRoleMember.PrincipalType = [Microsoft.SqlServer.Management.Smo.PrincipalType]::Login
-				} elseif ($SmoServerObject.Roles[$RoleMember] -is [Microsoft.SqlServer.Management.Smo.ServerRole]) {
-					$ServerRoleMember.PrincipalType = [Microsoft.SqlServer.Management.Smo.PrincipalType]::ServerRole
-				} else {
-					$ServerRoleMember.PrincipalType = $null
-				}
-
-				$ServerRoleMember
-			}
-		}
-		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
-				Disconnect-SmoServer -SmoServerObject $SmoServerObject
-			}
-
-			throw $_
 		}
 	}
 
@@ -5282,7 +5129,9 @@ function Get-SmoDatabaseUser {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -5292,7 +5141,7 @@ function Get-SmoDatabaseUser {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -5316,8 +5165,220 @@ function Get-SmoDatabaseUser {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Get-SmoServerRole {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([Microsoft.SqlServer.Management.Smo.ServerRole])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$RoleName
+	)
+
+	begin {
+		Try {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				if (Test-Path -Path Variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			if ($PSBoundParameters.ContainsKey('RoleName')) {
+				$ServerRoles = $SmoServerObject.Roles[$RoleName]
+			} else {
+				$ServerRoles = $SmoServerObject.Roles
+			}
+
+			$ServerRoles
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Get-SmoServerRoleMember {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([SqlServerTools.ServerRoleMember])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$RoleName
+	)
+
+	begin {
+		Try {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				if (Test-Path -Path Variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$ServerRole = $SmoServerObject.Roles[$RoleName]
+
+			if ($null -ne $ServerRole) {
+				$RoleMembers = $ServerRole.EnumMemberNames()
+			}
+			else {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Server role not found.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+					$RoleName
+				)
+			}
+
+			foreach ($RoleMember in $RoleMembers) {
+				$ServerRoleMember = [SqlServerTools.ServerRoleMember]::New()
+
+				$ServerRoleMember.Principal = $RoleMember
+
+				if ($SmoServerObject.Logins[$RoleMember] -is [Microsoft.SqlServer.Management.Smo.Login]) {
+					$ServerRoleMember.PrincipalType = [Microsoft.SqlServer.Management.Smo.PrincipalType]::Login
+				} elseif ($SmoServerObject.Roles[$RoleMember] -is [Microsoft.SqlServer.Management.Smo.ServerRole]) {
+					$ServerRoleMember.PrincipalType = [Microsoft.SqlServer.Management.Smo.PrincipalType]::ServerRole
+				} else {
+					$ServerRoleMember.PrincipalType = $null
+				}
+
+				$ServerRoleMember
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
 	}
@@ -5373,7 +5434,9 @@ function Get-SmoSqlLogin {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -5383,7 +5446,7 @@ function Get-SmoSqlLogin {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -5406,11 +5469,12 @@ function Get-SmoSqlLogin {
 			$SmoLogin
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
-
-			throw $_
 		}
 	}
 
@@ -5496,7 +5560,9 @@ function Import-SmoDatabaseMasterKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -5506,7 +5572,7 @@ function Import-SmoDatabaseMasterKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -5542,7 +5608,7 @@ function Import-SmoDatabaseMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -5606,7 +5672,9 @@ function Import-SmoServiceMasterKey {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -5616,6 +5684,14 @@ function Import-SmoServiceMasterKey {
 			}
 		}
 		catch {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				if (Test-Path -Path Variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
 			throw $_
 		}
 	}
@@ -5633,7 +5709,7 @@ function Import-SmoServiceMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -5698,7 +5774,9 @@ function Invoke-SmoScriptDatabase {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -5708,7 +5786,7 @@ function Invoke-SmoScriptDatabase {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -5783,7 +5861,7 @@ function Invoke-SmoScriptDatabase {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -5871,7 +5949,9 @@ function Invoke-SmoScriptDatabaseObject {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -5881,7 +5961,7 @@ function Invoke-SmoScriptDatabaseObject {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -5972,7 +6052,7 @@ function Invoke-SmoScriptDatabaseObject {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -6044,7 +6124,9 @@ function Invoke-SmoScriptServerObject {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -6054,7 +6136,7 @@ function Invoke-SmoScriptServerObject {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -6095,7 +6177,7 @@ function Invoke-SmoScriptServerObject {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -6200,7 +6282,9 @@ function Invoke-SmoNonQuery {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -in ('DatabaseName_CommandText', 'DatabaseName_InputFile')) {
+			$DatabaseNameParameterSets = @('DatabaseName_CommandText', 'DatabaseName_InputFile')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -6210,7 +6294,7 @@ function Invoke-SmoNonQuery {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -in ('DatabaseName_CommandText', 'DatabaseName_InputFile')) {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -6257,7 +6341,7 @@ function Invoke-SmoNonQuery {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -in ('DatabaseName_CommandText', 'DatabaseName_InputFile')) {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -6329,7 +6413,9 @@ function New-SmoCredential {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -6339,7 +6425,7 @@ function New-SmoCredential {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -6365,7 +6451,7 @@ function New-SmoCredential {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -6904,7 +6990,9 @@ function New-SmoDatabaseEncryptionKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -6914,7 +7002,7 @@ function New-SmoDatabaseEncryptionKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -6947,7 +7035,7 @@ function New-SmoDatabaseEncryptionKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -7020,7 +7108,9 @@ function New-SmoDatabaseFileGroup {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -7030,7 +7120,7 @@ function New-SmoDatabaseFileGroup {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -7067,7 +7157,7 @@ function New-SmoDatabaseFileGroup {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -7317,7 +7407,9 @@ function New-SmoDatabaseRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -7327,7 +7419,7 @@ function New-SmoDatabaseRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -7363,7 +7455,7 @@ function New-SmoDatabaseRole {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -7437,7 +7529,9 @@ function New-SmoDatabaseSchema {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -7456,7 +7550,7 @@ function New-SmoDatabaseSchema {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -7483,7 +7577,7 @@ function New-SmoDatabaseSchema {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -7786,7 +7880,9 @@ function New-SmoDatabaseUser {
 				)
 			}
 
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -7825,7 +7921,7 @@ function New-SmoDatabaseUser {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -7862,7 +7958,7 @@ function New-SmoDatabaseUser {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -7927,7 +8023,9 @@ function New-SmoServerRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -7937,7 +8035,7 @@ function New-SmoServerRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -7961,11 +8059,12 @@ function New-SmoServerRole {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
-
-			throw $_
 		}
 	}
 
@@ -8158,7 +8257,9 @@ function New-SmoSqlLogin {
 				}
 			}
 
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance', 'ServerInstance_SqlLogin')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -8168,7 +8269,7 @@ function New-SmoSqlLogin {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -8221,11 +8322,12 @@ function New-SmoSqlLogin {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
-
-			throw $_
 		}
 	}
 
@@ -8473,7 +8575,9 @@ function Remove-SmoCredential {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -8483,7 +8587,7 @@ function Remove-SmoCredential {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -8516,7 +8620,7 @@ function Remove-SmoCredential {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -8589,7 +8693,9 @@ function Remove-SmoDatabaseAsymmetricKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -8599,7 +8705,7 @@ function Remove-SmoDatabaseAsymmetricKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -8632,7 +8738,7 @@ function Remove-SmoDatabaseAsymmetricKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -8809,7 +8915,9 @@ function Remove-SmoDatabaseCertificate {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -8819,7 +8927,7 @@ function Remove-SmoDatabaseCertificate {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -8852,7 +8960,7 @@ function Remove-SmoDatabaseCertificate {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -8926,7 +9034,9 @@ function Remove-SmoDatabaseDataFile {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -8936,7 +9046,7 @@ function Remove-SmoDatabaseDataFile {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -8980,7 +9090,7 @@ function Remove-SmoDatabaseDataFile {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9038,7 +9148,9 @@ function Remove-SmoDatabaseEncryptionKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9048,7 +9160,7 @@ function Remove-SmoDatabaseEncryptionKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9106,7 +9218,7 @@ function Remove-SmoDatabaseEncryptionKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9172,7 +9284,9 @@ function Remove-SmoDatabaseFileGroup {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9182,7 +9296,7 @@ function Remove-SmoDatabaseFileGroup {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9215,7 +9329,7 @@ function Remove-SmoDatabaseFileGroup {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9273,7 +9387,9 @@ function Remove-SmoDatabaseMasterKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9283,7 +9399,7 @@ function Remove-SmoDatabaseMasterKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9314,7 +9430,7 @@ function Remove-SmoDatabaseMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9597,7 +9713,9 @@ function Remove-SmoDatabaseRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9607,7 +9725,7 @@ function Remove-SmoDatabaseRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9638,7 +9756,7 @@ function Remove-SmoDatabaseRole {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9712,7 +9830,9 @@ function Remove-SmoDatabaseRoleMember {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9740,7 +9860,7 @@ function Remove-SmoDatabaseRoleMember {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9763,7 +9883,7 @@ function Remove-SmoDatabaseRoleMember {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9829,7 +9949,9 @@ function Remove-SmoDatabaseSchema {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9839,7 +9961,7 @@ function Remove-SmoDatabaseSchema {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9872,7 +9994,7 @@ function Remove-SmoDatabaseSchema {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -9945,7 +10067,9 @@ function Remove-SmoDatabaseSymmetricKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -9955,7 +10079,7 @@ function Remove-SmoDatabaseSymmetricKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -9988,7 +10112,7 @@ function Remove-SmoDatabaseSymmetricKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -10181,7 +10305,9 @@ function Remove-SmoDatabaseUser {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -10191,7 +10317,7 @@ function Remove-SmoDatabaseUser {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -10222,7 +10348,7 @@ function Remove-SmoDatabaseUser {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -10279,7 +10405,9 @@ function Remove-SmoServerRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -10289,7 +10417,7 @@ function Remove-SmoServerRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -10322,7 +10450,7 @@ function Remove-SmoServerRole {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -10387,7 +10515,9 @@ function Remove-SmoServerRoleMember {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -10397,7 +10527,7 @@ function Remove-SmoServerRoleMember {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -10430,7 +10560,7 @@ function Remove-SmoServerRoleMember {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -10487,7 +10617,9 @@ function Remove-SmoSqlLogin {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -10497,7 +10629,7 @@ function Remove-SmoSqlLogin {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -10530,7 +10662,7 @@ function Remove-SmoSqlLogin {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -10635,7 +10767,9 @@ function Rename-SmoDatabaseDataFile {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -10708,7 +10842,7 @@ function Rename-SmoDatabaseDataFile {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -10794,7 +10928,7 @@ function Rename-SmoDatabaseDataFile {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -10891,7 +11025,9 @@ function Rename-SmoDatabaseLogFile {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -10953,7 +11089,7 @@ function Rename-SmoDatabaseLogFile {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -11040,7 +11176,7 @@ function Rename-SmoDatabaseLogFile {
 		finally {
 			$DatabaseObject.SetOnline()
 
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -11105,7 +11241,9 @@ function Reset-SmoDatabaseEncryptionKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -11115,7 +11253,7 @@ function Reset-SmoDatabaseEncryptionKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -11140,7 +11278,7 @@ function Reset-SmoDatabaseEncryptionKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -11213,7 +11351,9 @@ function Reset-SmoDatabaseMasterKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -11223,7 +11363,7 @@ function Reset-SmoDatabaseMasterKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -11257,7 +11397,7 @@ function Reset-SmoDatabaseMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -11313,7 +11453,9 @@ function Reset-SmoServiceMasterKey {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -11341,7 +11483,7 @@ function Reset-SmoServiceMasterKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -11413,7 +11555,9 @@ function Set-SmoCredential {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -11423,7 +11567,7 @@ function Set-SmoCredential {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -11461,7 +11605,7 @@ function Set-SmoCredential {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
 		}
@@ -11822,7 +11966,9 @@ function Set-SmoDatabaseDataFile {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -11832,7 +11978,7 @@ function Set-SmoDatabaseDataFile {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -11892,7 +12038,7 @@ function Set-SmoDatabaseDataFile {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -11965,7 +12111,9 @@ function Set-SmoDatabaseEncryptionKey {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -11975,7 +12123,7 @@ function Set-SmoDatabaseEncryptionKey {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -12000,7 +12148,7 @@ function Set-SmoDatabaseEncryptionKey {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -12095,7 +12243,9 @@ function Set-SmoDatabaseFileGroup {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -12105,7 +12255,7 @@ function Set-SmoDatabaseFileGroup {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -12156,7 +12306,7 @@ function Set-SmoDatabaseFileGroup {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -12739,7 +12889,9 @@ function Set-SmoDatabaseQueryStore {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -12749,7 +12901,7 @@ function Set-SmoDatabaseQueryStore {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -12804,7 +12956,7 @@ function Set-SmoDatabaseQueryStore {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -12878,7 +13030,9 @@ function Set-SmoDatabaseRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -12888,7 +13042,7 @@ function Set-SmoDatabaseRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -12925,7 +13079,7 @@ function Set-SmoDatabaseRole {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -12999,7 +13153,9 @@ function Set-SmoDatabaseSchema {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -13018,7 +13174,7 @@ function Set-SmoDatabaseSchema {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -13046,7 +13202,7 @@ function Set-SmoDatabaseSchema {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -13135,7 +13291,9 @@ function Set-SmoDatabaseUser {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$DatabaseObjectParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -13167,7 +13325,7 @@ function Set-SmoDatabaseUser {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if (Test-Path -Path Variable:\DatabaseObject) {
 					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
 						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
@@ -13216,7 +13374,7 @@ function Set-SmoDatabaseUser {
 			throw $_
 		}
 		finally {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
@@ -13281,7 +13439,9 @@ function Set-SmoServerRole {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -13291,7 +13451,7 @@ function Set-SmoServerRole {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -13326,11 +13486,12 @@ function Set-SmoServerRole {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
-
-			throw $_
 		}
 	}
 
@@ -13429,7 +13590,9 @@ function Set-SmoSqlLogin {
 
 	begin {
 		Try {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				$SmoServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = 'master'
@@ -13439,7 +13602,7 @@ function Set-SmoSqlLogin {
 			}
 		}
 		Catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				if (Test-Path -Path Variable:\SmoServerObject) {
 					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
 						Disconnect-SmoServer -SmoServerObject $SmoServerObject
@@ -13496,11 +13659,12 @@ function Set-SmoSqlLogin {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'ServerInstance') {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
 			}
-
-			throw $_
 		}
 	}
 
@@ -14128,7 +14292,9 @@ function Get-SqlClientDataSet {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$SqlServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -14142,7 +14308,7 @@ function Get-SqlClientDataSet {
 			}
 		}
 		catch {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				if ($(Test-Path -Path Variable:SqlConnection)) {
 					if ($SqlConnection -is [Microsoft.Data.SqlClient.SqlConnection]) {
 						Disconnect-SqlServerInstance -SqlConnection $SqlConnection
@@ -14233,7 +14399,7 @@ function Get-SqlClientDataSet {
 				if ($PSCmdlet.ShouldProcess($DataSetName, 'Get SQL dataset')) {
 					[void]$SqlDataAdapter.Fill($OutputDataset, $DataTableName)
 
-					if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+					if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 						Disconnect-SqlServerInstance -SqlConnection $SqlConnection
 					}
 
@@ -14271,7 +14437,7 @@ function Get-SqlClientDataSet {
 				$SqlDataAdapter.Dispose()
 			}
 
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SqlServerInstance -SqlConnection $SqlConnection
 			}
 		}
@@ -14663,7 +14829,9 @@ function Invoke-SqlClientNonQuery {
 
 	begin {
 		try {
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				$SqlServerParameters = @{
 					'ServerInstance' = $ServerInstance
 					'DatabaseName' = $DatabaseName
@@ -14689,7 +14857,7 @@ function Invoke-SqlClientNonQuery {
 				$Result = $SqlCommand.ExecuteNonQuery()
 			}
 
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SqlServerInstance -SqlConnection $SqlConnection
 			}
 
@@ -14707,7 +14875,7 @@ function Invoke-SqlClientNonQuery {
 				$SqlCommand.Dispose()
 			}
 
-			if ($PSCmdlet.ParameterSetName -eq 'DatabaseName') {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
 				Disconnect-SqlServerInstance -SqlConnection $SqlConnection
 			}
 		}
