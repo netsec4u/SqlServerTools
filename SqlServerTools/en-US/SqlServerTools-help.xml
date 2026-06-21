@@ -1646,12 +1646,14 @@ The default is 30 seconds.</maml:para>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
-          <maml:name>ConnectionLifetime</maml:name>
+          <maml:name>ConnectionEncryption</maml:name>
           <maml:description>
-            <maml:para>When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Connection Lifetime.</maml:para>
-            <maml:para>A value of zero (0) causes pooled connections to have the maximum connection timeout.</maml:para>
+            <maml:para>Specify the encryption behavior of communication between the server and the client.
+Optional specifies that TLS encryption is optional and will negotiate encryption when the serverrequires encryption.
+Mandatory specifies TLS encryption is required when connecting to the server and if the server does not support encryption, the connection fails.
+Strict enables and requires TDS8.0 and TLS encryption to the server.</maml:para>
           </maml:description>
-          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+          <command:parameterValue required="false" variableLength="true">SqlConnectionEncryption</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>ConnectionTimeout</maml:name>
@@ -1683,13 +1685,6 @@ Default is 15 seconds.</maml:para>
           <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
-          <maml:name>EncryptConnection</maml:name>
-          <maml:description>
-            <maml:para>Boolean value that indicates whether SQL Server uses SSL encryption for all data sent between the client and server if the server has a certificate installed.</maml:para>
-          </maml:description>
-          <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>FailoverPartnerServerInstance</maml:name>
           <maml:description>
             <maml:para>Specifies name or address of the partner server to connect to if the primary server is down.</maml:para>
@@ -1717,6 +1712,14 @@ When not specified, the server name from the Data Source is used for certificate
             <maml:para>Specifies the IP address family preference when establishing TCP connections.</maml:para>
           </maml:description>
           <command:parameterValue required="false" variableLength="true">Microsoft.Data.SqlClient.SqlConnectionIPAddressPreference</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>LoadBalanceTimeout</maml:name>
+          <maml:description>
+            <maml:para>When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Load Balance Lifetime.</maml:para>
+            <maml:para>A value of zero (0) causes pooled connections to have the maximum connection timeout.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>MaxPoolSize</maml:name>
@@ -1754,6 +1757,14 @@ When not specified, the server name from the Data Source is used for certificate
           </maml:description>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Pooling</maml:name>
+          <maml:description>
+            <maml:para>When true, any newly created connection will be added to the pool when closed.
+The next attempt to open the same connection, that connection will be drawn from the pool.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>ServerInstance</maml:name>
           <maml:description>
@@ -1767,6 +1778,13 @@ When not specified, the server name from the Data Source is used for certificate
             <maml:para>Indicates whether the channel will be encrypted while bypassing walking the certificate chain to validate trust.</maml:para>
           </maml:description>
           <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WorkstationID</maml:name>
+          <maml:description>
+            <maml:para>The name of the workstation connecting to SQL Server.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.String</command:parameterValue>
         </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
@@ -1795,12 +1813,14 @@ The default is 30 seconds.</maml:para>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
-          <maml:name>ConnectionLifetime</maml:name>
+          <maml:name>ConnectionEncryption</maml:name>
           <maml:description>
-            <maml:para>When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Connection Lifetime.</maml:para>
-            <maml:para>A value of zero (0) causes pooled connections to have the maximum connection timeout.</maml:para>
+            <maml:para>Specify the encryption behavior of communication between the server and the client.
+Optional specifies that TLS encryption is optional and will negotiate encryption when the serverrequires encryption.
+Mandatory specifies TLS encryption is required when connecting to the server and if the server does not support encryption, the connection fails.
+Strict enables and requires TDS8.0 and TLS encryption to the server.</maml:para>
           </maml:description>
-          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+          <command:parameterValue required="false" variableLength="true">SqlConnectionEncryption</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>ConnectionTimeout</maml:name>
@@ -1839,13 +1859,6 @@ Default is 15 seconds.</maml:para>
           <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
-          <maml:name>EncryptConnection</maml:name>
-          <maml:description>
-            <maml:para>Boolean value that indicates whether SQL Server uses SSL encryption for all data sent between the client and server if the server has a certificate installed.</maml:para>
-          </maml:description>
-          <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>FailoverPartnerServerInstance</maml:name>
           <maml:description>
             <maml:para>Specifies name or address of the partner server to connect to if the primary server is down.</maml:para>
@@ -1866,6 +1879,14 @@ When not specified, the server name from the Data Source is used for certificate
             <maml:para>Specifies the IP address family preference when establishing TCP connections.</maml:para>
           </maml:description>
           <command:parameterValue required="false" variableLength="true">Microsoft.Data.SqlClient.SqlConnectionIPAddressPreference</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>LoadBalanceTimeout</maml:name>
+          <maml:description>
+            <maml:para>When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Load Balance Lifetime.</maml:para>
+            <maml:para>A value of zero (0) causes pooled connections to have the maximum connection timeout.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>MaxPoolSize</maml:name>
@@ -1903,6 +1924,14 @@ When not specified, the server name from the Data Source is used for certificate
           </maml:description>
           <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Pooling</maml:name>
+          <maml:description>
+            <maml:para>When true, any newly created connection will be added to the pool when closed.
+The next attempt to open the same connection, that connection will be drawn from the pool.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
+        </command:parameter>
         <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
           <maml:name>ServerInstance</maml:name>
           <maml:description>
@@ -1916,6 +1945,13 @@ When not specified, the server name from the Data Source is used for certificate
             <maml:para>Indicates whether the channel will be encrypted while bypassing walking the certificate chain to validate trust.</maml:para>
           </maml:description>
           <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WorkstationID</maml:name>
+          <maml:description>
+            <maml:para>The name of the workstation connecting to SQL Server.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.String</command:parameterValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -1943,12 +1979,14 @@ The default is 30 seconds.</maml:para>
         <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
       </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
-        <maml:name>ConnectionLifetime</maml:name>
+        <maml:name>ConnectionEncryption</maml:name>
         <maml:description>
-          <maml:para>When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Connection Lifetime.</maml:para>
-          <maml:para>A value of zero (0) causes pooled connections to have the maximum connection timeout.</maml:para>
+          <maml:para>Specify the encryption behavior of communication between the server and the client.
+Optional specifies that TLS encryption is optional and will negotiate encryption when the serverrequires encryption.
+Mandatory specifies TLS encryption is required when connecting to the server and if the server does not support encryption, the connection fails.
+Strict enables and requires TDS8.0 and TLS encryption to the server.</maml:para>
         </maml:description>
-        <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
+        <command:parameterValue required="false" variableLength="true">SqlConnectionEncryption</command:parameterValue>
       </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>ConnectionTimeout</maml:name>
@@ -1987,13 +2025,6 @@ Default is 15 seconds.</maml:para>
         <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
       </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
-        <maml:name>EncryptConnection</maml:name>
-        <maml:description>
-          <maml:para>Boolean value that indicates whether SQL Server uses SSL encryption for all data sent between the client and server if the server has a certificate installed.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>FailoverPartnerServerInstance</maml:name>
         <maml:description>
           <maml:para>Specifies name or address of the partner server to connect to if the primary server is down.</maml:para>
@@ -2021,6 +2052,14 @@ When not specified, the server name from the Data Source is used for certificate
           <maml:para>Specifies the IP address family preference when establishing TCP connections.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="true">Microsoft.Data.SqlClient.SqlConnectionIPAddressPreference</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>LoadBalanceTimeout</maml:name>
+        <maml:description>
+          <maml:para>When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Load Balance Lifetime.</maml:para>
+          <maml:para>A value of zero (0) causes pooled connections to have the maximum connection timeout.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
       </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>MaxPoolSize</maml:name>
@@ -2058,6 +2097,14 @@ When not specified, the server name from the Data Source is used for certificate
         </maml:description>
         <command:parameterValue required="false" variableLength="true">System.Int32</command:parameterValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Pooling</maml:name>
+        <maml:description>
+          <maml:para>When true, any newly created connection will be added to the pool when closed.
+The next attempt to open the same connection, that connection will be drawn from the pool.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
         <maml:name>ServerInstance</maml:name>
         <maml:description>
@@ -2071,6 +2118,13 @@ When not specified, the server name from the Data Source is used for certificate
           <maml:para>Indicates whether the channel will be encrypted while bypassing walking the certificate chain to validate trust.</maml:para>
         </maml:description>
         <command:parameterValue required="false" variableLength="true">System.Boolean</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>WorkstationID</maml:name>
+        <maml:description>
+          <maml:para>The name of the workstation connecting to SQL Server.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.String</command:parameterValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes />
@@ -2103,8 +2157,6 @@ When not specified, the server name from the Data Source is used for certificate
 * Enlist
 
 * FailoverPartnerSPN
-
-* IsFixedSize
 
 * PersistSecurityInfo
 

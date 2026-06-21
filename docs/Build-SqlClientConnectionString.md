@@ -4,7 +4,7 @@ external help file: SqlServerTools-Help.xml
 HelpUri: https://github.com/netsec4u/SqlServerTools/blob/main/docs/Build-SqlClientConnectionString.md
 Locale: en-US
 Module Name: SqlServerTools
-ms.date: 05/07/2026
+ms.date: 06/14/2026
 PlatyPS schema version: 2024-05-01
 title: Build-SqlClientConnectionString
 ---
@@ -27,7 +27,7 @@ Build-SqlClientConnectionString
   [-IntegratedSecurity <bool>]
   [-ConnectionTimeout <int>]
   [-CommandTimeout <int>]
-  [-EncryptConnection <bool>]
+  [-ConnectionEncryption <SqlConnectionEncryption>]
   [-HostNameInCertificate <string>]
   [-IPAddressPreference <SqlConnectionIPAddressPreference>]
   [-TrustServerCertificate <bool>]
@@ -38,9 +38,11 @@ Build-SqlClientConnectionString
   [-MultiSubnetFailover <bool>]
   [-ConnectRetryCount <int>]
   [-ConnectRetryInterval <int>]
+  [-Pooling <bool>]
   [-MinPoolSize <int>]
   [-MaxPoolSize <int>]
-  [-ConnectionLifetime <int>]
+  [-LoadBalanceTimeout <int>]
+  [-WorkstationID <string>]
   [<CommonParameters>]
 ```
 
@@ -54,7 +56,7 @@ Build-SqlClientConnectionString
   [-FailoverPartnerServerInstance <string>]
   [-ConnectionTimeout <int>]
   [-CommandTimeout <int>]
-  [-EncryptConnection <bool>]
+  [-ConnectionEncryption <SqlConnectionEncryption>]
   [-HostNameInCertificate <string>]
   [-IPAddressPreference <SqlConnectionIPAddressPreference>]
   [-TrustServerCertificate <bool>]
@@ -65,9 +67,11 @@ Build-SqlClientConnectionString
   [-MultiSubnetFailover <bool>]
   [-ConnectRetryCount <int>]
   [-ConnectRetryInterval <int>]
+  [-Pooling <bool>]
   [-MinPoolSize <int>]
   [-MaxPoolSize <int>]
-  [-ConnectionLifetime <int>]
+  [-LoadBalanceTimeout <int>]
+  [-WorkstationID <string>]
   [<CommonParameters>]
 ```
 
@@ -164,17 +168,19 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
-### -ConnectionLifetime
+### -ConnectionEncryption
 
-When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Connection Lifetime.
-
-A value of zero (0) causes pooled connections to have the maximum connection timeout.
+Specify the encryption behavior of communication between the server and the client.
+Optional specifies that TLS encryption is optional and will negotiate encryption when the serverrequires encryption.
+Mandatory specifies TLS encryption is required when connecting to the server and if the server does not support encryption, the connection fails.
+Strict enables and requires TDS8.0 and TLS encryption to the server.
 
 ```yaml
-Type: System.Int32
-DefaultValue: 600
+Type: SqlConnectionEncryption
+DefaultValue: Optional
 SupportsWildcards: false
-Aliases: []
+Aliases:
+- EncryptConnection
 ParameterSets:
 - Name: (All)
   Position: Named
@@ -293,27 +299,6 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
-### -EncryptConnection
-
-Boolean value that indicates whether SQL Server uses SSL encryption for all data sent between the client and server if the server has a certificate installed.
-
-```yaml
-Type: System.Boolean
-DefaultValue: True
-SupportsWildcards: false
-Aliases: []
-ParameterSets:
-- Name: (All)
-  Position: Named
-  IsRequired: false
-  ValueFromPipeline: false
-  ValueFromPipelineByPropertyName: false
-  ValueFromRemainingArguments: false
-DontShow: false
-AcceptedValues: []
-HelpMessage: ''
-```
-
 ### -FailoverPartnerServerInstance
 
 Specifies name or address of the partner server to connect to if the primary server is down.
@@ -385,6 +370,29 @@ Specifies the IP address family preference when establishing TCP connections.
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnectionIPAddressPreference
 DefaultValue: None
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -LoadBalanceTimeout
+
+When a connection is returned to the pool, its creation time is compared with the current time, and the connection is destroyed if that time span (in seconds) exceeds the value specified by Load Balance Lifetime.
+
+A value of zero (0) causes pooled connections to have the maximum connection timeout.
+
+```yaml
+Type: System.Int32
+DefaultValue: 600
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -506,6 +514,28 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
+### -Pooling
+
+When true, any newly created connection will be added to the pool when closed.
+The next attempt to open the same connection, that connection will be drawn from the pool.
+
+```yaml
+Type: System.Boolean
+DefaultValue: True
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -ServerInstance
 
 The name of the SQL Server instance to connect to.
@@ -534,6 +564,27 @@ Indicates whether the channel will be encrypted while bypassing walking the cert
 ```yaml
 Type: System.Boolean
 DefaultValue: False
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
+### -WorkstationID
+
+The name of the workstation connecting to SQL Server.
+
+```yaml
+Type: System.String
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -582,8 +633,6 @@ The following connection string options are not implemented:
 * Enlist
 
 * FailoverPartnerSPN
-
-* IsFixedSize
 
 * PersistSecurityInfo
 

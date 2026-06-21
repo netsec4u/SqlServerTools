@@ -181,6 +181,12 @@ enum ScriptableServerObjectClass {
 	Trigger
 	UserDefinedMessage
 }
+
+enum SqlConnectionEncryption {
+	Mandatory
+	Optional
+	Strict
+}
 #EndRegion
 
 #Region Classes
@@ -305,17 +311,17 @@ namespace SmoRestore
 {
 	public class BackupHeader
 	{
-		private Int16 _DeviceType;
+		private Int16? _DeviceType;
 		private string _DeviceTypeDescription = null;
 
 		public string BackupName;
 		public string BackupDescription;
-		public Int16 BackupType;
+		public Int16? BackupType;
 		public string BackupTypeDescription;
-		public DateTime ExpirationDate;
-		public bool Compressed;
+		public DateTime? ExpirationDate;
+		public bool? Compressed;
 		public Int16 Position;
-		public Int16 DeviceType
+		public Int16? DeviceType
 		{
 			get
 			{
@@ -369,53 +375,53 @@ namespace SmoRestore
 		public string UserName;
 		public string ServerName;
 		public string DatabaseName;
-		public int DatabaseVersion;
-		public DateTime DatabaseCreationDate;
-		public decimal BackupSize;
-		public decimal FirstLSN;
-		public decimal LastLSN;
-		public decimal CheckpointLSN;
-		public decimal DatabaseBackupLSN;
-		public DateTime BackupStartDate;
-		public DateTime BackupFinishDate;
-		public Int16 SortOrder;
-		public Int16 CodePage;
-		public int UnicodeLocaleId;
-		public int UnicodeComparisonStyle;
-		public byte CompatibilityLevel;
-		public int SoftwareVendorId;
-		public int SoftwareVersionMajor;
-		public int SoftwareVersionMinor;
-		public int SoftwareVersionBuild;
+		public int? DatabaseVersion;
+		public DateTime? DatabaseCreationDate;
+		public decimal? BackupSize;
+		public decimal? FirstLSN;
+		public decimal? LastLSN;
+		public decimal? CheckpointLSN;
+		public decimal? DatabaseBackupLSN;
+		public DateTime? BackupStartDate;
+		public DateTime? BackupFinishDate;
+		public Int16? SortOrder;
+		public Int16? CodePage;
+		public int? UnicodeLocaleId;
+		public int? UnicodeComparisonStyle;
+		public byte? CompatibilityLevel;
+		public int? SoftwareVendorId;
+		public int? SoftwareVersionMajor;
+		public int? SoftwareVersionMinor;
+		public int? SoftwareVersionBuild;
 		public string MachineName;
-		public int Flags;
-		public Guid BindingID;
-		public Guid RecoveryForkID;
+		public int? Flags;
+		public Guid? BindingID;
+		public Guid? RecoveryForkID;
 		public string Collation;
-		public Guid FamilyGUID;
-		public bool HasBulkLoggedData;
-		public bool IsSnapshot;
-		public bool IsReadOnly;
-		public bool IsSingleUser;
-		public bool HasBackupChecksums;
-		public bool IsDamaged;
-		public bool BeginsLogChain;
-		public bool HasIncompleteMetaData;
-		public bool IsForceOffline;
-		public bool IsCopyOnly;
-		public Guid FirstRecoveryForkID;
+		public Guid? FamilyGUID;
+		public bool? HasBulkLoggedData;
+		public bool? IsSnapshot;
+		public bool? IsReadOnly;
+		public bool? IsSingleUser;
+		public bool? HasBackupChecksums;
+		public bool? IsDamaged;
+		public bool? BeginsLogChain;
+		public bool? HasIncompleteMetaData;
+		public bool? IsForceOffline;
+		public bool? IsCopyOnly;
+		public Guid? FirstRecoveryForkID;
 		public decimal? ForkPointLSN;
 		public string RecoveryModel;
 		public decimal? DifferentialBaseLSN;
 		public Guid? DifferentialBaseGUID;
-		public Guid BackupSetGUID;
-		public Int64 CompressedBackupSize;
-		public Int16 containment;
+		public Guid? BackupSetGUID;
+		public Int64? CompressedBackupSize;
+		public Int16? containment;
 		public string KeyAlgorithm;
 		public Byte[] EncryptorThumbprint;
 		public string EncryptorType;
 		public DateTime? LastValidRestoreTime;
-		public Int16 TimeZone;
+		public Int16? TimeZone;
 		public string CompressionAlgorithm;
 	}
 
@@ -13762,6 +13768,7 @@ function Build-SqlClientConnectionString {
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[ValidateLength(1,128)]
+		[Alias('InitialCatalog')]
 		[string]$DatabaseName,
 
 		[Parameter(
@@ -13770,6 +13777,7 @@ function Build-SqlClientConnectionString {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'IntegratedSecurity'
 		)]
+		[Alias('TrustedConnection')]
 		[bool]$IntegratedSecurity = $true,
 
 		[Parameter(
@@ -13801,7 +13809,8 @@ function Build-SqlClientConnectionString {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[bool]$EncryptConnection = $true,
+		[Alias('EncryptConnection')]
+		[SqlConnectionEncryption]$ConnectionEncryption = [SqlConnectionEncryption]::Optional,
 
 		[Parameter(
 			Mandatory = $false,
@@ -13882,6 +13891,13 @@ function Build-SqlClientConnectionString {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[bool]$Pooling = $true,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
 		[ValidateRange(0, [int]::MaxValue)]
 		[int]$MinPoolSize = 0,
 
@@ -13899,15 +13915,35 @@ function Build-SqlClientConnectionString {
 			ValueFromPipelineByPropertyName = $false
 		)]
 		[ValidateRange(0, [int]::MaxValue)]
-		[int]$ConnectionLifetime = 600
+		[Alias('ConnectionLifetime')]
+		[int]$LoadBalanceTimeout = 600,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1,128)]
+		[string]$WorkstationID = [System.Net.Dns]::GetHostName()
 	)
 
 	begin {
-		$SqlConnectionStringBuilder = [Microsoft.Data.SqlClient.SqlConnectionStringBuilder]::New()
+		if ($TrustServerCertificate) {
+			if ($ConnectionEncryption -eq 'Strict') {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('TrustServerCertificate is not valid when ConnectionEncryption is Strict.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidOperation,
+					$PSCmdlet.ParameterSetName
+				)
+			}
+		}
 	}
 
 	process {
 		try {
+			$SqlConnectionStringBuilder = [Microsoft.Data.SqlClient.SqlConnectionStringBuilder]::New()
+
 			$SqlInstanceName = Format-SqlInstanceName -ServerInstance $ServerInstance
 
 			$SqlConnectionStringBuilder['Data Source'] = $SqlInstanceName.SqlInstanceName
@@ -13927,39 +13963,70 @@ function Build-SqlClientConnectionString {
 				$SqlConnectionStringBuilder['Password'] = $Credential.GetNetworkCredential().Password
 			}
 
-			if ($PSBoundParameters.ContainsKey('EncryptConnection')) {
-				if ($EncryptConnection) {
-					$SqlConnectionStringBuilder['Encrypt'] = [Microsoft.Data.SqlClient.SqlConnectionEncryptOption]::Mandatory.ToString()
-				} else {
-					$SqlConnectionStringBuilder['Encrypt'] = [Microsoft.Data.SqlClient.SqlConnectionEncryptOption]::Optional.ToString()
-				}
-			} else {
-				$SqlConnectionStringBuilder['Encrypt'] = [Microsoft.Data.SqlClient.SqlConnectionEncryptOption]::Optional.ToString()
+			$SqlConnectionStringBuilder['Pooling'] = $Pooling
+
+			if ($PSBoundParameters.ContainsKey('MinPoolSize')) {
+				$SqlConnectionStringBuilder['Min Pool Size'] = $MinPoolSize
 			}
 
+			if ($PSBoundParameters.ContainsKey('MaxPoolSize')) {
+				$SqlConnectionStringBuilder['Max Pool Size'] = $MaxPoolSize
+			}
+
+			if ($PSBoundParameters.ContainsKey('MultipleActiveResultSets')) {
+				$SqlConnectionStringBuilder['MultipleActiveResultSets'] = $MultipleActiveResultSets
+			}
+
+			if ($PSBoundParameters.ContainsKey('ConnectionTimeout')) {
+				$SqlConnectionStringBuilder['Connect Timeout'] = $ConnectionTimeout
+			}
+
+			[Microsoft.Data.SqlClient.SqlConnectionEncryptOption]$SqlConnectionEncryptOption = $ConnectionEncryption.ToString()
+
+			$SqlConnectionStringBuilder['Encrypt'] = $SqlConnectionEncryptOption.ToString()
+
 			if ($PSBoundParameters.ContainsKey('HostNameInCertificate')) {
-				$SqlConnectionStringBuilder['HostNameInCertificate'] = $HostNameInCertificate
+				$SqlConnectionStringBuilder['Host Name In Certificate'] = $HostNameInCertificate
+			}
+
+			if ($PSBoundParameters.ContainsKey('TrustServerCertificate')) {
+				$SqlConnectionStringBuilder['Trust Server Certificate'] = $TrustServerCertificate
+			}
+
+			if ($PSBoundParameters.ContainsKey('LoadBalanceTimeout')) {
+				$SqlConnectionStringBuilder['Load Balance Timeout'] = $LoadBalanceTimeout
+			}
+
+			if ($PSBoundParameters.ContainsKey('PacketSize')) {
+				$SqlConnectionStringBuilder['Packet Size'] = $PacketSize
+			}
+
+			$SqlConnectionStringBuilder['Application Name'] = $ApplicationName
+			$SqlConnectionStringBuilder['Workstation ID'] = $WorkstationID
+
+			if ($PSBoundParameters.ContainsKey('ApplicationIntent')) {
+				$SqlConnectionStringBuilder['Application Intent'] = $ApplicationIntent
+			}
+
+			if ($PSBoundParameters.ContainsKey('MultiSubnetFailover')) {
+				$SqlConnectionStringBuilder['Multi Subnet Failover'] = $MultiSubnetFailover
+			}
+
+			if ($PSBoundParameters.ContainsKey('ConnectRetryCount')) {
+				$SqlConnectionStringBuilder['Connect Retry Count'] = $ConnectRetryCount
+			}
+
+			if ($PSBoundParameters.ContainsKey('ConnectRetryInterval')) {
+				$SqlConnectionStringBuilder['Connect Retry Interval'] = $ConnectRetryInterval
+			}
+
+			if ($PSBoundParameters.ContainsKey('CommandTimeout')) {
+				$SqlConnectionStringBuilder['Command Timeout'] = $CommandTimeout
 			}
 
 			if ($PSBoundParameters.ContainsKey('IPAddressPreference')) {
-				$SqlConnectionStringBuilder['IPAddressPreference'] = $IPAddressPreference
+				$SqlConnectionStringBuilder['IP Address Preference'] = $IPAddressPreference
 			}
-
-			$SqlConnectionStringBuilder['Pooling'] = $true
-			$SqlConnectionStringBuilder['Min Pool Size'] = $MinPoolSize
-			$SqlConnectionStringBuilder['Max Pool Size'] = $MaxPoolSize
-			$SqlConnectionStringBuilder['Connection Lifetime'] = $ConnectionLifetime
-			$SqlConnectionStringBuilder['Connect Timeout'] = $ConnectionTimeout
-			$SqlConnectionStringBuilder['Command Timeout'] = $CommandTimeout
-			$SqlConnectionStringBuilder['TrustServerCertificate'] = $TrustServerCertificate
-			$SqlConnectionStringBuilder['Packet Size'] = $PacketSize
-			$SqlConnectionStringBuilder['Application Name'] = $ApplicationName
-			$SqlConnectionStringBuilder['Workstation ID'] = [System.Net.Dns]::GetHostName()
-			$SqlConnectionStringBuilder['ApplicationIntent'] = $ApplicationIntent
-			$SqlConnectionStringBuilder['MultipleActiveResultSets'] = $MultipleActiveResultSets
-			$SqlConnectionStringBuilder['MultiSubnetFailover'] = $MultiSubnetFailover
-			$SqlConnectionStringBuilder['ConnectRetryCount'] = $ConnectRetryCount
-			$SqlConnectionStringBuilder['ConnectRetryInterval'] = $ConnectRetryInterval
 
 			$SqlConnectionStringBuilder.ConnectionString
 		}
