@@ -2780,8 +2780,7 @@ function Disable-SmoDatabaseQueryStore {
 		try {
 			$QueryStoreOptions = $DatabaseObject.QueryStoreOptions
 
-			$QueryStoreOptions.QueryStoreOperationMode = [Microsoft.SqlServer.Management.Smo.QueryStoreOperationMode]::Off
-
+			$QueryStoreOptions.DesiredState = [Microsoft.SqlServer.Management.Smo.QueryStoreOperationMode]::Off
 
 			if ($PSCmdlet.ShouldProcess($DatabaseObject.name, 'Disabling Query Store')) {
 				$QueryStoreOptions.PurgeQueryStoreData()
@@ -3023,7 +3022,7 @@ function Enable-SmoDatabaseQueryStore {
 		try {
 			$QueryStoreOptions = $DatabaseObject.QueryStoreOptions
 
-			$QueryStoreOptions.QueryStoreOperationMode = [Microsoft.SqlServer.Management.Smo.QueryStoreOperationMode]::ReadWrite
+			$QueryStoreOptions.DesiredState = [Microsoft.SqlServer.Management.Smo.QueryStoreOperationMode]::ReadWrite
 			$QueryStoreOptions.QueryCaptureMode = [Microsoft.SqlServer.Management.Smo.QueryStoreCaptureMode]::Auto
 			$QueryStoreOptions.MaxPlansPerQuery = 200
 			$QueryStoreOptions.MaxStorageSizeInMB = 2048
@@ -12948,7 +12947,9 @@ function Set-SmoDatabaseQueryStore {
 			}
 
 			foreach ($Parameter in $PSBoundParameters.GetEnumerator()) {
-				if ($Parameter.Key -notin @('ServerInstance', 'DatabaseName', 'DatabaseObject')) {
+				if ($Parameter.Key -eq 'QueryStoreOperationMode') {
+					$QueryStoreOptions.DesiredState = $Parameter.Value
+				} elseif ($Parameter.Key -notin @('ServerInstance', 'DatabaseName', 'DatabaseObject')) {
 					$QueryStoreOptions.$($Parameter.Key) = $Parameter.Value
 				}
 			}

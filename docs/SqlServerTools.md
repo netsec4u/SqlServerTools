@@ -52,7 +52,7 @@ Add member to server role.
 
 ### [Build-SqlClientConnectionString](Build-SqlClientConnectionString.md)
 
-Builds connection strings for a SQL Server database.
+Builds connection strings for a SQL Server connection.
 
 ### [Clear-SmoDatabaseQueryStore](Clear-SmoDatabaseQueryStore.md)
 

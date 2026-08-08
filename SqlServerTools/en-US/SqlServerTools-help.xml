@@ -1611,7 +1611,7 @@ Add-SmoServerRoleMember -SmoServerObject $SmoServerObject -RoleName MyServerRole
     <command:details>
       <command:name>Build-SqlClientConnectionString</command:name>
       <maml:description>
-        <maml:para>Builds connection strings for a SQL Server database.</maml:para>
+        <maml:para>Builds connection strings for a SQL Server connection.</maml:para>
       </maml:description>
       <command:verb>Build</command:verb>
       <command:noun>SqlClientConnectionString</command:noun>

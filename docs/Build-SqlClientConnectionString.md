@@ -13,7 +13,7 @@ title: Build-SqlClientConnectionString
 
 ## SYNOPSIS
 
-Builds connection strings for a SQL Server database.
+Builds connection strings for a SQL Server connection.
 
 ## SYNTAX
 

@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.7.2.0'
+ModuleVersion = '3.7.2.1'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
