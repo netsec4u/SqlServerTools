@@ -92,7 +92,7 @@ Disconnects connections to SQL Server.
 
 ### [Enable-SmoDatabaseQueryStore](Enable-SmoDatabaseQueryStore.md)
 
-Enables query store.
+Enable query store.
 
 ### [Enable-SmoTransparentDatabaseEncryption](Enable-SmoTransparentDatabaseEncryption.md)
 
@@ -445,4 +445,8 @@ Test SQL Browser connectivity.
 ### [Test-SqlConnection](Test-SqlConnection.md)
 
 Test SQL Server connectivity.
+
+### [Update-SmoSqlLoginPassword](Update-SmoSqlLoginPassword.md)
+
+Update SQL login password.
 

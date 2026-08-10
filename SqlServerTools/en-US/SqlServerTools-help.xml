@@ -15473,13 +15473,13 @@ Remove-SmoDatabaseSchema -DatabaseObject $DatabaseObject -SchemaName HL7</dev:co
     <command:details>
       <command:name>Remove-SmoDatabaseSymmetricKey</command:name>
       <maml:description>
-        <maml:para>Removes a database asymmetric key.</maml:para>
+        <maml:para>Removes a database symmetric key.</maml:para>
       </maml:description>
       <command:verb>Remove</command:verb>
       <command:noun>SmoDatabaseSymmetricKey</command:noun>
     </command:details>
     <maml:description>
-      <maml:para>Removes a database asymmetric key.</maml:para>
+      <maml:para>Removes a database symmetric key.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -21730,6 +21730,144 @@ Default is 15 seconds.</maml:para>
       <maml:navigationLink>
         <maml:linkText>Online Version</maml:linkText>
         <command:uri>https://github.com/netsec4u/SqlServerTools/blob/main/docs/Test-SqlConnection.md</command:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command>
+    <command:details>
+      <command:name>Update-SmoSqlLoginPassword</command:name>
+      <maml:description>
+        <maml:para>Update SQL login password.</maml:para>
+      </maml:description>
+      <command:verb>Update</command:verb>
+      <command:noun>SmoSqlLoginPassword</command:noun>
+    </command:details>
+    <maml:description>
+      <maml:para>Update SQL login password.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Update-SmoSqlLoginPassword
+</maml:name>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>LoginName</maml:name>
+          <maml:description>
+            <maml:para>Login name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>NewPassword</maml:name>
+          <maml:description>
+            <maml:para>Password for login.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.Security.SecureString</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>Password</maml:name>
+          <maml:description>
+            <maml:para>Password for login.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.Security.SecureString</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>ServerInstance</maml:name>
+          <maml:description>
+            <maml:para>The name of the SQL Server instance to connect to.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+          </maml:description>
+          <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>LoginName</maml:name>
+        <maml:description>
+          <maml:para>Login name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>NewPassword</maml:name>
+        <maml:description>
+          <maml:para>Password for login.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.Security.SecureString</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>Password</maml:name>
+        <maml:description>
+          <maml:para>Password for login.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.Security.SecureString</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>ServerInstance</maml:name>
+        <maml:description>
+          <maml:para>The name of the SQL Server instance to connect to.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.String</command:parameterValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Runs the command in a mode that only reports what would happen without performing the actions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="true">System.Management.Automation.SwitchParameter</command:parameterValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes />
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <dev:name>System.Void</dev:name>
+        </dev:type>
+        <maml:description>
+          <maml:para />
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para />
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--------- Example 1 ---------</maml:title>
+        <maml:introduction>
+        </maml:introduction>
+        <dev:code>Update-SmoSqlLoginPassword -ServerInstance MyServer -LoginName DBUser -Password $(Read-Host "Enter current password" -AsSecureString) -NewPassword $(Read-Host "Enter new password" -AsSecureString)</dev:code>
+        <dev:remarks>
+          <maml:para>Updates the password for the specified SQL login.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version</maml:linkText>
+        <command:uri>https://github.com/netsec4u/SqlServerTools/blob/main/docs/Update-SmoSqlLoginPassword.md</command:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

@@ -7856,6 +7856,7 @@ function New-SmoDatabaseUser {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidatePassword()]
 		[System.Security.SecureString]$Password,
 
 		[Parameter(
@@ -8145,6 +8146,7 @@ function New-SmoSqlLogin {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'SmoServer_SqlLogin'
 		)]
+		[ValidatePassword()]
 		[System.Security.SecureString]$Password,
 
 		[Parameter(
@@ -13285,6 +13287,7 @@ function Set-SmoDatabaseUser {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidatePassword()]
 		[System.Security.SecureString]$Password,
 
 		[Parameter(
@@ -13563,6 +13566,7 @@ function Set-SmoSqlLogin {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
+		[ValidatePassword()]
 		[System.Security.SecureString]$Password,
 
 		[Parameter(
@@ -13678,6 +13682,84 @@ function Set-SmoSqlLogin {
 	end {
 	}
 }
+
+function Update-SmoSqlLoginPassword {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium'
+	)]
+
+	[OutputType([void])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$LoginName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.Security.SecureString]$Password,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidatePassword()]
+		[System.Security.SecureString]$NewPassword
+	)
+
+	begin {
+	}
+
+	process {
+		try {
+			$SqlConnectionInfo = [Microsoft.SqlServer.Management.Common.SqlConnectionInfo]::New()
+			$SqlConnectionInfo.ServerName = $ServerInstance
+			$SqlConnectionInfo.AuthenticationType = [Microsoft.SqlServer.Management.Common.SqlConnectionInfo+AuthenticationMethod]::SqlPassword
+			$SqlConnectionInfo.UserName = $LoginName
+			$SqlConnectionInfo.SecurePassword = $Password
+
+			$ServerConnection = [Microsoft.SqlServer.Management.Common.ServerConnection]::New($SqlConnectionInfo)
+			$SmoServer = [Microsoft.SqlServer.Management.Smo.Server]::New($ServerConnection)
+
+			if ($PSCmdlet.ShouldProcess($LoginName, "Update login password.")) {
+				$SmoServer.ChangePassword($Password, $NewPassword)
+			}
+		}
+		catch {
+			throw $_
+		}
+	}
+
+	end {
+	}
+}
+
 #EndRegion
 
 #Region SQL Client Functions

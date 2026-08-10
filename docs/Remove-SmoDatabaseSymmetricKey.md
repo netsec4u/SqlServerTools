@@ -13,7 +13,7 @@ title: Remove-SmoDatabaseSymmetricKey
 
 ## SYNOPSIS
 
-Removes a database asymmetric key.
+Removes a database symmetric key.
 
 ## SYNTAX
 
@@ -49,7 +49,7 @@ This cmdlet has the following aliases:
 
 ## DESCRIPTION
 
-Removes a database asymmetric key.
+Removes a database symmetric key.
 
 ## EXAMPLES
 

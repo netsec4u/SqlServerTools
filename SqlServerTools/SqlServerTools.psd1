@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.7.2.1'
+ModuleVersion = '3.7.3.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -174,7 +174,8 @@ FunctionsToExport = @(
 	'Publish-SqlDatabaseDacPac',
 	'Save-SqlClientDataSet',
 	'Test-SqlBrowserConnection',
-	'Test-SqlConnection'
+	'Test-SqlConnection',
+	'Update-SmoSqlLoginPassword'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
