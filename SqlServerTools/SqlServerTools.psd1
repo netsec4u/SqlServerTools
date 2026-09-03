@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.7.3.0'
+ModuleVersion = '3.7.4.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -44,7 +44,7 @@ PowerShellVersion = '5.1'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-	@{ModuleName="SqlServer"; ModuleVersion="22.3.0"; GUID="97c3b589-6545-4107-a061-3fe23a4e9195"}
+	@{ModuleName='SqlServer'; ModuleVersion='22.4.5.1'; GUID='97c3b589-6545-4107-a061-3fe23a4e9195'}
 )
 
 # Assemblies that must be loaded prior to importing this module

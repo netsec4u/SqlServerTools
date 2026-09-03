@@ -313,6 +313,7 @@ namespace SmoRestore
 	{
 		private Int16? _DeviceType;
 		private string _DeviceTypeDescription = null;
+		private Int16? _TimeZone;
 
 		public string BackupName;
 		public string BackupDescription;
@@ -421,7 +422,24 @@ namespace SmoRestore
 		public Byte[] EncryptorThumbprint;
 		public string EncryptorType;
 		public DateTime? LastValidRestoreTime;
-		public Int16? TimeZone;
+		public Int16? TimeZone
+		{
+			get
+			{
+				return _TimeZone;
+			}
+			set
+			{
+				if (value < -48 || value > 48 || value == 127)
+				{
+					_TimeZone = 0;
+				}
+				else
+				{
+					_TimeZone = (Int16)(value * 15);
+				}
+			}
+		}
 		public string CompressionAlgorithm;
 	}
 
