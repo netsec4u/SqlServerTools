@@ -6818,7 +6818,6 @@ function New-SmoDatabaseCertificate {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'DatabaseObject-CertFileWithKey'
 		)]
-		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo][TransformPath()]$CertificatePath,
 
 		[Parameter(
@@ -6833,7 +6832,6 @@ function New-SmoDatabaseCertificate {
 			ValueFromPipelineByPropertyName = $false,
 			ParameterSetName = 'DatabaseObject-CertFileWithKey'
 		)]
-		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo][TransformPath()]$PrivateKeyPath,
 
 		[Parameter(
@@ -6873,6 +6871,20 @@ function New-SmoDatabaseCertificate {
 				}
 
 				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+
+			if ($DatabaseObject.Parent.ConnectionContext.LoginSecure) {
+				if ($PSBoundParameters.ContainsKey('CertificatePath')) {
+					if (([System.Uri]$CertificatePath.FullName).IsUnc) {
+						Write-Warning -Message "The certificate path is a UNC path. UNC paths may require Kerberos Constrained Delegation to access the file from the SQL Server instance."
+					}
+				}
+
+				if ($PSBoundParameters.ContainsKey('PrivateKeyPath')) {
+					if (([System.Uri]$PrivateKeyPath.FullName).IsUnc) {
+						Write-Warning -Message "The private key path is a UNC path. UNC paths may require Kerberos Constrained Delegation to access the file from the SQL Server instance."
+					}
+				}
 			}
 		}
 		catch {
@@ -15353,8 +15365,8 @@ catch {
 # SIG # Begin signature block
 # MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCD6oy5nazWkFboh
-# Hk6BMApjEN1qk5ks9tJbsr/LYK9zpKCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAFc7/7AoJTH0C+
+# IOs3ZD/S58CK4PdKF99XeKMws1DkYqCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -15534,34 +15546,34 @@ catch {
 # Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB
 # nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIDjEa95H/J7OKnO1yrPH
-# 0kGFmu8vZzaaRcSmrRjQDr2sMA0GCSqGSIb3DQEBAQUABIICACxA4HuFYeonybJK
-# vAuw8VYGHiAPWXCMU41Q89EkKpOEZMQIrdKpc6ru/oO+4eMBjDZvggW6Sab2/PI1
-# BzCBBvAGpBFSBgd88LtP7+9U8n3CYhWmymftq+DlJKyCfINuA7/eyUNsTGLbe5eB
-# qSUbR0ZDtYb0dATnW94WZcDK9UGR8YM37AXDOSCrs87nGEmNUOaqDxn/uOTfbiMb
-# 9yFNEbu9x6rmDcq+CA0MpYdWXOZXUCOmr2js834OZ19EdgWWevIc4cVuZjEKUC4R
-# AIUedGH0376NwCGeXdSsDIhz5msKpkQONtLhHnYFn9IwAFGQEujIDyq8M4ay1I4q
-# KIqIAotqamSJ/LzgxIy6RdSt8ts1o23fx5tyQoeq/GJXnmf4aOKlVbwHyoyuiGHM
-# zrNxEUnba4yP0KwBdPiky7nl8l4RjJDpjh2/yFjRbzTnFV78/+GtU5UjU7ySQ+vn
-# /8WM5aNaIXj8ln1jehkZ9N9n8YM0Dfw+woy3WDtuH6YkHpZAPmPHSM0MrEHs+ji6
-# wkDnTJZIrWY0ozAuTNENxVhfVaM+jI0jb1KW6jtsZwR0ekUIurMXvzD1HEs7tY+q
-# eMtvGmzDFqGAmp2FWE/Sec1ZgJ3m8zvQsWdkDAJ9uUoIpN16GvC2UAtyEGLHHCij
-# iyTEDjjs8jYeV0MAOTwYcw6fA5FqoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
+# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIGx3PwhIerRdat1hwd8k
+# jT1YweCuvsinrYKlTCVIkLr7MA0GCSqGSIb3DQEBAQUABIICABKLT810V0L6Ri+E
+# nSvoIf11XNcp0V6xCBlvTSSgIYE7jkKbuhc5SSMGPms8l6CSlqVKHraCCOUnA7x+
+# pQRB/AnXlnEZ5STCXNNSxM5GxgGFTR7/CNKt1z0/n8E2kANtvc0IODYZ1MCHExP5
+# rERqgX5xI8O0L9YOH/804/lvKBPf1OBfAi3FEBK57E6PPddLo/rcEZ96VgpV18As
+# sxeDZofxwAZVnqD68Cr5Upo3lvzmGPwUJQ5ZQrtqCvWkmQMpy1QV+Luocrb7Y7HC
+# PAGUY1+fPXnyjPQOnApqAND+j/eQ7TV/XdnhrtE8T+AJsRV4meGuN+bKQvAjT7xt
+# zP4DPLRpduPG1At4it1mxK+372loNKmiTONUpFo9DM0TxL2zxzUhD8hhwH5noSXT
+# NTJf6Jn7K02po2M8IReTG4t0AR5pmlm7j8hH6J2Jfhv3Cjw83S6GsXQmTCN7sZMM
+# YpN5OwZhO5Cw5b1/k6QLvEqrmLxVa09Sjz8aJvT7cgnRb+61IPAolHK58+0DGoJS
+# PxmO+j20QjZ0ejaqFrGgWrZZPDtuENx5WIDgIZwbJ/EvjBMHmcO5KVZNHz6eeP2A
+# sgEJq+I2ZyHuR29NgBGX13LiVOAhKhUZGpyi+5fFpbpORyYOUwfQLI6Bl77sLFoy
+# tJxFUcmoODEZU1Y09Rax+N6Xf77foYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
 # AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw
 # PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2
 # IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF
 # AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2
-# MDkxMzE5MzcxNFowLwYJKoZIhvcNAQkEMSIEIK+UvW8gFhEF8OhwlVZQnHoHC+7A
-# pjG2+O2V/jqAG6KZMA0GCSqGSIb3DQEBAQUABIICAHVY1+S6v6WIEEYJmh4gUWFT
-# PaMhbKc8O8goLbR1VB0akIFWANtqBJBPvkoxoCJso91SUD9GTCB+Wwn3r/RtB27L
-# MBmkalHBOxBZazIoETmdSVeLftGmOyy7rsBcpzEjmyC4gcy+/2R8JkLROcGlTR+u
-# KjNW4yyE8CpjYaPlPhTlJ/WcCjl0QuRXvAmzrnsJpufGiuRNhqtfCLn5aziQQuBV
-# JnQquzZcy4NoZMaKAnSX+JcHG679Kdq0JqEu4HvzHaDGZrin+m/oJBOzaJHozJns
-# 0QrZvye82i/iw6oDijY3EFIdJ+nZOXcogli/O1NBM2YnmXlMoPfwIO1yObO7j0TX
-# vgTWsA408GxI8ilEcNUy6OZID2ZWgzMppwuayU/vPP7hVZ8q/y43RUgXLvi9+Qje
-# xKcfvJ1DEfC24rVjbx9kY7dy96vh16WD+Rb8mPhXmQbTGEr6gUasR/tUJi1mCzs8
-# 3XGAqqVa6CyDgoSWCo3TqhPVcW6tJYWF9ogZIBzB7X16++fmGfbCX4Vv13X/uiCN
-# 8psoRRn5zSA2AdDv40p9OJUnK3U4jXZlifRKxxHFZ/xtVCbysLPiDtUglsnZBG4e
-# ZFxTI0sW0vctmsKcSSj/FV2Z2cvUelFVM8570gtCSPgbIm2AoEnffGKWYxaNQgl5
-# pngfU5ahyP4G0GZot2v2
+# MDkyOTAxMTM1MFowLwYJKoZIhvcNAQkEMSIEIIwBeYSXhyCplOefNQXZIE+HPHFU
+# UaAFHEZ4cQrnCbgKMA0GCSqGSIb3DQEBAQUABIICAEZu9kAvDoUsENUx2BySZV7s
+# M0qfpmgeI3kVR3URh/jEDlaR3lU1AdPzzK+lNJMyFxK6g++di2M34Fgou3Xc9MMQ
+# QGFHFdn7OrnRuorGXF33eotXWk8T6G6WHwJ9JpBenPyQS7RYqJL2Oihywa5BIvWl
+# M7zDVM21jw0xsZ6JWdoxDD8bMLbBGpceQZW58guFwYxjzlGZ7oBA5J/JkhpBLCvH
+# 5AohbslyzBTRJyODh2D12bY3WXpmZzhYJ81pW9sJn4lqtI7yReAOJx3tAM/uy/ev
+# Lcr0oEeMwytoA73OlxjjJFSvQ0x+zP8t5agubbsLZndddu9yqRcHaFFlMPcjx0Ok
+# JobWy5wwYXL7sjhGjxuGn/TZp4oNpZIJueWPAQ5qFLl7b65V17AWCVCBUsMZvgag
+# yz+5fOGP05rqTRpy1XGWjPIBpCflhhuOznXRxg1WX5yLi3QJO0inlL9zEYDusDMh
+# MS1K5+5TZEnW8MRaQa4abjfakqwMUcTicjF5rh+E+7sVb6WyBOGdTlQiYOvCtl4/
+# HYWo5nWoz2bX0RLslvNBRDU8BV0LbhrpI5QvGVaJa05xpWXwQF0/UnZ+TgHyvgCT
+# R1igqsVgWH8Ud6aXFz9uDO9X2lgrpiWHjlHX+QQfBI4L63BPdBpDq1qVs1AFC+qc
+# d4s29V7BA6dEGJA4cCI6
 # SIG # End signature block
