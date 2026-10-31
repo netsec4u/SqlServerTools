@@ -108,7 +108,7 @@ SQL Server Connection string.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -129,7 +129,7 @@ Path to DacPac file.
 
 ```yaml
 Type: System.IO.FileInfo
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -150,7 +150,7 @@ Name of database.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -171,7 +171,7 @@ Defines options that affect the behavior of package deployment to a database.
 
 ```yaml
 Type: Microsoft.SqlServer.Dac.DacDeployOptions
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -192,7 +192,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

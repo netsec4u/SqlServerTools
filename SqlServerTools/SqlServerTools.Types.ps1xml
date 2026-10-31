@@ -44,6 +44,34 @@
 		</Members>
 	</Type>
 	<Type>
+		<Name>SmoRestore.BackupLabel</Name>
+		<Members>
+			<MemberSet>
+				<Name>PSStandardMembers</Name>
+				<Members>
+					<PropertySet>
+						<Name>DefaultDisplayPropertySet</Name>
+						<ReferencedProperties>
+							<Name>MediaName</Name>
+							<Name>MediaSetId</Name>
+							<Name>FamilyCount</Name>
+							<Name>FamilySequenceNumber</Name>
+							<Name>MediaFamilyId</Name>
+							<Name>MediaSequenceNumber</Name>
+							<Name>MediaLabelPresent</Name>
+							<Name>MediaDescription</Name>
+							<Name>SoftwareName</Name>
+							<Name>SoftwareVendorId</Name>
+							<Name>MediaDate</Name>
+							<Name>MirrorCount</Name>
+							<Name>IsCompressed</Name>
+						</ReferencedProperties>
+					</PropertySet>
+				</Members>
+			</MemberSet>
+		</Members>
+	</Type>
+	<Type>
 		<Name>SmoRestore.FileList</Name>
 		<Members>
 			<MemberSet>
@@ -80,13 +108,72 @@
 			</MemberSet>
 		</Members>
 	</Type>
+	<Type>
+		<Name>SqlServerTools.BackupLogicalFile</Name>
+		<Members>
+			<MemberSet>
+				<Name>PSStandardMembers</Name>
+				<Members>
+					<PropertySet>
+						<Name>DefaultDisplayPropertySet</Name>
+						<ReferencedProperties>
+							<Name>LogicalFileName</Name>
+							<Name>Pages</Name>
+						</ReferencedProperties>
+					</PropertySet>
+				</Members>
+			</MemberSet>
+		</Members>
+	</Type>
+	<Type>
+		<Name>SqlServerTools.Backup</Name>
+		<Members>
+			<MemberSet>
+				<Name>PSStandardMembers</Name>
+				<Members>
+					<PropertySet>
+						<Name>DefaultDisplayPropertySet</Name>
+						<ReferencedProperties>
+							<Name>DatabaseName</Name>
+							<Name>BackupType</Name>
+							<Name>Pages</Name>
+							<Name>Seconds</Name>
+							<Name>MBPerSecond</Name>
+							<Name>LogicalFiles</Name>
+						</ReferencedProperties>
+					</PropertySet>
+				</Members>
+			</MemberSet>
+		</Members>
+	</Type>
+	<Type>
+		<Name>SqlServerTools.Restore</Name>
+		<Members>
+			<MemberSet>
+				<Name>PSStandardMembers</Name>
+				<Members>
+					<PropertySet>
+						<Name>DefaultDisplayPropertySet</Name>
+						<ReferencedProperties>
+							<Name>DatabaseName</Name>
+							<Name>RestoreType</Name>
+							<Name>Pages</Name>
+							<Name>Seconds</Name>
+							<Name>MBPerSecond</Name>
+							<Name>LogicalFiles</Name>
+						</ReferencedProperties>
+					</PropertySet>
+				</Members>
+			</MemberSet>
+		</Members>
+	</Type>
 </Types>
 
 <!-- SIG # Begin signature block -->
 <!-- MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor -->
 <!-- BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG -->
-<!-- KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDWpGJ6NAnDZPm/ -->
-<!-- EOGV4QwtwJQRHqoVNtmOFA0BvNCriKCCINswggWNMIIEdaADAgECAhAOmxiO+dAt -->
+<!-- KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCNXOcG3lAxOsIe -->
+<!-- VuQ1DOlYi5yHbc72ftKwnvcpqYpa96CCINswggWNMIIEdaADAgECAhAOmxiO+dAt -->
 <!-- 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK -->
 <!-- EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV -->
 <!-- BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa -->
@@ -266,34 +353,34 @@
 <!-- Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB -->
 <!-- nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI -->
 <!-- oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB -->
-<!-- CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIFfFLgsw+bHkOUhhE/Xv -->
-<!-- GQwNjyKvu47tE7A3ePnLlmJLMA0GCSqGSIb3DQEBAQUABIICAAVy3xgNubo0evE0 -->
-<!-- +aGp4BTuV5t78kr3WGDuaJYVsHDkMfgvTStrNTL7J4adNLGs5i0H8kG767dd+hEY -->
-<!-- 4XrQYlsHNPWjBoF1RQcaXfmKMvz3mAEaef+DqgprF8mnTiSFmFqpvW2GWAYm6fYH -->
-<!-- jlkX17BoGgCeiuTfRZZBeFYcq4o1APn1RbfEppVWnQA2pF7kLucHY6bSO5VhrooO -->
-<!-- 5dp1wyk9YA3UF86jd6LqEPSK0tJphldfHt5W3mddJDLEQrJujLHQyF9B3d59ceCa -->
-<!-- IslkSsWWq7CTxibJ0scKZw8MkjEDCHVJiUesM2E8jApJhMBu0IvIZvV7KGC7jfT/ -->
-<!-- uCjQrd2nmaXlPy5j5KD8wr3wm9A9pCcDNtelbDD1nJsEU+BmxYJMnZZznEdm8Jhs -->
-<!-- dzHQV8KWkELYu1iKsvr7Bfg16C2WQ/BIwcYIMPNFbUoEL0c+D7tPU7O1CMV4esEc -->
-<!-- yA+nJLxX8EBHF+YaQPEUJ78PTRPEERFlpxsJsus+xWrMJ6/w107zRY6+amYRY91w -->
-<!-- rcOXPKv/ZcMAG4MqtYQK8Tpyl1tVF/CsISr8DwkGkQPsMqK+CMwX2WKo0PGcRUtk -->
-<!-- mpYX2Rl937FYgF8aRcahcoQq4fSe28GkEGv33iRnqieMLMYJ2nVwoOtPpkVRx4GF -->
-<!-- sygcGEx4fpwWyRKrK09snQQXajBmoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP -->
+<!-- CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEICLsclBlHJwknrg4WtxV -->
+<!-- d2HyOoD2fnJuOL2jCox660EPMA0GCSqGSIb3DQEBAQUABIICAJ9xo1TX+n3wpWAt -->
+<!-- 8e0YxJzhxVgPRwZgfUFiGP5XYPDFt3dmvGp7fMo6zOBUae/6PW/XSC4Lt2EMJbw3 -->
+<!-- gimupO8s/Pl7D0qNptZ/ooT/DFUSzirZ05zKMK7/x76bCxeYzK72fSAT6lQIWGb6 -->
+<!-- 5KXiigMt6kd1lK0e8QG3JlBK0dFHRG0wvQ1w3Tr2FpyCCRSUcTWV22y8CvEvEdG9 -->
+<!-- sBXoU57cmejoYrA+tHLZc1U1Z+EL5YmnEEoPcLRnCxOoNk6vFIG5auSERE4JcGDC -->
+<!-- DNdOLS07FfHwwKKW5mXSfLunWVSok1mr0GNLQpDmVRNvCCIJBW8RyjdYkNPzm96y -->
+<!-- a92ZiwQtBfUTDVB4uIUl7xLIEyQvjDim3oE1Iame5rZvRL9GEO8Scm51ry+eIP2u -->
+<!-- 8vrrBbWfRvWh+dpLMaa8JbkkADRz9Mn2MH/q/yNV88AFe57AnZwvLKry91vEAnfg -->
+<!-- XBXxGxrd8I8K85lOs6vZkbtunxQWI19nVy3LkA/2VO9KxQWSnF1gee25lLsv7Al8 -->
+<!-- q0aVGqXiZEMsd1dJw6npwDDf5Kc/8oAqtbwDaBCYvuspQVgLQ6vA/sw3TD/D/uOq -->
+<!-- 3vKywoaE/hu2pdj7wQew8UJ6aiB+Z1K4wk48QaptAv+zUFVM7XAvIPM78zNEumGb -->
+<!-- FcfkFqxP7HNCIfKqW+AtBmaVvKPOoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP -->
 <!-- AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw -->
 <!-- PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2 -->
 <!-- IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF -->
 <!-- AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2 -->
-<!-- MDkyOTAxMTM1MlowLwYJKoZIhvcNAQkEMSIEIIRk3rXFf/qQMSwdMx6R4RdMuOPg -->
-<!-- qj/C57gh88lex/qAMA0GCSqGSIb3DQEBAQUABIICAJXBkri4y65a7o+MsYjFq49J -->
-<!-- AIAzJlvaNL5RkYDDgo1C1IxZykPPQeZYsBgLmdr70xcL8O23WpH/L3B7Mgq7VXdO -->
-<!-- hUXDlCz1MzoBqy7x54+119Aqc1hF4A68OPFa2DD1XG2kxNTVRYHl/HeO3YHnJI4m -->
-<!-- k5WYIPdOFuBqsmKP8MWbcQtkSg68ictgg9fdBN/az2khOWfloJC+jt8KOU8rttBb -->
-<!-- Dhjbh2dIK51l5aDjyvvXICzHDI6KeAdf1wrG2D3Lj6a9JT+CxAnqjM0265m6Iv// -->
-<!-- MlAupjx3uQAeFxR1Re5hMmXFnYbdXZFAUJMPT/kI9lnzoC3m9RfrD7MRStJqNl3Z -->
-<!-- 1wHn7owK9+Ez6b4mrAs+airGA8vSsopTH7QxVGenD16wcERs/73qjf6dDKaKvGTG -->
-<!-- usmQe3tkaDNWMu7wIx/rw+umut/RySxgCYjhOzkOX8AndSsSnI1JhhFRos/GYJsD -->
-<!-- 1sF1+q7aN4StbLJUcpwpMGRwonS7ff8Xvcm4whj4B7rGQAaLKrsvIKn5ogjznbH7 -->
-<!-- doeckBJraT53g2Prfo5IRocV2+qo48NvqR21Lv7QTNn+hV6suSJmKEJbECdcidPx -->
-<!-- VtIMVKKRs7lX5XLq6d77SE5XKxvUZuR/yzMdvCzkrEBkibH6MBP9BPEsDTA+/Exz -->
-<!-- iUG5XyA9nYyp8EabUrKP -->
+<!-- MTAzMTE2MzA1M1owLwYJKoZIhvcNAQkEMSIEIJNveGXukSd+H/gvSB26oA1zFUgd -->
+<!-- dEF2rCVwzK2EB/w8MA0GCSqGSIb3DQEBAQUABIICADVF5/T2dMkqVcDc9BykjPZq -->
+<!-- /ANNCJlTzDtPvRsmVzEfqjetwzecz3BFGhwXUjUf2pS367ymdy7kWEU4IWW5AGMs -->
+<!-- lP4yDpkfyKUTYkauTx/p9bF0DlqBE5CDhx7OgT7Bl2aTPL20qBfn8M1uBIHs/nGy -->
+<!-- kz5ZMw6hmGEwMfOZDyx69AWTtbJSY3N2czTkW0/5aHHMGBN4ybDcBKl56A6DVLZa -->
+<!-- /av1WG3k9AwgKkfCT25KCcYI99tf2sGfmPufSJFKvwiUyveafINX1PkhVEgiTS1j -->
+<!-- pwvWp1ISjbM7UYShWk+/ta44BBcC5AwlWpZUatNOjhPKPdn8hECqTaaD83+OrJOy -->
+<!-- aYdMaWQ3DwnjQNMqtIUvsSejO3keYOJH1C9z/UwMt0SsfVD1TWidtTJIOa8plrUE -->
+<!-- XTnkjaYDDmU8Lr8vjB2IFA6EGpfDT/mlCkEvutyYlQh/T4fYKKjsznjpTtnZ8KDL -->
+<!-- iKmgThH/ISsjs/bXkIsxwr9yehO+iG7boaW7dUIBy7N6dFZW9zq1ATG1nmllDQ6x -->
+<!-- MPrOpKjxWRWbT3EBzO0GL3nB7lYgUOLWiMFceu6LBlROoSN5eyqAighlfr34wnHL -->
+<!-- fWCbSlQpDCL2RjSHYAvdVDTWZMvJii7Iu8u2cNU/pV74SX/Q685M2m6ozaEmr0Bl -->
+<!-- 4M21Tovj63qhD2SZV+je -->
 <!-- SIG # End signature block -->

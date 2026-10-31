@@ -119,7 +119,7 @@ An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -140,7 +140,7 @@ Specifies the encryption password for database master key.
 
 ```yaml
 Type: System.Security.SecureString
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

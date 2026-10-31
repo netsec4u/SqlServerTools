@@ -74,7 +74,7 @@ Name of database.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -95,7 +95,7 @@ An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -116,7 +116,7 @@ Specifies the password to encrypt exported database master key.
 
 ```yaml
 Type: System.Security.SecureString
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -137,7 +137,7 @@ Specifies the path and file name to store the database master key.
 
 ```yaml
 Type: System.IO.FileInfo
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -158,7 +158,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer

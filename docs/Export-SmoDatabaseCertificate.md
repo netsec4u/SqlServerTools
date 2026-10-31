@@ -80,7 +80,7 @@ Specifies the name of the database certificate to export.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -101,7 +101,7 @@ Specifies the path and file name to export the certificate to.
 
 ```yaml
 Type: System.IO.FileInfo
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -122,7 +122,7 @@ Name of database.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -143,7 +143,7 @@ An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -164,7 +164,7 @@ Specifies the password to decrypt private key in database.
 
 ```yaml
 Type: System.Security.SecureString
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - DecryptionPassword
@@ -186,7 +186,7 @@ Specifies the password to encrypt exported certificate.
 
 ```yaml
 Type: System.Security.SecureString
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - EncryptionPassword
@@ -208,7 +208,7 @@ Specifies the path and file name to export the private key to.
 
 ```yaml
 Type: System.IO.FileInfo
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -229,7 +229,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer

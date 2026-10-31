@@ -53,7 +53,7 @@ An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

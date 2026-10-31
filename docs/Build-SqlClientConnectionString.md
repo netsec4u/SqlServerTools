@@ -263,7 +263,7 @@ Specifies a user account that has permission to perform this action.
 
 ```yaml
 Type: System.Management.Automation.PSCredential
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -284,7 +284,7 @@ Specifies the name of the database associated with the connection.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -305,7 +305,7 @@ Specifies name or address of the partner server to connect to if the primary ser
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -327,7 +327,7 @@ When not specified, the server name from the Data Source is used for certificate
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -369,7 +369,7 @@ Specifies the IP address family preference when establishing TCP connections.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnectionIPAddressPreference
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -457,7 +457,7 @@ Specifies that an application can maintain multiple active result sets (MARS).
 
 ```yaml
 Type: System.Boolean
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -542,7 +542,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

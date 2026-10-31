@@ -50,6 +50,10 @@ Adds key encryption to symmetric key.
 
 Add member to server role.
 
+### [Backup-SmoDatabase](Backup-SmoDatabase.md)
+
+Backup an sql database to local or remote disk.
+
 ### [Build-SqlClientConnectionString](Build-SqlClientConnectionString.md)
 
 Builds connection strings for a SQL Server connection.
@@ -117,6 +121,10 @@ Returns backup file information.
 ### [Get-SmoBackupHeader](Get-SmoBackupHeader.md)
 
 Returns backup header information.
+
+### [Get-SmoBackupLabel](Get-SmoBackupLabel.md)
+
+Returns backup label information.
 
 ### [Get-SmoDatabaseAsymmetricKey](Get-SmoDatabaseAsymmetricKey.md)
 
@@ -378,6 +386,10 @@ Regenerate new database master key.
 
 Regenerate service master key.
 
+### [Restore-SmoDatabase](Restore-SmoDatabase.md)
+
+Restores SQL database.
+
 ### [Save-SqlClientDataSet](Save-SqlClientDataSet.md)
 
 Save dataset to data adapter.
@@ -437,6 +449,10 @@ Alter server role.
 ### [Set-SmoSqlLogin](Set-SmoSqlLogin.md)
 
 Set SQL login properties.
+
+### [Test-SmoBackup](Test-SmoBackup.md)
+
+Verifies the backup without restoring it.
 
 ### [Test-SqlBrowserConnection](Test-SqlBrowserConnection.md)
 

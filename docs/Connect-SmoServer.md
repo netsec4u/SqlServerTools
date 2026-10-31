@@ -207,7 +207,7 @@ Specifies a user account that has permission to perform this action.
 
 ```yaml
 Type: System.Management.Automation.PSCredential
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -285,7 +285,7 @@ If you do not specify a network and you use a remote server, the one of the conf
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Common.NetworkProtocol
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -312,7 +312,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer
@@ -340,7 +340,7 @@ An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

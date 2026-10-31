@@ -208,7 +208,7 @@ Bulk import batch size.
 
 ```yaml
 Type: System.Int32
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -229,7 +229,7 @@ Specifies column mappings to define the relationships between columns in the dat
 
 ```yaml
 Type: System.Collections.Generic.List`1[Microsoft.Data.SqlClient.SqlBulkCopyColumnMapping]
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -273,7 +273,7 @@ SQL Server Connection string.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -300,7 +300,7 @@ Name of database.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -327,7 +327,7 @@ Specifies data row.
 
 ```yaml
 Type: System.Data.DataRow[]
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -360,7 +360,7 @@ Specifies Data table.
 
 ```yaml
 Type: System.Data.DataTable
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -394,7 +394,7 @@ Streaming is only applicable to max data types (i.e. VARBINARY(MAX), VARCHAR(MAX
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -458,7 +458,7 @@ Specifies only the rows matching the row state are copied to the destination.
 
 ```yaml
 Type: System.Data.DataRowState
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -490,7 +490,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer
@@ -539,7 +539,7 @@ An open SQL Client Connection object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlConnection
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -566,7 +566,7 @@ Table name to insert data.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

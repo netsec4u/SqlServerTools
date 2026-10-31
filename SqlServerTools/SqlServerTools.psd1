@@ -4,7 +4,7 @@
 RootModule = 'SqlServerTools.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.7.5.1'
+ModuleVersion = '3.8.0.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core', 'Desktop')
@@ -76,6 +76,7 @@ FunctionsToExport = @(
 	'Add-SmoDatabaseRoleMember',
 	'Add-SmoDatabaseSymmetricKeyKeyEncryption',
 	'Add-SmoServerRoleMember',
+	'Backup-SmoDatabase',
 	'Clear-SmoDatabaseQueryStore',
 	'Close-SmoDatabaseMasterKey',
 	'Close-SmoDatabaseSymmetricKey',
@@ -90,6 +91,7 @@ FunctionsToExport = @(
 	'Export-SmoServiceMasterKey',
 	'Get-SmoBackupFileList',
 	'Get-SmoBackupHeader',
+	'Get-SmoBackupLabel',
 	'Get-SmoDatabaseAsymmetricKey',
 	'Get-SmoDatabaseCertificate',
 	'Get-SmoDatabaseDataFile',
@@ -151,6 +153,7 @@ FunctionsToExport = @(
 	'Reset-SmoDatabaseEncryptionKey',
 	'Reset-SmoDatabaseMasterKey',
 	'Reset-SmoServiceMasterKey',
+	'Restore-SmoDatabase',
 	'Set-SmoCredential',
 	'Set-SmoDatabaseAsymmetricKey',
 	'Set-SmoDatabaseCertificate',
@@ -165,6 +168,7 @@ FunctionsToExport = @(
 	'Set-SmoDatabaseUser',
 	'Set-SmoServerRole',
 	'Set-SmoSqlLogin',
+	'Test-SmoBackup',
 	'Build-SqlClientConnectionString',
 	'Connect-SqlServerInstance',
 	'Disconnect-SqlServerInstance',
@@ -251,8 +255,8 @@ HelpInfoURI = 'https://netsec4u.github.io/Help/SqlServerTools/'
 # SIG # Begin signature block
 # MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDw2lPJZ0jTKy8p
-# D7dojRIWreRD9fa9v5h2s2J6x0P7naCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBYuXtN+wtL076t
+# YaWscqJLkfurPZTwBvotjSY0+xODxqCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -432,34 +436,34 @@ HelpInfoURI = 'https://netsec4u.github.io/Help/SqlServerTools/'
 # Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB
 # nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIADLTGbUTKFFLGPVPX3n
-# FG+LEuOUj130S/qAt53xDzVnMA0GCSqGSIb3DQEBAQUABIICAGqrEUcwN4wkNI4Z
-# MlaKoLl3LnPfjiX65utPWyhNKMAmMkmcWCJEir3IHrp7y8qxOp7+CoK5ixEuX0cB
-# kwu4hlzmhQM602lHdodq1gfb9YVZXBXJSISbHOPP2nr9ueNMlA2jLk+xaYY9SSA/
-# rZ4e4iv842VkYq0zK1+95LU0Eg1MY9YAQUJSOLoXgV+j+FrMQm4GfjvAYkDnvpps
-# Uz+Lc0vvDxpRF5zb3blAP8SB5WAl2y0oEmJJk6+kPGc2PNNHXGjyJh/Qz+/sBZi4
-# jQ8PHdLzoeBHjVGscAn7MM5awFFGhXuMpoTFxFiEc2ntzLILEF2DVac29cnbAfXJ
-# Qd8oDWcgjJplZitnMXIb6oj8g7D5dTt8WH65czCiUwjHJUCPqPW768Vp2VQiU7Wp
-# +YC23kXYvrHI5Fd/ACi0ANLmNBy9iD7QuJwl1FVZYbXBymSjh+/+drT/fzGKBWBl
-# OlaiF91c7mkvqAcolovyWkFcpg9De3c5UjpxDgvt+xi4+ufs3S21NgltYLN2ZTUy
-# Jfex2ucKReqMh6ed6HBkxYOXSviZ4I1fQqq+AUcujCqPUclbNArmGhmCk1qkb44n
-# 8Op1K2AaPDDLTCeBXmlOHzTmwxYTWy+YpUrfUeBTVs/ZF3kKzF8+psor/vMQH8jt
-# OQiGR8HgOgNqqQAnNt+ONs4YKnesoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
+# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEINw18z0CjB9GYsWEUm4X
+# QOikQFO549mXA5rTd/jhRS5iMA0GCSqGSIb3DQEBAQUABIICAGTq6BYjFM1nQCoa
+# oBiC0CmaFu+n7wSbqPbnR2gHjFv2KaYxub1n/T1UUSkXQ0LgwErVerH0fYFt+eF2
+# hLiTnR3139RKUaJ4NEq23E7Q7RyZtiu3q5KJoUP62Ods2ahZuh3jZ5HEkP0qCyLE
+# 0Wu8ayrm+Ph0RhKNbV9x7JqY8skFXOWVGCmZnkQkU0HSa1ipHDSyaGu+dkDRbsqN
+# 6/t9Q1AqWmlQhIDjcmJiPzy54j6rvBUgEVADVgMeqDb+KolBFoMZ2L1LVzWnT/Ea
+# p2sZH+7P1v09J3JAUgNq1Wb65mw5FXjOjqgdryRtBf82dadohAl0prkkj1+fAXJp
+# jXM5YNXRBWNP6HXaw1JhzPI/82jPBAvvWWjwZAFns4nxFcE62oGy6ehe6IbqdXpr
+# U0M+fHi9Uf5t/mNzbP1eaSvlS5WsZtZGWlqqQyW6NoqioHRnkc08Yl4N63lfwaKv
+# yl4afnn9OOPtwdHwZp5s/cJwxq0gbQRLoM4Q1JQs4fzy/Cslb6KiuVWwmS0xTx7p
+# 0AhkWd3BSKGZwJPhN8SPPlUSwgBQwZuWC+cUHgf/OHOq0A/xfIPssBi5QvR1X8ij
+# 2xObQHmqBLEuR5V0DNKYJkxPi+by5RHuBFuWsMIXoWR7xzambJTGzv3BG3W4SkKM
+# XL2koAbBh73yubG22WDsg8hojwRxoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
 # AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw
 # PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2
 # IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF
 # AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2
-# MDkyOTAxMTM0OVowLwYJKoZIhvcNAQkEMSIEIBE22nIPcf1WJa/2pQjluwmYytL5
-# Z3UGN1/I3YdJcS+EMA0GCSqGSIb3DQEBAQUABIICAJUNHIC+mlpJJK9aQKXodsCf
-# sCU7UevXxplRb9nyUJqAREf+E6Znq+4Wo6uYYtnaboI0FTlLo7k/Rkei68/vvaCS
-# D4AJ6ol/RDwIFWpPj3XSQ+sUJIkKp32IG6JHtZIFV+llnLatLrBhSJ7x5/9Bq5R8
-# zVcIxJDSbmgxV8sGCuCxX69GTStns2q6ZlVnXDbW8lT+4BeMbP9s3mwRNX/RvMco
-# ypXBRsMeNZcMB9wgPsgDtMZWJxIIGeaqvM9dBLJgQgW2qccT07h8+KhTM7GiZkxY
-# NntN4ro5OhR9vHP2lm/sUayAe7g6HP3WemGO3X+KxV2bBuPdxeBafdSX6zjoxEUb
-# gObCuMVblV0SW3A8QL/OAQ+yCn0ONd75eI1TqpRzieuHFdel2Hh+xhoCeK1w02pO
-# FaoIqZzg72t8kFq883QZG6pYP0T0LWB6f9Q7fYbd/rymn2NDsFJLG3jDD+O6BEdT
-# ANgJuPvU1HcGxpfI1hEXNnBh74n1ESqPJdaJnt36eMqZKjZzaf+AuKG8ZGEeFTv4
-# MtpTHoWBwC0UA+H3ZMrJGlRy7RMEnyGJNx6v2GMK/TJ3WORIJWlvd/588AKSb6UF
-# fzvt/B/qQ4Eu4zjTuKP3pM36ECaBWTtfOYMnohqrelqt1stT8i+TK1GftQie4DZM
-# 1C7eEC0w3TEH+psWwbtk
+# MTAzMTE2MzA0OVowLwYJKoZIhvcNAQkEMSIEIH9cASF8z462EKgJN1d0fdJwNghn
+# sMro7I6aVWHbd3SCMA0GCSqGSIb3DQEBAQUABIICAG8WTF+lfq4SYAWIyOH2GeFj
+# iebN0RjKIeoi/qYHYPXTYPDwiV/Yiu9UNjq8UBRDpkYBjvJEVuhVYomAOV7mERbN
+# EwDV3fyBu2Cc10XjNbR8PXgZPJn1H8eQBl1gbpnv1ntx6Rl3yysYmg+fp0hOW20s
+# 06HYZjRJ00Apy+WWLjc1DsP0tf2NiMk3i1SvHP5A79X/WHEk4yfW1bM0/c9cIsFR
+# wKtoLaCtKYUzKfvFVb54ufxMrlq80RvfaxWOxB+wRKEYzwbFUgzJZOXHu+JJAxLv
+# xL/7fkK9GmhNHNkc8Zpfszl8EXkv7AtXQ2j8r9IUO7szvf9p+geUY6u6GBNc7ENp
+# VG/S0LWHXL5mQI6jBdS3SD4gEKsXyyJgrXqYB3JVparpuWe10w65m+dP1xA3WeRw
+# 0WDTgL2zedLpBKUVuNzTkd/ISVJNc0EcSKUpBj0Oub8fVIbJsu1WsBoejdzjb5yV
+# B3eYWuzBTJm4pjVCaZjzB+lUWB0eY/JWicevYDaJ3dDuj8RS7BvycM0cFZ3cCf/H
+# 8fv8rDicYH0W8kvVQW0BSzKJqgvwof0oIJUofIcK6WFj6KeOApfXUPqkpogzYtnh
+# tIh7WudAYzWIAphygYnLUBinq8psaC/HkqzicgXdStgkM6i+n6dPVWmowadH8h9U
+# hoB73vhHTK6Y8EjScq0T
 # SIG # End signature block

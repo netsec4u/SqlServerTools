@@ -79,7 +79,7 @@ Data set object.
 
 ```yaml
 Type: System.Data.DataSet
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -100,7 +100,7 @@ Specifies data table name.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -121,7 +121,7 @@ Data adapter object.
 
 ```yaml
 Type: Microsoft.Data.SqlClient.SqlDataAdapter
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

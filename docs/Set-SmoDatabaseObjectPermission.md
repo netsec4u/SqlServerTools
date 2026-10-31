@@ -136,7 +136,7 @@ Action to perform.
 
 ```yaml
 Type: PermissionAction
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -179,7 +179,7 @@ Database Name.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -206,7 +206,7 @@ An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -233,7 +233,7 @@ Database object class.
 
 ```yaml
 Type: DatabaseObjectClass
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -254,7 +254,7 @@ Database object name.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -275,7 +275,7 @@ Permission to grant, deny, or revoke.
 
 ```yaml
 Type: DatabaseObjectPermission
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -302,7 +302,7 @@ Set of permissions to grant, deny, or revoke.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.ObjectPermissionSet
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -329,7 +329,7 @@ User or role name to grant, deny, or revoke permissions.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -350,7 +350,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer

@@ -72,7 +72,7 @@ Specifies the computer name to test.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -114,7 +114,7 @@ Specifies the IP Address to test.
 
 ```yaml
 Type: System.Net.IPAddress
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:

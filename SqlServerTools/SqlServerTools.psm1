@@ -14,11 +14,15 @@ enum AuthenticationMode {
 enum DatabaseObjectClass {
 	Assembly
 	AsymmetricKey
+	BrokerService
 	Certificate
 	ExtendedStoredProcedure
+	MessageType
 	Schema
 	StoredProcedure
 	Sequences
+	ServiceContract
+	ServiceQueue
 	SymmetricKey
 	Synonym
 	Table
@@ -443,6 +447,23 @@ namespace SmoRestore
 		public string CompressionAlgorithm;
 	}
 
+	public class BackupLabel
+	{
+		public string MediaName;
+		public Guid MediaSetId;
+		public int FamilyCount;
+		public int FamilySequenceNumber;
+		public Guid MediaFamilyId;
+		public int MediaSequenceNumber;
+		public byte MediaLabelPresent;
+		public string MediaDescription;
+		public string SoftwareName;
+		public int SoftwareVendorId;
+		public DateTime MediaDate;
+		public int MirrorCount;
+		public bool IsCompressed;
+	}
+
 	public class FileList
 	{
 		public string LogicalName;
@@ -471,6 +492,11 @@ namespace SmoRestore
 }
 '@
 
+$ReferencedAssemblies = @(
+	[AppDomain]::CurrentDomain.GetAssemblies().where({$_.ManifestModule.Name -eq 'Microsoft.SqlServer.Smo.dll'}).Location
+	[AppDomain]::CurrentDomain.GetAssemblies().where({$_.ManifestModule.Name -eq 'Microsoft.SqlServer.SqlEnum.dll'}).Location
+)
+
 Add-Type -TypeDefinition $TypeDefinition
 
 $TypeDefinition = @'
@@ -495,10 +521,36 @@ using System;
 
 namespace SqlServerTools
 {
+	public class Backup
+	{
+		public string DatabaseName;
+		public string BackupType;
+		public int Pages;
+		public int Seconds;
+		public decimal MBPerSecond;
+		public BackupLogicalFile[] LogicalFiles;
+	}
+
+	public class BackupLogicalFile
+	{
+		public string LogicalFileName;
+		public int Pages;
+	}
+
 	public class DatabaseRoleMember
 	{
 		public string Principal;
 		public Microsoft.SqlServer.Management.Smo.PrincipalType? PrincipalType;
+	}
+
+	public class Restore
+	{
+		public string DatabaseName;
+		public string RestoreType;
+		public int Pages;
+		public int Seconds;
+		public decimal MBPerSecond;
+		public BackupLogicalFile[] LogicalFiles;
 	}
 
 	public class ServerRoleMember
@@ -1334,7 +1386,7 @@ function Add-SmoDatabaseAsymmetricKeyPrivateKey {
 				)
 			}
 
-			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Adding database Asymmetric key.")) {
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, 'Adding database Asymmetric key.')) {
 				$AsymmetricKey.AddPrivateKey(
 					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword))
 				)
@@ -1969,7 +2021,7 @@ function Add-SmoDatabaseSymmetricKeyKeyEncryption {
 				$KeyEncryptionValue
 			)
 
-			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, "Add database symmetric key encryption.")) {
+			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, 'Add database symmetric key encryption.')) {
 				$SymmetricKey.AddKeyEncryption($KeyEncryption)
 			}
 		}
@@ -2118,7 +2170,7 @@ function Add-SmoDatabaseCertificatePrivateKey {
 				)
 			}
 
-			if ($PSCmdlet.ShouldProcess($CertificateName, "Add database certificate private key.")) {
+			if ($PSCmdlet.ShouldProcess($CertificateName, 'Add database certificate private key.')) {
 				$Certificate.Alter()
 			}
 		}
@@ -2247,6 +2299,467 @@ function Add-SmoServerRoleMember {
 		finally {
 			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
 				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Backup-SmoDatabase {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'DatabaseName'
+	)]
+
+	[OutputType(
+		[string],
+		[SqlServerTools.Backup]
+	)]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseName'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'DatabaseObject'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Database]$DatabaseObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.BackupSetType]$BackupType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$BackupFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 255)]
+		[string]$BackupSetDescription,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$BackupSetName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 255)]
+		[string]$MediaDescription,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$MediaName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$FileGroup,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$LogicalFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateSet(512, 1024, 2048, 4096, 8192, 16384, 32768, 65536)]
+		[int]$BlockSize,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(1, [int]::MaxValue)]
+		[int]$BufferCount,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateScript({ $_ % 65536 -eq 0 })]
+		[ValidateRange(65536, 4194304)]
+		[int]$MaxTransferSize,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$Checksum,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.BackupCompressionOptions]$BackupCompression,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$CopyOnly,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(0, [int]::MaxValue)]
+		[int]$RetainDays,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$TailLog,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$ScriptBackup
+	)
+
+	begin {
+		Try {
+			$DatabaseNameParameterSets = @('DatabaseName')
+
+			if ($BackupType -notin @('FileOrFileGroup', 'FileOrFileGroupDifferential')) {
+				if ($PSBoundParameters.ContainsKey('FileGroup') -or $PSBoundParameters.ContainsKey('LogicalFile')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('Filegroup or LogicalFile cannot be used with specified backup type.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$BackupType
+					)
+				}
+			}
+
+			if ($BackupType -ne 'Log' -and $TailLog) {
+				throw [System.Management.Automation.ErrorRecord]::New(
+					[Exception]::New('Tail log backup is only valid for transaction log backups.'),
+					'1',
+					[System.Management.Automation.ErrorCategory]::InvalidOperation,
+					$BackupType
+				)
+			}
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				$DatabaseObjectParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = $DatabaseName
+				}
+
+				$DatabaseObject = Get-SmoDatabaseObject @DatabaseObjectParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path Variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+
+		$InformationEventHandler = [Microsoft.SqlServer.Management.Common.ServerMessageEventHandler] {
+			# $SmoBackup = $args[0]
+			$ServerMessageEventArgs =$args[1]
+
+			if ($ServerMessageEventArgs.Error.Number -eq 4035) {
+				$RegExPattern = "(?i)Processed (?<Pages>\d+) pages for database '(?<Database>[^']+)', file '(?<LogicalFile>[^']+)' on file (?<FileNumber>\d+)\."
+
+				$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::Multiline)
+				$RegExMatches = $RegEx.Matches($ServerMessageEventArgs.Error.Message)
+
+				$BackupLogicalFile = [SqlServerTools.BackupLogicalFile]::New()
+
+				$BackupLogicalFile.LogicalFileName = $RegExMatches.Groups.Where({$_.Name -eq 'LogicalFile'}).Value
+				$BackupLogicalFile.Pages = $RegExMatches.Groups.Where({$_.Name -eq 'Pages'}).Value
+
+				$script:BackupLogicalFileList.Add($BackupLogicalFile)
+			} else {
+				Write-Information "$($ServerMessageEventArgs.Error.Number) - $($ServerMessageEventArgs.Error.Message)"
+			}
+		}
+
+		$PercentCompleteEventHandler = [Microsoft.SqlServer.Management.Smo.PercentCompleteEventHandler] {
+			$SmoBackup = $args[0]
+			$ServerMessageEventArgs =$args[1]
+
+			$ProgressParameters = @{
+				'Id' = 0
+				'Activity' = 'SQL Backup Progress'
+				'Status' = "Backup $($SmoBackup.Database) - $($ServerMessageEventArgs.Message)"
+				'CurrentOperation' = "Database: $($SmoBackup.Database)"
+				'PercentComplete' = $ServerMessageEventArgs.Percent
+			}
+
+			Write-Progress @ProgressParameters
+		}
+
+		$ServerMessageEventHandler = [Microsoft.SqlServer.Management.Common.ServerMessageEventHandler] {
+			$SmoBackup = $args[0]
+			$ServerMessageEventArgs =$args[1]
+
+			if ($ServerMessageEventArgs.Error.Number -eq 3014) {
+				$RegExPattern = '(?<Start>\sprocessed\s)(?<Pages>\d{1,})\spages\sin\s(?<Seconds>(\d{1,}(\.\d{1,})?))\sseconds\s\((?<MBPerSecond>(\d{1,}(\.\d{1,})?)).*'
+
+				$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::Multiline)
+				$RegExMatches = $RegEx.Matches($ServerMessageEventArgs.Error.Message)
+
+				$Backup = [SqlServerTools.Backup]::New()
+
+				$Backup.DatabaseName = $SmoBackup.Database
+
+				switch ($SmoBackup.Action) {
+					'Database' {
+						if ($SmoBackup.DatabaseFiles.Count -gt 0 -or $SmoBackup.DatabaseFileGroups.Count -gt 0) {
+							if ($SmoBackup.Incremental) {
+								$Backup.BackupType = 'Differential Partial'
+							} else {
+								$Backup.BackupType = 'Partial'
+							}
+						} else {
+							if ($SmoBackup.Incremental) {
+								$Backup.BackupType = 'Database Differential'
+							} else {
+								$Backup.BackupType = 'Database'
+							}
+						}
+					}
+					'Files' {
+						if ($SmoBackup.Incremental) {
+							$Backup.BackupType = 'Differential File'
+						} else {
+							$Backup.BackupType = 'File'
+						}
+					}
+					'Log' {
+						$Backup.BackupType = 'Transaction Log'
+					}
+				}
+
+				$Backup.Pages = $RegExMatches.Groups.Where({$_.Name -eq 'Pages'}).Value
+				$Backup.Seconds = $RegExMatches.Groups.Where({$_.Name -eq 'Seconds'}).Value
+				$Backup.MBPerSecond = $RegExMatches.Groups.Where({$_.Name -eq 'MBPerSecond'}).Value
+				$Backup.LogicalFiles = $script:BackupLogicalFileList
+
+				$script:Output = $Backup
+			} else {
+				Write-Error "$($ServerMessageEventArgs.Error.Number) - $($ServerMessageEventArgs.Error.Message)"
+
+				$script:Output = $null
+			}
+		}
+	}
+
+	process {
+		try {
+			$script:BackupLogicalFileList = [System.Collections.Generic.List[SqlServerTools.BackupLogicalFile]]::New()
+
+			$SmoBackup = [Microsoft.SqlServer.Management.Smo.Backup]::New()
+
+			$SmoBackup.PercentCompleteNotification = 5
+
+			switch ($BackupType) {
+				{$_ -in @('Database', 'Differential')} {
+					$SmoBackup.Action = [Microsoft.SqlServer.Management.Smo.BackupActionType]::Database
+				}
+				{$_ -in @('FileOrFileGroup', 'FileOrFileGroupDifferential')} {
+					$SmoBackup.Action = [Microsoft.SqlServer.Management.Smo.BackupActionType]::Files
+
+					if ($PSBoundParameters.ContainsKey('FileGroup')) {
+						foreach ($Item in $FileGroup) {
+							[void]$($SmoBackup.DatabaseFileGroups.Add($Item))
+						}
+					} elseif ($PSBoundParameters.ContainsKey('LogicalFile')) {
+						foreach ($Item in $LogicalFile) {
+							[void]$($SmoBackup.DatabaseFiles.Add($Item))
+						}
+					} else {
+						foreach ($FileGroup in $DatabaseObject.FileGroups.Name) {
+							[void]$($SmoBackup.DatabaseFileGroups.Add($FileGroup))
+						}
+					}
+				}
+				'Log' {
+					$SmoBackup.Action = [Microsoft.SqlServer.Management.Smo.BackupActionType]::Log
+
+					if ($TailLog) {
+						$SmoBackup.NoRecovery = $true
+					}
+				}
+			}
+
+			if ($BackupType -in @('Differential', 'FileOrFileGroupDifferential')) {
+				if($CopyOnly) { Write-Warning 'CopyOnly parameter is ignored when performing Differential backups.'}
+
+				$SmoBackup.Incremental = $true
+			}
+
+			if ($PSBoundParameters.ContainsKey('CopyOnly')) {
+				$SmoBackup.CopyOnly = $CopyOnly
+			}
+
+			foreach ($File in $BackupFile) {
+				$SmoBackupDeviceItem = [Microsoft.SqlServer.Management.SMO.BackupDeviceItem]::New($File, [Microsoft.SqlServer.Management.SMO.DeviceType]::File)
+
+				$SmoBackup.Devices.Add($SmoBackupDeviceItem)
+			}
+
+			$SmoBackup.Database = $DatabaseObject.Name
+
+			if ($PSBoundParameters.ContainsKey('BackupSetDescription')) {
+				$SmoBackup.BackupSetDescription = $BackupSetDescription
+			} else {
+				$SmoBackup.BackupSetDescription = [string]::Format('{0} backup of {1}', $BackupType, $DatabaseObject.Name)
+			}
+
+			if ($PSBoundParameters.ContainsKey('BackupSetName')) {
+				$SmoBackup.BackupSetName = $BackupSetName
+			} else {
+				$SmoBackup.BackupSetName = [string]::Format('{0} {1}', $Database.Name, $BackupTimestamp)
+			}
+
+			if ($PSBoundParameters.ContainsKey('MediaDescription')) {
+				$SmoBackup.MediaDescription = $MediaDescription
+			} else {
+				$SmoBackup.MediaDescription = [string]::Format('{0} database backup of {1}', $BackupType, $Database.Name)
+			}
+
+			if ($PSBoundParameters.ContainsKey('MediaName')) {
+				$SmoBackup.MediaName = $MediaName
+			} else {
+				$SmoBackup.MediaName = [string]::Format('{0} Backup', $Database.Name)
+			}
+
+			if ($PSBoundParameters.ContainsKey('BackupCompression')) {
+				$SmoBackup.CompressionOption = $BackupCompression
+			} else {
+				$SmoBackup.CompressionOption = [Microsoft.SqlServer.Management.Smo.BackupCompressionOptions]::Default
+			}
+
+			if ($PSBoundParameters.ContainsKey('BlockSize')) {
+				$SmoBackup.BlockSize = $BlockSize
+			}
+
+			if ($PSBoundParameters.ContainsKey('BufferCount')) {
+				$SmoBackup.BufferCount = $BufferCount
+			}
+
+			if ($PSBoundParameters.ContainsKey('MaxTransferSize')) {
+				$SmoBackup.MaxTransferSize = $MaxTransferSize
+			}
+			else {
+				$SmoBackup.MaxTransferSize = 1048576
+			}
+
+			if ($PSBoundParameters.ContainsKey('Checksum')) {
+				$SmoBackup.Checksum = $Checksum
+			} else {
+				$SmoBackup.Checksum = [bool]$DatabaseObject.Parent.Configuration.DefaultBackupChecksum.RunValue
+			}
+
+			if ($PSBoundParameters.ContainsKey('RetainDays')) {
+				$SmoBackup.RetainDays = $RetainDays
+			} else {
+				$SmoBackup.RetainDays = $DatabaseObject.Parent.Configuration.MediaRetention.RunValue
+			}
+
+			$SmoBackup.add_PercentComplete($PercentCompleteEventHandler)
+			$SmoBackup.add_Information($InformationEventHandler)
+			$SmoBackup.add_Complete($ServerMessageEventHandler)
+
+			if ($ScriptBackup) {
+				if ($PSCmdlet.ShouldProcess($DatabaseObject.Name, "Script $BackupType backup")) {
+					$SmoBackup.Script($DatabaseObject.Parent)
+				}
+			} else {
+				if ($PSCmdlet.ShouldProcess($DatabaseObject.Name, "$BackupType backup")) {
+					$SmoBackup.SqlBackup($DatabaseObject.Parent)
+
+					$script:Output
+				}
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			$SmoBackup.remove_PercentComplete($PercentCompleteEventHandler)
+			$SmoBackup.remove_Information($InformationEventHandler)
+			$SmoBackup.remove_Complete($ServerMessageEventHandler)
+
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
 			}
 		}
 	}
@@ -3233,7 +3746,6 @@ function Export-SmoDatabaseCertificate {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidatePathIsValid()]
 		[System.IO.FileInfo][TransformPath()]$CertificatePath,
 
 		[Parameter(
@@ -3241,7 +3753,6 @@ function Export-SmoDatabaseCertificate {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidatePathIsValid()]
 		[System.IO.FileInfo][TransformPath()]$PrivateKeyPath,
 
 		[Parameter(
@@ -3557,7 +4068,6 @@ function Get-SmoBackupFileList {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo]$DatabaseBackupPath,
 
 		[Parameter(
@@ -3603,7 +4113,7 @@ function Get-SmoBackupFileList {
 		try {
 			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
 
-			$SmoRestore.Devices.AddDevice((Resolve-Path -Path $DatabaseBackupPath).ProviderPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
+			$SmoRestore.Devices.AddDevice($DatabaseBackupPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
 
 			$FileList = $SmoRestore.ReadFileList($SmoServerObject)
 
@@ -3656,7 +4166,6 @@ function Get-SmoBackupHeader {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[ValidatePathExists('Leaf')]
 		[System.IO.FileInfo]$DatabaseBackupPath,
 
 		[Parameter(
@@ -3702,7 +4211,7 @@ function Get-SmoBackupHeader {
 		try {
 			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
 
-			$SmoRestore.Devices.AddDevice((Resolve-Path -Path $DatabaseBackupPath).ProviderPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
+			$SmoRestore.Devices.AddDevice($DatabaseBackupPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
 
 			$BackupHeaders = $SmoRestore.ReadBackupHeader($SmoServerObject)
 
@@ -3716,6 +4225,104 @@ function Get-SmoBackupHeader {
 				}
 
 				$SmoBackupHeader
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Get-SmoBackupLabel {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $false,
+		ConfirmImpact = 'Low',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([SmoRestore.BackupLabel])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.IO.FileInfo]$DatabaseBackupPath,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject
+	)
+
+	begin {
+		try {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				$SmoServerObject = Connect-SmoServer -ServerInstance $ServerInstance
+			}
+		}
+		catch {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				if (Test-Path -Path Variable:\SmoServerObject) {
+					if ($SmoServerObject -is [Microsoft.SqlServer.Management.Smo.Server]) {
+						Disconnect-SmoServer -SmoServerObject $SmoServerObject
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+
+			$SmoRestore.Devices.AddDevice($DatabaseBackupPath, [Microsoft.SqlServer.Management.Smo.DeviceType]::File)
+
+			$MediaHeaders = $SmoRestore.ReadMediaHeader($SmoServerObject)
+
+			foreach ($Row in $MediaHeaders.Rows) {
+				$SmoBackupLabel = [SmoRestore.BackupLabel]::New()
+
+				foreach ($Column in $MediaHeaders.Columns) {
+					if ($Row.item($Column) -IsNot [DBNull]) {
+						$SmoBackupLabel.$($Column.ColumnName) = $Row.item($Column)
+					}
+				}
+
+				$SmoBackupLabel
 			}
 		}
 		catch {
@@ -6636,7 +7243,7 @@ function New-SmoDatabaseAsymmetricKey {
 		try {
 			$AsymmetricKey = [Microsoft.SqlServer.Management.Smo.AsymmetricKey]::New($DatabaseObject, $AsymmetricKeyName)
 
-			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Creating database asymmetric key.")) {
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, 'Creating database asymmetric key.')) {
 				switch ($PSCmdlet.ParameterSetName) {
 					{$_ -in @('DatabaseName-EncryptionAlgorithm', 'DatabaseObject-EncryptionAlgorithm')} {
 						if ($PSBoundParameters.ContainsKey('KeyPassword')) {
@@ -6876,13 +7483,13 @@ function New-SmoDatabaseCertificate {
 			if ($DatabaseObject.Parent.ConnectionContext.LoginSecure) {
 				if ($PSBoundParameters.ContainsKey('CertificatePath')) {
 					if (([System.Uri]$CertificatePath.FullName).IsUnc) {
-						Write-Warning -Message "The certificate path is a UNC path. UNC paths may require Kerberos Constrained Delegation to access the file from the SQL Server instance."
+						Write-Warning -Message 'The certificate path is a UNC path. UNC paths may require Kerberos Constrained Delegation to access the file from the SQL Server instance.'
 					}
 				}
 
 				if ($PSBoundParameters.ContainsKey('PrivateKeyPath')) {
 					if (([System.Uri]$PrivateKeyPath.FullName).IsUnc) {
-						Write-Warning -Message "The private key path is a UNC path. UNC paths may require Kerberos Constrained Delegation to access the file from the SQL Server instance."
+						Write-Warning -Message 'The private key path is a UNC path. UNC paths may require Kerberos Constrained Delegation to access the file from the SQL Server instance.'
 					}
 				}
 			}
@@ -6904,7 +7511,7 @@ function New-SmoDatabaseCertificate {
 		try {
 			$Certificate = [Microsoft.SqlServer.Management.Smo.Certificate]::New($DatabaseObject, $CertificateName)
 
-			if ($PSCmdlet.ShouldProcess($CertificateName, "Creating database certificate.")) {
+			if ($PSCmdlet.ShouldProcess($CertificateName, 'Creating database certificate.')) {
 				if ($PSCmdlet.ParameterSetName -in $CertFileParameterSets) {
 					if ($PSBoundParameters.ContainsKey('PrivateKeyPath')) {
 						if ($PSBoundParameters.ContainsKey('PrivateKeyEncryptionPassword')) {
@@ -7775,7 +8382,7 @@ function New-SmoDatabaseSymmetricKey {
 			$SymmetricKey = [Microsoft.SqlServer.Management.Smo.SymmetricKey]::New($DatabaseObject, $SymmetricKeyName)
 			$KeyEncryption = [Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryption]::New($KeyEncryptionType, $KeyEncryptionValue)
 
-			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, "Creating database symmetric key.")) {
+			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, 'Creating database symmetric key.')) {
 				switch ($PSCmdlet.ParameterSetName) {
 					{$_ -in @('DatabaseName', 'DatabaseObject')} {
 						$SymmetricKey.Create(
@@ -8273,7 +8880,7 @@ function New-SmoSqlLogin {
 	)
 
 	begin {
-		Try {
+		try {
 			if ($LoginType -NotIn ('SqlLogin', 'WindowsGroup', 'WindowsUser')) {
 				throw [System.Management.Automation.ErrorRecord]::New(
 					[Exception]::New('Login type not supported.'),
@@ -8878,7 +9485,7 @@ function Remove-SmoDatabaseAsymmetricKeyPrivateKey {
 				)
 			}
 
-			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Removing database Asymmetric key.")) {
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, 'Removing database Asymmetric key.')) {
 				$AsymmetricKey.RemovePrivateKey()
 			}
 		}
@@ -10268,7 +10875,7 @@ function Remove-SmoDatabaseSymmetricKeyKeyEncryption {
 
 			$KeyEncryption = [Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryption]::New($KeyEncryptionType, $KeyEncryptionValue)
 
-			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, "Remove database symmetric key encryption.")) {
+			if ($PSCmdlet.ShouldProcess($SymmetricKeyName, 'Remove database symmetric key encryption.')) {
 				$SymmetricKey.DropKeyEncryption($KeyEncryption)
 			}
 		}
@@ -11530,6 +12137,688 @@ function Reset-SmoServiceMasterKey {
 	}
 }
 
+function Restore-SmoDatabase {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType(
+		[string],
+		[SqlServerTools.Restore]
+	)]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.SMO.RestoreActionType]$RestoreActionType,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$BackupFile,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$DatabaseName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$DatabasePage,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$FileGroup,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$LogicalFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.RelocateFile[]]$RelocateFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$NoRecovery,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.IO.FileInfo]$StandByFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$ReplaceDatabase,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$RestrictedUser,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(1, [int]::MaxValue)]
+		[int]$BackupSetFileNumber,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$MediaName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateSet(512, 1024, 2048, 4096, 8192, 16384, 32768, 65536)]
+		[int]$BlockSize,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateRange(1, [int]::MaxValue)]
+		[int]$BufferCount,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateScript({ $_ % 65536 -eq 0 })]
+		[ValidateRange(65536, 4194304)]
+		[int]$MaxTransferSize,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$Checksum,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$KeepReplication,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$KeepTemporalRetention,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.DateTime]$ToPointInTime,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$StopAtMarkName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.DateTime]$StopAtMarkAfterDate,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string]$StopBeforeMarkName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[System.DateTime]$StopBeforeMarkAfterDate,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$ScriptRestore
+	)
+
+	begin {
+		Try {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSBoundParameters.ContainsKey('DatabasePages')) {
+				if ($RestoreActionType -notin @('OnlinePage')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('DatabasePages not valid with RestoreActionType.  DatabasePages can be used with OnlinePage restore action.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('FileGroup')) {
+				if ($RestoreActionType -notin @('Files', 'Log', 'OnlineFiles', 'OnlinePage')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('FileGroup not valid with RestoreActionType.  FileGroup can be used with Files, Log, OnlineFiles, OnlinePage restore actions.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('KeepReplication')) {
+				if ($RestoreActionType -notin @('Database', 'Files', 'Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('KeepReplication not valid with RestoreActionType.  KeepReplication can be used with Database, Files, Log restore actions.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('KeepTemporalRetention')) {
+				if ($RestoreActionType -notin @('Database', 'Files', 'Log', 'OnlineFiles')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('KeepTemporalRetention not valid with RestoreActionType.  KeepTemporalRetention can be used with Database, Files, Log, OnlineFiles restore actions.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('RelocateFile')) {
+				if ($RestoreActionType -notin @('Database', 'Files', 'OnlineFiles')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('RelocateFile not valid with RestoreActionType.  RelocateFile can be used with Database, Files, OnlineFiles restore actions.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('ReplaceDatabase')) {
+				if ($RestoreActionType -notin @('Database', 'Files')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('ReplaceDatabase not valid with RestoreActionType.  ReplaceDatabase can be used with Database, Files restore actions.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('StandByFile')) {
+				if ($RestoreActionType -notin @('Database', 'Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('StandByFile not valid with RestoreActionType.  StandByFile can be used with Database, Log restore actions.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('StopAtMarkAfterDate')) {
+				if ($RestoreActionType -notin @('Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('StopAtMarkAfterDate not valid with RestoreActionType.  StopAtMarkAfterDate can be used with Log restore action.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('StopAtMarkName')) {
+				if ($RestoreActionType -notin @('Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('StopAtMarkName not valid with RestoreActionType.  StopAtMarkName can be used with Log restore action.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('StopBeforeMarkAfterDate')) {
+				if ($RestoreActionType -notin @('Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('StopBeforeMarkAfterDate not valid with RestoreActionType.  StopBeforeMarkAfterDate can be used with Log restore action.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('StopBeforeMarkName')) {
+				if ($RestoreActionType -notin @('Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('StopBeforeMarkName not valid with RestoreActionType.  StopBeforeMarkName can be used with Log restore action.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSBoundParameters.ContainsKey('ToPointInTime')) {
+				if ($RestoreActionType -notin @('Log')) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('ToPointInTime not valid with RestoreActionType.  ToPointInTime can be used with Log restore action.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::InvalidOperation,
+						$RestoreActionType
+					)
+				}
+			}
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+
+			if ($RestoreActionType -in @('OnlineFiles', 'OnlinePage')) {
+				if ($DatabaseName -notin $SmoServerObject.Databases.Name) {
+					throw [System.Management.Automation.ErrorRecord]::New(
+						[Exception]::New('Database does not exist.'),
+						'1',
+						[System.Management.Automation.ErrorCategory]::ObjectNotFound,
+						$DatabaseName
+					)
+				}
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				if (Test-Path -Path Variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+
+		$InformationEventHandler = [Microsoft.SqlServer.Management.Common.ServerMessageEventHandler] {
+			# $SmoRestore = $args[0]
+			$ServerMessageEventArgs =$args[1]
+
+			if ($ServerMessageEventArgs.Error.Number -eq 4035) {
+				$RegExPattern = "(?i)Processed (?<Pages>\d+) pages for database '(?<Database>[^']+)', file '(?<LogicalFile>[^']+)' on file (?<FileNumber>\d+)\."
+
+				$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::Multiline)
+				$RegExMatches = $RegEx.Matches($ServerMessageEventArgs.Error.Message)
+
+				$BackupLogicalFile = [SqlServerTools.BackupLogicalFile]::New()
+
+				$BackupLogicalFile.LogicalFileName = $RegExMatches.Groups.Where({$_.Name -eq 'LogicalFile'}).Value
+				$BackupLogicalFile.Pages = $RegExMatches.Groups.Where({$_.Name -eq 'Pages'}).Value
+
+				$script:BackupLogicalFileList.Add($BackupLogicalFile)
+			} else {
+				Write-Information "$($ServerMessageEventArgs.Error.Number) - $($ServerMessageEventArgs.Error.Message)"
+			}
+		}
+
+		$PercentCompleteEventHandler = [Microsoft.SqlServer.Management.Smo.PercentCompleteEventHandler] {
+			$SmoRestore = $args[0]
+			$ServerMessageEventArgs =$args[1]
+
+			$ProgressParameters = @{
+				'Id' = 0
+				'Activity' = 'SQL Restore Progress'
+				'Status' = "Restore $($SmoRestore.Database) - $($ServerMessageEventArgs.Message)"
+				'CurrentOperation' = "Database: $($SmoRestore.Database)"
+				'PercentComplete' = $ServerMessageEventArgs.Percent
+			}
+
+			Write-Progress @ProgressParameters
+		}
+
+		$ServerMessageEventHandler = [Microsoft.SqlServer.Management.Common.ServerMessageEventHandler] {
+			$SmoRestore = $args[0]
+			$ServerMessageEventArgs =$args[1]
+
+			if ($ServerMessageEventArgs.Error.Number -eq 3014) {
+				$RegExPattern = '(?<Start>\sprocessed\s)(?<Pages>\d{1,})\spages\sin\s(?<Seconds>(\d{1,}(\.\d{1,})?))\sseconds\s\((?<MBPerSecond>(\d{1,}(\.\d{1,})?)).*'
+
+				$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::Multiline)
+				$RegExMatches = $RegEx.Matches($ServerMessageEventArgs.Error.Message)
+
+				$Restore = [SqlServerTools.Restore]::New()
+
+				$Restore.DatabaseName = $SmoRestore.Database
+				$Restore.RestoreType = $SmoRestore.Action
+				$Restore.Pages = $RegExMatches.Groups.Where({$_.Name -eq 'Pages'}).Value
+				$Restore.Seconds = $RegExMatches.Groups.Where({$_.Name -eq 'Seconds'}).Value
+				$Restore.MBPerSecond = $RegExMatches.Groups.Where({$_.Name -eq 'MBPerSecond'}).Value
+				$Restore.LogicalFiles = $script:BackupLogicalFileList
+
+				$script:Output = $Restore
+			} else {
+				Write-Error "$($ServerMessageEventArgs.Error.Number) - $($ServerMessageEventArgs.Error.Message)"
+
+				$script:Output = $null
+			}
+		}
+	}
+
+	process {
+		try {
+			$script:BackupLogicalFileList = [System.Collections.Generic.List[SqlServerTools.BackupLogicalFile]]::New()
+
+			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+
+			$SmoRestore.Database = $DatabaseName
+			$SmoRestore.Action = $RestoreActionType
+
+			$SmoRestore.KeepReplication = $KeepReplication
+			$SmoRestore.KeepTemporalRetention = $KeepTemporalRetention
+			$SmoRestore.NoRecovery = $NoRecovery
+			$SmoRestore.PercentCompleteNotification = 5
+			$SmoRestore.RestrictedUser = $RestrictedUser
+
+			foreach ($File in $BackupFile) {
+				$SmoBackupDeviceItem = [Microsoft.SqlServer.Management.SMO.BackupDeviceItem]::New($File, [Microsoft.SqlServer.Management.SMO.DeviceType]::File)
+
+				$SmoRestore.Devices.Add($SmoBackupDeviceItem)
+			}
+
+			if ($PSBoundParameters.ContainsKey('BackupSetFileNumber')) {
+				$SmoRestore.FileNumber = $BackupSetFileNumber
+			}
+
+			if ($PSBoundParameters.ContainsKey('BlockSize')) {
+				$SmoRestore.BlockSize = $BlockSize
+			}
+
+			if ($PSBoundParameters.ContainsKey('BufferCount')) {
+				$SmoRestore.BufferCount = $BufferCount
+			}
+
+			if ($PSBoundParameters.ContainsKey('Checksum')) {
+				$SmoRestore.Checksum = $Checksum
+			} else {
+				$SmoRestore.Checksum = [bool]$SmoServer.Configuration.DefaultBackupChecksum.RunValue
+			}
+
+			if ($PSBoundParameters.ContainsKey('MaxTransferSize')) {
+				$SmoRestore.MaxTransferSize = $MaxTransferSize
+			}
+			else {
+				$SmoRestore.MaxTransferSize = 1048576
+			}
+
+			if ($PSBoundParameters.ContainsKey('MediaName')) {
+				$SmoRestore.MediaName = $MediaName
+			}
+
+			if ($PSBoundParameters.ContainsKey('StandByFile')) {
+				$SmoRestore.StandbyFile = $StandByFile
+			}
+
+			switch ($RestoreActionType) {
+				'Database' {
+					if ($PSBoundParameters.ContainsKey('RelocateFiles')) {
+						foreach ($File in $RelocateFile) {
+							$RelocateFileFile = [Microsoft.SqlServer.Management.Smo.RelocateFile]::New()
+
+							$RelocateFileFile.LogicalFileName = $File.LogicalName
+							$RelocateFileFile.PhysicalFileName = $file.PhysicalName
+
+							[void]$SmoRestore.RelocateFiles.Add($RelocateFileFile)
+						}
+					} else {
+						$FileList = Get-SmoBackupFileList -SmoServerObject $SmoServerObject -DatabaseBackupPath $BackupFile[0]
+
+						foreach ($File in $FileList) {
+							switch ($File.Type) {
+								'D' {
+									$Folder = $SmoServerObject.DefaultFile
+
+									if ($File.FileGroupId -eq 1) {
+										$Extension = '.mdf'
+									} else {
+										$Extension = '.ndf'
+									}
+
+									if ($File.FileId -eq 1) {
+										$NewFileName = [string]::Format('{0}_{1}{2}', $DatabaseName, $File.FileGroupName, $Extension)
+									} else {
+										$NewFileName = [string]::Format('{0}_{1}{2}{3}', $DatabaseName, $File.FileGroupName, $File.FileId, $Extension)
+									}
+								}
+								'L' {
+									$Folder = $SmoServerObject.DefaultLog
+									$NewFileName = [string]::Format('{0}_log.ldf', $DatabaseName, $File.FileGroupName)
+								}
+								Default {
+									throw [System.Management.Automation.ErrorRecord]::New(
+										[Exception]::New('File type not supported.'),
+										'1',
+										[System.Management.Automation.ErrorCategory]::NotImplemented,
+										$File.Type
+									)
+								}
+							}
+
+							$RelocateFileFile = [Microsoft.SqlServer.Management.Smo.RelocateFile]::New()
+
+							$RelocateFileFile.LogicalFileName = $File.LogicalName
+							$RelocateFileFile.PhysicalFileName = [System.IO.Path]::Combine($Folder, $NewFileName)
+
+							[void]$SmoRestore.RelocateFiles.Add($RelocateFileFile)
+						}
+					}
+
+					$SmoRestore.ReplaceDatabase = $ReplaceDatabase
+				}
+				'Files' {
+					if ($PSBoundParameters.ContainsKey('FileGroup')) {
+						foreach ($Item in $FileGroup) {
+							[void]$($SmoBackup.DatabaseFileGroups.Add($Item))
+						}
+					}
+
+					if ($PSBoundParameters.ContainsKey('LogicalFile')) {
+						foreach ($Item in $LogicalFile) {
+							[void]$($SmoBackup.DatabaseFiles.Add($Item))
+						}
+					}
+
+					$SmoRestore.ReplaceDatabase = $ReplaceDatabase
+				}
+				'Log' {
+					if ($PSBoundParameters.ContainsKey('ToPointInTime')) {
+						$SmoRestore.ToPointInTime = $ToPointInTime
+					}
+
+					if ($PSCmdlet.ParameterSetName -eq 'Restore-StopAtMarkName') {
+						$SmoRestore.StopAtMarkName = $StopAtMarkName
+
+						if ($PSBoundParameters.ContainsKey('StopAtMarkAfterDate')) {
+							$SmoRestore.StopAtMarkAfterDate = $StopAtMarkAfterDate
+						}
+					}
+
+					if ($PSCmdlet.ParameterSetName -eq 'Restore-StopBeforeMarkName') {
+						$SmoRestore.StopBeforeMarkName = $StopBeforeMarkName
+
+						if ($PSBoundParameters.ContainsKey('StopBeforeMarkAfterDate')) {
+							$SmoRestore.StopBeforeMarkAfterDate = $StopBeforeMarkAfterDate
+						}
+					}
+				}
+				'OnlineFiles' {
+					if ($PSBoundParameters.ContainsKey('FileGroup')) {
+						foreach ($Item in $FileGroup) {
+							[void]$($SmoBackup.DatabaseFileGroups.Add($Item))
+						}
+					}
+
+					if ($PSBoundParameters.ContainsKey('LogicalFile')) {
+						foreach ($Item in $LogicalFile) {
+							[void]$($SmoBackup.DatabaseFiles.Add($Item))
+						}
+					}
+
+					$SmoRestore.NoRecovery = $NoRecovery
+				}
+				'OnlinePage' {
+					if ($PSBoundParameters.ContainsKey('DatabasePage')) {
+						foreach ($Item in $DatabasePage) {
+							$SmoSuspectPage =[Microsoft.SqlServer.Management.Smo.SuspectPage]::New($Item.Split(':')[0], $Item.Split(':')[1])
+
+							$SmoRestore.DatabasePages.Add($SmoSuspectPage)
+						}
+					} else {
+						$SuspectPageTable = $SmoRestore.ReadSuspectPageTable($SmoServerObject)
+
+						$SuspectPages = $SuspectPageTable.where({$_.database_id -eq $SmoServerObject.Databases[$DatabaseName].Id -and $_.event_type -in @(1, 2, 3)})
+
+						if ($SuspectPages.Count -eq 0) {
+							throw [System.Management.Automation.ErrorRecord]::New(
+								[Exception]::New('No suspect pages found.'),
+								'1',
+								[System.Management.Automation.ErrorCategory]::InvalidResult,
+								$null
+							)
+						}
+
+						foreach ($SuspectPage in $SuspectPages) {
+							$SmoSuspectPage =[Microsoft.SqlServer.Management.Smo.SuspectPage]::New($SuspectPage.FileId, $SuspectPage.PageId)
+
+							$SmoRestore.DatabasePages.Add($SmoSuspectPage)
+						}
+					}
+
+					# $PageRestorePlanner = [Microsoft.SqlServer.Management.Smo.PageRestorePlanner]::New($SmoServerObject.Databases[$DatabaseName])
+					# $PageRestorePlanner.SqlRestore($SmoServerObject, $SmoRestore)
+				}
+			}
+
+			$SmoRestore.add_PercentComplete($PercentCompleteEventHandler)
+			$SmoRestore.add_Information($InformationEventHandler)
+			$SmoRestore.add_Complete($ServerMessageEventHandler)
+
+			if ($ScriptRestore) {
+				if ($PSCmdlet.ShouldProcess($DatabaseName, "Script $RestoreActionType restore")) {
+					$SmoRestore.Script($SmoServerObject)
+				}
+			} else {
+				if ($PSCmdlet.ShouldProcess($DatabaseName, "$RestoreActionType restore")) {
+					$SmoRestore.SqlRestore($SmoServerObject)
+
+					$script:Output
+				}
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			$SmoRestore.remove_PercentComplete($PercentCompleteEventHandler)
+			$SmoRestore.remove_Information($InformationEventHandler)
+			$SmoRestore.remove_Complete($ServerMessageEventHandler)
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
+	}
+}
+
 function Set-SmoCredential {
 	<#
 	.EXTERNALHELP
@@ -11760,7 +13049,7 @@ function Set-SmoDatabaseAsymmetricKey {
 				)
 			}
 
-			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, "Updating database Asymmetric key.")) {
+			if ($PSCmdlet.ShouldProcess($AsymmetricKeyName, 'Updating database Asymmetric key.')) {
 				$AsymmetricKey.ChangePrivateKeyPassword(
 					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword)),
 					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($NewPrivateKeyPassword))
@@ -11889,7 +13178,7 @@ function Set-SmoDatabaseCertificate {
 				)
 			}
 
-			if ($PSCmdlet.ShouldProcess($CertificateName, "Updating database certificate.")) {
+			if ($PSCmdlet.ShouldProcess($CertificateName, 'Updating database certificate.')) {
 				$Certificate.ChangePrivateKeyPassword(
 					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($PrivateKeyPassword)),
 					[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($NewPrivateKeyPassword))
@@ -12515,11 +13804,17 @@ function Set-SmoDatabaseObjectPermission {
 					'AsymmetricKey' {
 						$ClassObject = $DatabaseObject.AsymmetricKeys[$ObjectName]
 					}
+					'BrokerService' {
+						$ClassObject = $DatabaseObject.ServiceBroker.Services[$ObjectName]
+					}
 					'Certificate' {
 						$ClassObject = $DatabaseObject.Certificates[$ObjectName]
 					}
 					'ExtendedStoredProcedure' {
 						$ClassObject = $DatabaseObject.ExtendedStoredProcedures[$ObjectName]
+					}
+					'MessageType' {
+						$ClassObject = $DatabaseObject.ServiceBroker.MessageTypes[$ObjectName]
 					}
 					'Schema' {
 						$ClassObject = $DatabaseObject.Schemas[$ObjectName]
@@ -12529,6 +13824,12 @@ function Set-SmoDatabaseObjectPermission {
 					}
 					'Sequence' {
 						$ClassObject = $DatabaseObject.Sequences[$ObjectName]
+					}
+					'ServiceContract' {
+						$ClassObject = $DatabaseObject.ServiceBroker.ServiceContracts[$ObjectName]
+					}
+					'ServiceQueue' {
+						$ClassObject = $DatabaseObject.ServiceBroker.Queues[$ObjectName]
 					}
 					'SymmetricKey' {
 						$ClassObject = $DatabaseObject.SymmetricKeys[$ObjectName]
@@ -13692,11 +14993,147 @@ function Set-SmoSqlLogin {
 				$SmoLogin.Rename($NewLoginName)
 			}
 
-			if ($PSCmdlet.ShouldProcess($LoginName, "Alter login.")) {
+			if ($PSCmdlet.ShouldProcess($LoginName, 'Alter login.')) {
 				$SmoLogin.Alter()
 				$SmoLogin.Refresh()
 
 				$SmoLogin
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				Disconnect-SmoServer -SmoServerObject $SmoServerObject
+			}
+		}
+	}
+
+	end {
+	}
+}
+
+function Test-SmoBackup {
+	<#
+	.EXTERNALHELP
+	SqlServerTools-Help.xml
+	#>
+
+	[System.Diagnostics.DebuggerStepThrough()]
+
+	[CmdletBinding(
+		PositionalBinding = $false,
+		SupportsShouldProcess = $true,
+		ConfirmImpact = 'Medium',
+		DefaultParameterSetName = 'ServerInstance'
+	)]
+
+	[OutputType([bool])]
+
+	param (
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'ServerInstance'
+		)]
+		[ValidateLength(1, 128)]
+		[Alias('SqlServer')]
+		[string]$ServerInstance,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false,
+			ParameterSetName = 'SmoServer'
+		)]
+		[Microsoft.SqlServer.Management.Smo.Server]$SmoServerObject,
+
+		[Parameter(
+			Mandatory = $true,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[string[]]$BackupFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[Microsoft.SqlServer.Management.Smo.RelocateFile[]]$RelocateFile,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[ValidateLength(1, 128)]
+		[string]$MediaName,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[switch]$Checksum
+	)
+
+	begin {
+		Try {
+			$ServerInstanceParameterSets = @('ServerInstance')
+
+			if ($PSCmdlet.ParameterSetName -in $ServerInstanceParameterSets) {
+				$SmoServerParameters = @{
+					'ServerInstance' = $ServerInstance
+					'DatabaseName' = 'master'
+				}
+
+				$SmoServerObject = Connect-SmoServer @SmoServerParameters
+			}
+		}
+		Catch {
+			if ($PSCmdlet.ParameterSetName -in $DatabaseNameParameterSets) {
+				if (Test-Path -Path Variable:\DatabaseObject) {
+					if ($DatabaseObject -is [Microsoft.SqlServer.Management.Smo.Database]) {
+						Disconnect-SmoServer -SmoServerObject $DatabaseObject.Parent
+					}
+				}
+			}
+
+			throw $_
+		}
+	}
+
+	process {
+		try {
+			$SmoRestore = [Microsoft.SqlServer.Management.Smo.Restore]::New()
+
+			$SmoRestore.PercentCompleteNotification = 5
+
+			foreach ($File in $BackupFile) {
+				$SmoBackupDeviceItem = [Microsoft.SqlServer.Management.SMO.BackupDeviceItem]::New($File, [Microsoft.SqlServer.Management.SMO.DeviceType]::File)
+
+				$SmoRestore.Devices.Add($SmoBackupDeviceItem)
+			}
+
+			if ($PSBoundParameters.ContainsKey('BackupSetFileNumber')) {
+				$SmoRestore.FileNumber = $BackupSetFileNumber
+			}
+
+			if ($PSBoundParameters.ContainsKey('Checksum')) {
+				$SmoRestore.Checksum = $Checksum
+			} else {
+				$SmoRestore.Checksum = [bool]$SmoServer.Configuration.DefaultBackupChecksum.RunValue
+			}
+
+			if ($PSBoundParameters.ContainsKey('MediaName')) {
+				$SmoRestore.MediaName = $MediaName
+			}
+
+			if ($PSCmdlet.ShouldProcess(@($BackupFile)[0], 'Verify backup file')) {
+				$SmoRestore.SqlVerify($SmoServerObject)
 			}
 		}
 		catch {
@@ -13777,7 +15214,7 @@ function Update-SmoSqlLoginPassword {
 			$ServerConnection = [Microsoft.SqlServer.Management.Common.ServerConnection]::New($SqlConnectionInfo)
 			$SmoServer = [Microsoft.SqlServer.Management.Smo.Server]::New($ServerConnection)
 
-			if ($PSCmdlet.ShouldProcess($LoginName, "Update login password.")) {
+			if ($PSCmdlet.ShouldProcess($LoginName, 'Update login password.')) {
 				$SmoServer.ChangePassword($Password, $NewPassword)
 			}
 		}
@@ -14617,6 +16054,8 @@ function Get-SqlClientDataSet {
 			throw $_
 		}
 		finally {
+			$SqlDataAdapter.remove_FillError($FillErrorEventHandler)
+
 			if (Test-Path -Path Variable:\SqlCommand) {
 				$SqlCommand.Dispose()
 			}
@@ -14836,7 +16275,7 @@ function Invoke-SqlClientBulkCopy {
 			$ConnectionString = Build-SqlClientConnectionString -ServerInstance $ServerInstance -DatabaseName $DatabaseName
 		}
 
-		$eventHandler = {
+		$EventHandler = {
 			param(
 				$EventSender,
 				$SqlRowsCopiedEventArgs
@@ -14904,7 +16343,7 @@ function Invoke-SqlClientBulkCopy {
 				$SqlBulkCopy.EnableStreaming = $true
 			}
 
-			$SqlBulkCopy.add_SqlRowsCopied($eventHandler)
+			$SqlBulkCopy.add_SqlRowsCopied($EventHandler)
 
 			$ProgressParameters.Activity = 'Bulk Copy SQL Data.'
 			$ProgressParameters.Status = [string]::Format('Row {0} of {1}', 0, $Script:TotalRows)
@@ -14942,6 +16381,8 @@ function Invoke-SqlClientBulkCopy {
 		}
 		finally {
 			Write-Progress -Id 0 -Activity 'Bulk Copy SQL Data.' -Completed
+
+			$SqlBulkCopy.remove_SqlRowsCopied($EventHandler)
 
 			if (Test-Path -Path Variable:\SqlBulkCopy) {
 				$SqlBulkCopy.Close()
@@ -15330,6 +16771,9 @@ function Save-SqlClientDataSet {
 		finally {
 			Write-Progress -Id 1 -Activity 'Import SQL Data.' -Completed
 
+			$SqlDataAdapter.remove_RowUpdating($SqlRowUpdatingEventHandler)
+			$SqlDataAdapter.remove_RowUpdated($SqlRowUpdatedEventHandler)
+
 			if (Test-Path -Path Variable:\SqlCommandBuilder) {
 				$SqlCommandBuilder.Dispose()
 			}
@@ -15365,8 +16809,8 @@ catch {
 # SIG # Begin signature block
 # MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAFc7/7AoJTH0C+
-# IOs3ZD/S58CK4PdKF99XeKMws1DkYqCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDSUB/Oo8RYYZ8a
+# 3KvEp83nzAgycJERWqEHYxLnYQYCBKCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -15546,34 +16990,34 @@ catch {
 # Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB
 # nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIGx3PwhIerRdat1hwd8k
-# jT1YweCuvsinrYKlTCVIkLr7MA0GCSqGSIb3DQEBAQUABIICABKLT810V0L6Ri+E
-# nSvoIf11XNcp0V6xCBlvTSSgIYE7jkKbuhc5SSMGPms8l6CSlqVKHraCCOUnA7x+
-# pQRB/AnXlnEZ5STCXNNSxM5GxgGFTR7/CNKt1z0/n8E2kANtvc0IODYZ1MCHExP5
-# rERqgX5xI8O0L9YOH/804/lvKBPf1OBfAi3FEBK57E6PPddLo/rcEZ96VgpV18As
-# sxeDZofxwAZVnqD68Cr5Upo3lvzmGPwUJQ5ZQrtqCvWkmQMpy1QV+Luocrb7Y7HC
-# PAGUY1+fPXnyjPQOnApqAND+j/eQ7TV/XdnhrtE8T+AJsRV4meGuN+bKQvAjT7xt
-# zP4DPLRpduPG1At4it1mxK+372loNKmiTONUpFo9DM0TxL2zxzUhD8hhwH5noSXT
-# NTJf6Jn7K02po2M8IReTG4t0AR5pmlm7j8hH6J2Jfhv3Cjw83S6GsXQmTCN7sZMM
-# YpN5OwZhO5Cw5b1/k6QLvEqrmLxVa09Sjz8aJvT7cgnRb+61IPAolHK58+0DGoJS
-# PxmO+j20QjZ0ejaqFrGgWrZZPDtuENx5WIDgIZwbJ/EvjBMHmcO5KVZNHz6eeP2A
-# sgEJq+I2ZyHuR29NgBGX13LiVOAhKhUZGpyi+5fFpbpORyYOUwfQLI6Bl77sLFoy
-# tJxFUcmoODEZU1Y09Rax+N6Xf77foYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
+# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIHGQcZidOeuG0/B1Thtu
+# OeUDzs2RHDIdChoVdtcClKD1MA0GCSqGSIb3DQEBAQUABIICAHE3MnHXtzttR6BS
+# TM1D9PRllLdjBoY/G8YftI5LQlnXauxsEoQyVjRyPvgNsdzS6uMcc7TY2b4nDz23
+# 9Fz+IkkBBBuKdQ5FD06UX0Qf4sxwxrPbRVivkK3p5GK/BYNFSP/jznjpB89E+U+i
+# hQ27lHnexSWl94lbuVtFCUqpgBrybRfp+w4pjByOYzvWe3KJwHOKIQ8rVw/t1Rzo
+# /26PeUQSS4fG+bPHWoO5auWCzzAfqJrRHYLq+bloBh+89FPwuxyF5f5t0DT94FBo
+# U9Mot3MYvMEiNzzhhXgGDLmKt4u6BSG2X/n7mwxsGjRxodljTOYif90dxKb/+oy9
+# YXS0ZXgXQL/Pqza4QJbmURTgPtj8zJuL6e7S7SnMKFZ0MkNjfrLafXf9RUiI6jF/
+# e/SPC3M00ZNakurncPnRDJDIJrKZUI5YYgwweBsWXr6YZQKtreQi9EkKmddEzCmM
+# 53ZfxqNszUq60k/82VD9H5h9v/FRgw8HTuand2iJAtqSP6DCEAzpHRGsuwUsP/xV
+# 1EgO+4hJNq74dGA/hwVWGHUwp+NI/11YScn9MGZf0BBNq8BQqeHNUS2oP6OFQN1P
+# HUTjxb49jW6CsqoslBcnzGaUzMuQm/wTgPZH3pyPPWYMKj3Y7veAVDVyVcZ/xF7X
+# wCu9i5OLcWjF8ayIbee4guALy/n7oYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
 # AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw
 # PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2
 # IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF
 # AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2
-# MDkyOTAxMTM1MFowLwYJKoZIhvcNAQkEMSIEIIwBeYSXhyCplOefNQXZIE+HPHFU
-# UaAFHEZ4cQrnCbgKMA0GCSqGSIb3DQEBAQUABIICAEZu9kAvDoUsENUx2BySZV7s
-# M0qfpmgeI3kVR3URh/jEDlaR3lU1AdPzzK+lNJMyFxK6g++di2M34Fgou3Xc9MMQ
-# QGFHFdn7OrnRuorGXF33eotXWk8T6G6WHwJ9JpBenPyQS7RYqJL2Oihywa5BIvWl
-# M7zDVM21jw0xsZ6JWdoxDD8bMLbBGpceQZW58guFwYxjzlGZ7oBA5J/JkhpBLCvH
-# 5AohbslyzBTRJyODh2D12bY3WXpmZzhYJ81pW9sJn4lqtI7yReAOJx3tAM/uy/ev
-# Lcr0oEeMwytoA73OlxjjJFSvQ0x+zP8t5agubbsLZndddu9yqRcHaFFlMPcjx0Ok
-# JobWy5wwYXL7sjhGjxuGn/TZp4oNpZIJueWPAQ5qFLl7b65V17AWCVCBUsMZvgag
-# yz+5fOGP05rqTRpy1XGWjPIBpCflhhuOznXRxg1WX5yLi3QJO0inlL9zEYDusDMh
-# MS1K5+5TZEnW8MRaQa4abjfakqwMUcTicjF5rh+E+7sVb6WyBOGdTlQiYOvCtl4/
-# HYWo5nWoz2bX0RLslvNBRDU8BV0LbhrpI5QvGVaJa05xpWXwQF0/UnZ+TgHyvgCT
-# R1igqsVgWH8Ud6aXFz9uDO9X2lgrpiWHjlHX+QQfBI4L63BPdBpDq1qVs1AFC+qc
-# d4s29V7BA6dEGJA4cCI6
+# MTAzMTE2MzA1MFowLwYJKoZIhvcNAQkEMSIEIF0XWYEmtXFwF9ay+IS9BcnS3Ry6
+# 0y/VkXKbPyvlmrPuMA0GCSqGSIb3DQEBAQUABIICAED31XpzzqDGv0qdmVzjbjH9
+# WPhpHeSBrPM++3N5xTd5Mt7AoQubyhQamRsFIO/Fm3ZYFC3WVNB7X1anCub3hwms
+# eOGaXMs6hy2ap5btm2degbonGL2dlU+cbGjPJaUcvCr6amMLavBUh5X8DJXU/o1n
+# FRpAANjGZt1MafvmfGWhKyppNWVeEqAYk7shiryiNf+2gEKHldePKCDfFoj0+wiq
+# sLBEOgBHlDhYZAqHGhC0ZLg7Bzn3uaV7LimlPgo4tAuAUqTIoZO1mTsBGBms6qnI
+# x2DJK726GUb3mIGPMm4Ull6hne25ulDyu5lelc+ClGF7k2nRh5jTRGfmHX9w2kaQ
+# 90mT22xwWYbNjjl/GdvSLDPoulKU5zatRDRjqF3h4i2MmLue2kJsv3hyRwQ+b8+x
+# bhtHlkZT/3RWsisrgEPVOjvAOMvCfYw7mefdbkaGzGFvJthCDwPB6mPhBiXnOrfw
+# bINz8L/iVl4IY5fbTIdSS2ubYJfak0BJLrJK6wZfsku1OmOvjT9cYa0TwAY6oJGl
+# 23el6ne81VIAQ7Rk9DZn8u+C9WISPZuh2V9QRFyqk+hwOcHrL8qkamaaTDydBMpY
+# bGfHKV6f27bOzerWOyNUuTcC0wCIljpNwb1+DwkUU+Hy5uCPhPVjH6MZ1d+rFkEq
+# mrSac+1qPCENdy+iJv8R
 # SIG # End signature block

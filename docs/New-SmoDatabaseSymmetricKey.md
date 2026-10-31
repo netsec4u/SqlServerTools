@@ -154,7 +154,7 @@ Name of database.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -181,7 +181,7 @@ An existing SMO Database object representing the database.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.Database
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -208,7 +208,7 @@ The IdentityPhrase parameter is used to tag data (using a GUID based on the iden
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -235,7 +235,7 @@ Specifies the encryption method.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.SymmetricKeyEncryptionAlgorithm
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -256,7 +256,7 @@ Specifies key encryption type.
 
 ```yaml
 Type: Microsoft.SqlServer.Management.Smo.KeyEncryptionType
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -277,7 +277,7 @@ Specifies object name or password based on the value of the KeyEncryptionType pa
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -298,7 +298,7 @@ Specifies a pass phrase from which the symmetric key can be derived.
 
 ```yaml
 Type: System.Security.SecureString
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
@@ -325,7 +325,7 @@ The name of the SQL Server instance to connect to.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases:
 - SqlServer
@@ -353,7 +353,7 @@ Specifies the symmetric key name.
 
 ```yaml
 Type: System.String
-DefaultValue: None
+DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
