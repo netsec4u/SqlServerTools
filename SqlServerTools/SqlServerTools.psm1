@@ -2367,7 +2367,7 @@ function Backup-SmoDatabase {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[string[]]$BackupFile,
+		[System.IO.FileInfo[]]$BackupFile,
 
 		[Parameter(
 			Mandatory = $false,
@@ -2670,6 +2670,10 @@ function Backup-SmoDatabase {
 			}
 
 			foreach ($File in $BackupFile) {
+				if (-not $(Test-Path -LiteralPath $File.Directory.FullName)) {
+					[void][System.IO.Directory]::CreateDirectory($File.Directory.FullName)
+				}
+
 				$SmoBackupDeviceItem = [Microsoft.SqlServer.Management.SMO.BackupDeviceItem]::New($File, [Microsoft.SqlServer.Management.SMO.DeviceType]::File)
 
 				$SmoBackup.Devices.Add($SmoBackupDeviceItem)
@@ -2686,19 +2690,19 @@ function Backup-SmoDatabase {
 			if ($PSBoundParameters.ContainsKey('BackupSetName')) {
 				$SmoBackup.BackupSetName = $BackupSetName
 			} else {
-				$SmoBackup.BackupSetName = [string]::Format('{0} {1}', $Database.Name, $BackupTimestamp)
+				$SmoBackup.BackupSetName = [string]::Format('{0} {1}', $DatabaseObject.Name, $([DateTime]::Now).ToUniversalTime().ToString('yyyyMMddHHmmss'))
 			}
 
 			if ($PSBoundParameters.ContainsKey('MediaDescription')) {
 				$SmoBackup.MediaDescription = $MediaDescription
 			} else {
-				$SmoBackup.MediaDescription = [string]::Format('{0} database backup of {1}', $BackupType, $Database.Name)
+				$SmoBackup.MediaDescription = [string]::Format('{0} database backup of {1}', $BackupType, $DatabaseObject.Name)
 			}
 
 			if ($PSBoundParameters.ContainsKey('MediaName')) {
 				$SmoBackup.MediaName = $MediaName
 			} else {
-				$SmoBackup.MediaName = [string]::Format('{0} Backup', $Database.Name)
+				$SmoBackup.MediaName = [string]::Format('{0} Backup', $DatabaseObject.Name)
 			}
 
 			if ($PSBoundParameters.ContainsKey('BackupCompression')) {
@@ -16809,8 +16813,8 @@ catch {
 # SIG # Begin signature block
 # MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDSUB/Oo8RYYZ8a
-# 3KvEp83nzAgycJERWqEHYxLnYQYCBKCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCkvY0Ea8TxhQls
+# ykrnt76rpMY0AGnf6u2jh0dC1gVgB6CCINswggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -16990,34 +16994,34 @@ catch {
 # Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB
 # nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIHGQcZidOeuG0/B1Thtu
-# OeUDzs2RHDIdChoVdtcClKD1MA0GCSqGSIb3DQEBAQUABIICAHE3MnHXtzttR6BS
-# TM1D9PRllLdjBoY/G8YftI5LQlnXauxsEoQyVjRyPvgNsdzS6uMcc7TY2b4nDz23
-# 9Fz+IkkBBBuKdQ5FD06UX0Qf4sxwxrPbRVivkK3p5GK/BYNFSP/jznjpB89E+U+i
-# hQ27lHnexSWl94lbuVtFCUqpgBrybRfp+w4pjByOYzvWe3KJwHOKIQ8rVw/t1Rzo
-# /26PeUQSS4fG+bPHWoO5auWCzzAfqJrRHYLq+bloBh+89FPwuxyF5f5t0DT94FBo
-# U9Mot3MYvMEiNzzhhXgGDLmKt4u6BSG2X/n7mwxsGjRxodljTOYif90dxKb/+oy9
-# YXS0ZXgXQL/Pqza4QJbmURTgPtj8zJuL6e7S7SnMKFZ0MkNjfrLafXf9RUiI6jF/
-# e/SPC3M00ZNakurncPnRDJDIJrKZUI5YYgwweBsWXr6YZQKtreQi9EkKmddEzCmM
-# 53ZfxqNszUq60k/82VD9H5h9v/FRgw8HTuand2iJAtqSP6DCEAzpHRGsuwUsP/xV
-# 1EgO+4hJNq74dGA/hwVWGHUwp+NI/11YScn9MGZf0BBNq8BQqeHNUS2oP6OFQN1P
-# HUTjxb49jW6CsqoslBcnzGaUzMuQm/wTgPZH3pyPPWYMKj3Y7veAVDVyVcZ/xF7X
-# wCu9i5OLcWjF8ayIbee4guALy/n7oYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
+# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIBkIr7sZV1rd6l+9Kwhi
+# bZpKsQ4XojzBR9EUOnbBlJrJMA0GCSqGSIb3DQEBAQUABIICAIRY1frW0HxKUWOQ
+# yoCsWPPdLK3AxazDnm+6tWm8eN92AS0s4e9RbPqeWQPh//6+8mgcKKB4Aa9Wqrty
+# rXxmBnSxEOsg4Rw2H2PvIea19pmip91GE5TvGk4k6k6z0i3NEwkdbYKr41B/wAHX
+# VhchUjHFmhGdVnQHw3ERHswfKpdnaACiq0LpEi6Y5q4LDwF/uPCa1lkJKFrvIO5y
+# LJnDezJOyHnVYARmUkORx/7BiJ/IeGCtAAuTt0zK6T5ayONnivvgz2trsWfnpCGh
+# yH4yTuejaQUBy88zyY32eOM8b321CuioNaoeOh6k7q9Zdamzl3NplrHSz2LN0kHr
+# TaLb4eFlNwQXBYBtwcVDbVW/naSxHZhsMzfRaAeNvwptz+CWtSff+bp9KQsWu6zm
+# a/wXR01jEJLWvUdy8wpTegCVwlk97KPxC789Npxz2pmXA4ZnC3RhnBZcwwafc9BJ
+# PUwOzmpGsDDs+j9TqX6yt7jzCkkoCqUqDW1V0VWdPum0+QJ0UcGnPWztX7x8Sgmy
+# pffZvfhYZs7ePnqwA4VL+Lxsn5pnXytT2RnXcJN9pW9Nz2jb+T0QSaA5XTfaLy4X
+# 5Xl0O/X82Usu2VfQMVsfiqQVlF0zT0PNh/Pe1otp7Xqo/tTW7XnskasD6wCuiCkV
+# jD99V2CV4VcxkJ4i6LD2YPqQL8b5oYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
 # AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw
 # PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2
 # IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF
 # AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2
-# MTAzMTE2MzA1MFowLwYJKoZIhvcNAQkEMSIEIF0XWYEmtXFwF9ay+IS9BcnS3Ry6
-# 0y/VkXKbPyvlmrPuMA0GCSqGSIb3DQEBAQUABIICAED31XpzzqDGv0qdmVzjbjH9
-# WPhpHeSBrPM++3N5xTd5Mt7AoQubyhQamRsFIO/Fm3ZYFC3WVNB7X1anCub3hwms
-# eOGaXMs6hy2ap5btm2degbonGL2dlU+cbGjPJaUcvCr6amMLavBUh5X8DJXU/o1n
-# FRpAANjGZt1MafvmfGWhKyppNWVeEqAYk7shiryiNf+2gEKHldePKCDfFoj0+wiq
-# sLBEOgBHlDhYZAqHGhC0ZLg7Bzn3uaV7LimlPgo4tAuAUqTIoZO1mTsBGBms6qnI
-# x2DJK726GUb3mIGPMm4Ull6hne25ulDyu5lelc+ClGF7k2nRh5jTRGfmHX9w2kaQ
-# 90mT22xwWYbNjjl/GdvSLDPoulKU5zatRDRjqF3h4i2MmLue2kJsv3hyRwQ+b8+x
-# bhtHlkZT/3RWsisrgEPVOjvAOMvCfYw7mefdbkaGzGFvJthCDwPB6mPhBiXnOrfw
-# bINz8L/iVl4IY5fbTIdSS2ubYJfak0BJLrJK6wZfsku1OmOvjT9cYa0TwAY6oJGl
-# 23el6ne81VIAQ7Rk9DZn8u+C9WISPZuh2V9QRFyqk+hwOcHrL8qkamaaTDydBMpY
-# bGfHKV6f27bOzerWOyNUuTcC0wCIljpNwb1+DwkUU+Hy5uCPhPVjH6MZ1d+rFkEq
-# mrSac+1qPCENdy+iJv8R
+# MTEwNTA0MTYzM1owLwYJKoZIhvcNAQkEMSIEIM9XzMySgGq9Tc6SyXORRQ3Y7f0P
+# i6fAs1uUxl+Wk2UxMA0GCSqGSIb3DQEBAQUABIICAJq71YnfTLYNO6w7hdoEYGql
+# qveNbSgJJlH8bG+3+zyu5wSH6wFMBtmphDPnHfR5gaWaMW1tPEMUNRAjH09dha96
+# OH2zB0wcYJPG0p/WdRjgYoQCZ52EHHg66SyW5G1P2cEFYe09yDUwQ/mD+QceqXKT
+# eVtIul13qIcn+84TEOIV9bT7tEnQgt6A6KBSjczwpykOup7ldNJDB+ZmKt4OgSfv
+# Gk3ttS1aK55lmqkOvYI0BBPqrM6QI/AeX+7/t0xHf6lhZ67vfA/mX8CY8vANs5rt
+# 0bmDCM93sQdNfSpnQ8km1rU6AZsIy15V8NtG8Wd2mRnyqoY5iKTYRcoS0o2WtorP
+# pgPE360cYiveG4zuh3OHVyIVuU9mPXStY61qSxo67Ft4V02VHurhcXAbBD6dw6Eg
+# lor6HkD73WCZK8Lix3gR+VUgDCbaQgNO+S0EeeFNjPBEcI1xcT3/XEwwDCLdNY4s
+# b0AzCHG4855/vl1NVJwIXVQWfhdzDyhg500lDmG5w0B6sxeyN8iwORVky47qPH2f
+# yedHHWxzVfMuAa7ZAuR6FLqrOrcOcSUObaB8qv1xcoE/lrlotDVP/i+8kYjy8sx4
+# 8sTQW6FQ+XLVrW7EN49sGSdt1bLx24QHtCXutCj/iLJSyuZ4ZZANU8VQKb9wpQnt
+# IpNigiq2QRetEFsYoRYK
 # SIG # End signature block
