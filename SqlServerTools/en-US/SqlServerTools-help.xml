@@ -15507,6 +15507,14 @@ Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName M
           </dev:type>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named" aliases="none">
+          <maml:name>UpgradeExisting</maml:name>
+          <maml:description />
+          <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Boolean</maml:name>
+          </dev:type>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named" aliases="none">
           <maml:name>WhatIf</maml:name>
           <maml:description />
           <dev:type>
@@ -15546,6 +15554,14 @@ Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName M
           <command:parameterValue required="true" variableLength="false">DacDeployOptions</command:parameterValue>
           <dev:type>
             <maml:name>Microsoft.SqlServer.Dac.DacDeployOptions</maml:name>
+          </dev:type>
+        </command:parameter>
+        <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named" aliases="none">
+          <maml:name>UpgradeExisting</maml:name>
+          <maml:description />
+          <command:parameterValue required="true" variableLength="false">bool</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Boolean</maml:name>
           </dev:type>
         </command:parameter>
         <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="named" aliases="none">
@@ -15624,6 +15640,16 @@ Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName M
           <maml:name>System.String</maml:name>
         </dev:type>
       </command:parameter>
+      <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="none">
+        <maml:name>UpgradeExisting</maml:name>
+        <maml:description>
+          <maml:para>Allows modification of existing database schema to match schema contained on source package.  If database does not exist, this parameter will have no effect.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="true">System.Boolean</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Boolean</maml:name>
+        </dev:type>
+      </command:parameter>
       <command:parameter required="false" variableLength="false" globbing="false" pipelineInput="false" position="Named" aliases="wi">
         <maml:name>WhatIf</maml:name>
         <maml:description>
@@ -15647,7 +15673,7 @@ Open-SmoDatabaseSymmetricKey -DatabaseObject $DatabaseObject -SymmetricKeyName M
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
-        <maml:para>NetworkLibrary not yet implemented.</maml:para>
+        <maml:para />
       </maml:alert>
     </maml:alertSet>
     <command:examples>

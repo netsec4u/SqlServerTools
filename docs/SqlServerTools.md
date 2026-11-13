@@ -1,11 +1,11 @@
 ---
 document type: module
-Help Version: 2.0.0.0
+Help Version: 2.1.0.0
 HelpInfoUri: https://netsec4u.github.io/Help/SqlServerTools/
 Locale: en-US
 Module Guid: 0dbb8289-ae5b-4633-afc8-dfaf0acbe06c
 Module Name: SqlServerTools
-ms.date: 05/07/2026
+ms.date: 11/12/2026
 PlatyPS schema version: 2024-05-01
 title: SqlServerTools Module
 ---

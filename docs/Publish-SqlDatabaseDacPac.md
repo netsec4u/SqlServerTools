@@ -25,6 +25,7 @@ Publish-SqlDatabaseDacPac
   -DatabaseName <string>
   -DacPacPath <FileInfo>
   [-DeployOptions <DacDeployOptions>]
+  [-UpgradeExisting <bool>]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -37,6 +38,7 @@ Publish-SqlDatabaseDacPac
   -ConnectionString <string>
   -DacPacPath <FileInfo>
   [-DeployOptions <DacDeployOptions>]
+  [-UpgradeExisting <bool>]
   [-WhatIf]
   [-Confirm]
   [<CommonParameters>]
@@ -207,6 +209,27 @@ AcceptedValues: []
 HelpMessage: ''
 ```
 
+### -UpgradeExisting
+
+Allows modification of existing database schema to match schema contained on source package.  If database does not exist, this parameter will have no effect.
+
+```yaml
+Type: System.Boolean
+DefaultValue: ''
+SupportsWildcards: false
+Aliases: []
+ParameterSets:
+- Name: (All)
+  Position: Named
+  IsRequired: false
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+DontShow: false
+AcceptedValues: []
+HelpMessage: ''
+```
+
 ### -WhatIf
 
 Runs the command in a mode that only reports what would happen without performing the actions.
@@ -246,7 +269,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-NetworkLibrary not yet implemented.
 
 
 ## RELATED LINKS

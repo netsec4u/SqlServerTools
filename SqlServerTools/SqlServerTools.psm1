@@ -1274,6 +1274,67 @@ function Add-SmoAssembly {
 				}
 				#>
 			}
+
+			$TypeDefinition = @'
+			using System;
+			using System.Collections.Concurrent;
+			using System.Threading.Tasks;
+			using Microsoft.SqlServer.Dac;
+
+			public class DacEventItem
+			{
+				public string Type { get; set; } // "Message" or "Progress"
+				public string Message { get; set; }
+				public string Status { get; set; }
+				public string MessageType { get; set; }
+			}
+
+			public static class DacProgressBridge
+			{
+				public static ConcurrentQueue<DacEventItem> EventQueue = new ConcurrentQueue<DacEventItem>();
+
+				public static void OnMessage(object sender, DacMessageEventArgs e)
+				{
+					EventQueue.Enqueue(new DacEventItem {
+						Type = "Message",
+						Message = e.Message.Message,
+						MessageType = e.Message.MessageType.ToString()
+					});
+				}
+
+				public static void OnProgressChanged(object sender, DacProgressEventArgs e)
+				{
+					EventQueue.Enqueue(new DacEventItem {
+						Type = "Progress",
+						Message = e.Message,
+						Status = e.Status.ToString()
+					});
+				}
+
+				public static Task ExecuteDeployAsync(DacServices DacService, DacPackage DacPackage, string DatabaseName, bool upgradeExisting, DacDeployOptions DeployOptions)
+				{
+					return Task.Run(() => {
+						DacService.Deploy(DacPackage, DatabaseName, upgradeExisting, DeployOptions, null);
+					});
+				}
+			}
+'@
+
+			$ReferencedAssemblies = @(
+				[AppDomain]::CurrentDomain.GetAssemblies().where({$_.ManifestModule.Name -eq 'Microsoft.SqlServer.Dac.dll'}).Location,
+				'System.Collections.Concurrent',
+				'System.Runtime',
+				'System.Threading.Tasks'
+			)
+
+			$TypeParameters = @{
+				TypeDefinition = $TypeDefinition
+				ReferencedAssemblies = $ReferencedAssemblies
+				WarningAction = 'Ignore'
+				IgnoreWarnings = $true
+			}
+
+			Add-Type @TypeParameters
 		}
 		catch {
 			throw $_
@@ -16575,27 +16636,139 @@ function Publish-SqlDatabaseDacPac {
 			ValueFromPipeline = $false,
 			ValueFromPipelineByPropertyName = $false
 		)]
-		[Microsoft.SqlServer.Dac.DacDeployOptions]$DeployOptions
+		[Microsoft.SqlServer.Dac.DacDeployOptions]$DeployOptions,
+
+		[Parameter(
+			Mandatory = $false,
+			ValueFromPipeline = $false,
+			ValueFromPipelineByPropertyName = $false
+		)]
+		[bool]$UpgradeExisting = $false
 	)
 
 	begin {
-		if ($PSBoundParameters.ContainsKey('FailoverPartnerServerInstance')) {
-			$ConnectionString = Build-SqlClientConnectionString -ServerInstance $ServerInstance -DatabaseName $DatabaseName -IntegratedSecurity $true
-		}
-	}
-
-	process {
 		try {
-			$DacService = [Microsoft.SqlServer.Dac.DacServices]::New($ConnectionString)
-
-			$DacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($DacPacPath)
-
-			if ($PSCmdlet.ShouldProcess($DatabaseName, "Deploying DacPac $($DacPacPath.Name)")) {
-				$DacService.Deploy($DacPackage, $DatabaseName, $true, $DeployOptions, $null)
+			if ($PSBoundParameters.ContainsKey('ServerInstance')) {
+				$ConnectionString = Build-SqlClientConnectionString -ServerInstance $ServerInstance -DatabaseName $DatabaseName -IntegratedSecurity $true
 			}
 		}
 		catch {
 			throw $_
+		}
+
+		$MessageDelegate = [EventHandler[Microsoft.SqlServer.Dac.DacMessageEventArgs]]::CreateDelegate(
+			[EventHandler[Microsoft.SqlServer.Dac.DacMessageEventArgs]],
+			[DacProgressBridge].GetMethod('OnMessage')
+		)
+		$ProgressDelegate = [EventHandler[Microsoft.SqlServer.Dac.DacProgressEventArgs]]::CreateDelegate(
+			[EventHandler[Microsoft.SqlServer.Dac.DacProgressEventArgs]],
+			[DacProgressBridge].GetMethod('OnProgressChanged')
+		)
+
+		$ProgressParameters = @{
+			'Id' = 0
+			'Activity' = 'Deploy DacPac'
+			'Status' = 'Initializing'
+			'CurrentOperation' = ''
+			'PercentComplete' = 0
+		}
+
+		$RegExPattern = 'Processing Import\.\s(\d+(?:\.\d+)?)%\s*done\.'
+	}
+
+	process {
+		try {
+			[DacProgressBridge]::EventQueue.Clear()
+
+			$DacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($DacPacPath)
+			$DacService = [Microsoft.SqlServer.Dac.DacServices]::New($ConnectionString)
+
+			$DacService.add_ProgressChanged($ProgressDelegate)
+			$DacService.add_Message($MessageDelegate)
+
+			if ($PSCmdlet.ShouldProcess($DatabaseName, "Deploying DacPac $($DacPacPath.Name)")) {
+				$deployTask = [DacProgressBridge]::ExecuteDeployAsync($DacService, $DacPackage, $DatabaseName, $UpgradeExisting, $DeployOptions)
+
+				$inExecutionPhase = $false
+
+				while (-not $deployTask.IsCompleted) {
+					$Item = $null
+
+					while ([DacProgressBridge]::EventQueue.TryDequeue([ref]$Item)) {
+						$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+
+						if ($RegEx.Match($Item.Message).Success) {
+							$inExecutionPhase = $true
+
+							$RegExMatches = $RegEx.Matches($Item.Message)
+
+							$ProgressParameters.PercentComplete = [Math]::Min(99, [Math]::Round(15 + ([double]$RegExMatches[0].Groups[1].Value * 0.84)))
+						}
+						elseif (-not $inExecutionPhase -and $Item.Type -eq 'Progress') {
+							$ProgressParameters.PercentComplete = [Math]::Min(15, $ProgressParameters.PercentComplete + 2)
+						}
+
+						if ($Item.Type -eq 'Progress') {
+							$ProgressParameters.Activity = 'Deploying DACPAC'
+							$ProgressParameters.Status = $Item.Status
+							$ProgressParameters.CurrentOperation = $Item.Message
+						} elseif ($Item.Type -eq 'Message') {
+							switch ($Item.MessageType) {
+								'Error'   {
+									Write-Error "[$($Item.MessageType)] $($Item.Message)"
+								}
+								'Message' {
+									# No operation
+								}
+								'Warning' {
+									Write-Warning "[$($Item.MessageType)] $($Item.Message)"
+								}
+								default   {
+									Write-Warning "[$($Item.MessageType)] $($Item.Message)"
+								}
+							}
+
+							$ProgressParameters.CurrentOperation = $Item.Message
+						}
+
+						Write-Verbose $ProgressParameters.CurrentOperation
+						Write-Progress @ProgressParameters
+					}
+
+					Start-Sleep -Milliseconds 50
+				}
+
+				if ($deployTask.IsFaulted) {
+					if ($deployTask.Exception.InnerException) {
+						throw $deployTask.Exception.InnerException
+					} else {
+						throw $deployTask.Exception
+					}
+				}
+			}
+		}
+		catch {
+			throw $_
+		}
+		finally {
+			Write-Progress -Activity "Deploying DACPAC" -Status "Completed!" -PercentComplete 100
+
+			if (Test-Path -Path Variable:\DacService) {
+				$DacService.remove_ProgressChanged($ProgressDelegate)
+				$DacService.remove_Message($MessageDelegate)
+			}
+
+			if (Test-Path -Path Variable:\TraceSource) {
+				$TraceSource.Listeners.Remove($ConsoleTraceListener)
+			}
+
+			if (Test-Path -Path Variable:\ConsoleTraceListener) {
+				$ConsoleTraceListener.Dispose()
+			}
+
+			if (Test-Path -Path Variable:\DacPackage) {
+				$DacPackage.Dispose()
+			}
 		}
 	}
 
@@ -16813,8 +16986,8 @@ catch {
 # SIG # Begin signature block
 # MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCkvY0Ea8TxhQls
-# ykrnt76rpMY0AGnf6u2jh0dC1gVgB6CCINswggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDR4/ZpfUmwlzP8
+# CTVgd02CQGyFoZPDo5TJBQb4seIiNqCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -16994,34 +17167,34 @@ catch {
 # Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB
 # nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIBkIr7sZV1rd6l+9Kwhi
-# bZpKsQ4XojzBR9EUOnbBlJrJMA0GCSqGSIb3DQEBAQUABIICAIRY1frW0HxKUWOQ
-# yoCsWPPdLK3AxazDnm+6tWm8eN92AS0s4e9RbPqeWQPh//6+8mgcKKB4Aa9Wqrty
-# rXxmBnSxEOsg4Rw2H2PvIea19pmip91GE5TvGk4k6k6z0i3NEwkdbYKr41B/wAHX
-# VhchUjHFmhGdVnQHw3ERHswfKpdnaACiq0LpEi6Y5q4LDwF/uPCa1lkJKFrvIO5y
-# LJnDezJOyHnVYARmUkORx/7BiJ/IeGCtAAuTt0zK6T5ayONnivvgz2trsWfnpCGh
-# yH4yTuejaQUBy88zyY32eOM8b321CuioNaoeOh6k7q9Zdamzl3NplrHSz2LN0kHr
-# TaLb4eFlNwQXBYBtwcVDbVW/naSxHZhsMzfRaAeNvwptz+CWtSff+bp9KQsWu6zm
-# a/wXR01jEJLWvUdy8wpTegCVwlk97KPxC789Npxz2pmXA4ZnC3RhnBZcwwafc9BJ
-# PUwOzmpGsDDs+j9TqX6yt7jzCkkoCqUqDW1V0VWdPum0+QJ0UcGnPWztX7x8Sgmy
-# pffZvfhYZs7ePnqwA4VL+Lxsn5pnXytT2RnXcJN9pW9Nz2jb+T0QSaA5XTfaLy4X
-# 5Xl0O/X82Usu2VfQMVsfiqQVlF0zT0PNh/Pe1otp7Xqo/tTW7XnskasD6wCuiCkV
-# jD99V2CV4VcxkJ4i6LD2YPqQL8b5oYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
+# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIHFGcke6HzdDNddK831+
+# /gIw1euVwKJTvM3/AvpWWYILMA0GCSqGSIb3DQEBAQUABIICACfaGYWawGevY3ES
+# /IJi8No7QCn6ySuP3LtTc9821E7nwZsRyWooFah6rEy8EBxo7tMqF8EkTa7PvRgy
+# uh/pe8iNaCoOdEwMewz5MO1fE1h3CiEyg4lnCtSrufB/cfwZcGuHu+ZpQQXg4i6I
+# qx/5eqiWxiuBOIy1PhJF6VY/siKogf7WO5uoJ93p4RNhYfnAoBbCTuLGsjfa/Auf
+# 3QYuL/7o2fwUvCXgCQVla9EHXZYNqhcZp/Ijn5hl9/2oT5w5Utg7WtFjaW9hzgnz
+# 9SLDbFgS8SxAL1t5R6gS3dz2ZevIwVZ8t9nFGg8B6qJCPLiwBmkdrzkLfBw88izp
+# CgUCFIv7NUCNjIpDcy/LUe0d2c3HmacueMSlXKvbWUHBOITAd1o+gS5eA5oVEvGf
+# G/g3teke3BIXTqnU14YSg9vxuEytmMeLHdDVR8ANnHWaV9DQXeEieMVxGlWos3S/
+# +uFyinhqqKSIVbUTp/j2Tae0fj2x/IM7j9tmNIRjtHhAdC+lJMztH1jWqb4HrZ2j
+# gSQH0HzJyZ5mcc8KI4ygC39Anaa8h/k2Qhjhp3LbwHVL2/aFBgagHvOZeJBcv2Yi
+# mkEDvzAcoUuoHHYL12eRkeACC7tO/qZciRyt+0ov7ZpcGTghg6sZPSdw76Kkjzm9
+# glcJQCEBhqfLNbAaVKliDTaTHZXdoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
 # AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw
 # PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2
 # IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF
 # AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2
-# MTEwNTA0MTYzM1owLwYJKoZIhvcNAQkEMSIEIM9XzMySgGq9Tc6SyXORRQ3Y7f0P
-# i6fAs1uUxl+Wk2UxMA0GCSqGSIb3DQEBAQUABIICAJq71YnfTLYNO6w7hdoEYGql
-# qveNbSgJJlH8bG+3+zyu5wSH6wFMBtmphDPnHfR5gaWaMW1tPEMUNRAjH09dha96
-# OH2zB0wcYJPG0p/WdRjgYoQCZ52EHHg66SyW5G1P2cEFYe09yDUwQ/mD+QceqXKT
-# eVtIul13qIcn+84TEOIV9bT7tEnQgt6A6KBSjczwpykOup7ldNJDB+ZmKt4OgSfv
-# Gk3ttS1aK55lmqkOvYI0BBPqrM6QI/AeX+7/t0xHf6lhZ67vfA/mX8CY8vANs5rt
-# 0bmDCM93sQdNfSpnQ8km1rU6AZsIy15V8NtG8Wd2mRnyqoY5iKTYRcoS0o2WtorP
-# pgPE360cYiveG4zuh3OHVyIVuU9mPXStY61qSxo67Ft4V02VHurhcXAbBD6dw6Eg
-# lor6HkD73WCZK8Lix3gR+VUgDCbaQgNO+S0EeeFNjPBEcI1xcT3/XEwwDCLdNY4s
-# b0AzCHG4855/vl1NVJwIXVQWfhdzDyhg500lDmG5w0B6sxeyN8iwORVky47qPH2f
-# yedHHWxzVfMuAa7ZAuR6FLqrOrcOcSUObaB8qv1xcoE/lrlotDVP/i+8kYjy8sx4
-# 8sTQW6FQ+XLVrW7EN49sGSdt1bLx24QHtCXutCj/iLJSyuZ4ZZANU8VQKb9wpQnt
-# IpNigiq2QRetEFsYoRYK
+# MTExMzAxMjA0MFowLwYJKoZIhvcNAQkEMSIEIK76uiH1Ahvyya5qonzxoVefGF2f
+# BgzCp1fB07JJrYhgMA0GCSqGSIb3DQEBAQUABIICABYNTTDJZX54UJyq2lpjf9vL
+# 7fV6XOZozQQe4eIJVqgWNyG41z7HUahTSbLP2y0FCEnT4EkdBLxGhdwdaHw3kw7w
+# y+YkmZpp/I72Rp8fEDLioqVEflxujAGgEvLv0HlnXg4TYatceFbYYIIjrTlYaPz9
+# 5VawrwWwfacTjXGvkFEKGvhjBwi0hV8g1NBPKh+16zMXqSH+noIrBKkkRflyqKhs
+# X5Gx0v829eKxoh+tu9iGS3t1pmp4vD9dBezpNScPXdGrMRERBwDFzPXFU4nm1Nk6
+# s9j6cEykNjVmhlEgsWw6A3GPWB0qKkphyzQAlFc04E822/1tdKvXr1QWXuumqmzE
+# e0HtWmJbjA6RwaCj2SPt/H1hwt1L3cUZ5irvje4jTpfct9KDtBWi1FY910WD0POo
+# O3zKwt7icQzUYaioLPvzu4OTIMm3uUI5H6v3OuQbguHInDIB/X4Bof1h4lKAzfKw
+# xNat8YQKs5keToVEySAXlE3IwouUbAM8FhJXrmYlcWiVCsRCG5yBRprRXfrL9U9v
+# IJbpyRRgHQrr/tOZW5PbSiou/VifRy9rbSo+ifeVSmsxTN3UUfAPAODAOQamEV9m
+# Yj6smO0Qzam2WuIQ9zAkfvNs3zrJHmgZXXw+/0PRK4QSs4Hwc0JXk7czT7vIq4PB
+# m6l8csZjoYWfB2J4Twf0
 # SIG # End signature block
