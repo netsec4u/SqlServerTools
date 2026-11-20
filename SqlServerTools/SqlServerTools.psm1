@@ -2633,8 +2633,8 @@ function Backup-SmoDatabase {
 			if ($ServerMessageEventArgs.Error.Number -eq 3014) {
 				$RegExPattern = '(?<Start>\sprocessed\s)(?<Pages>\d{1,})\spages\sin\s(?<Seconds>(\d{1,}(\.\d{1,})?))\sseconds\s\((?<MBPerSecond>(\d{1,}(\.\d{1,})?)).*'
 
-				$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::Multiline)
-				$RegExMatches = $RegEx.Matches($ServerMessageEventArgs.Error.Message)
+				$RegEx = [regex]::New($RegExPattern, [System.Text.RegularExpressions.RegexOptions]::SingleLine)
+				$RegExMatches = $RegEx.Match($ServerMessageEventArgs.Error.Message)
 
 				$Backup = [SqlServerTools.Backup]::New()
 
@@ -2668,9 +2668,9 @@ function Backup-SmoDatabase {
 					}
 				}
 
-				$Backup.Pages = $RegExMatches.Groups.Where({$_.Name -eq 'Pages'}).Value
-				$Backup.Seconds = $RegExMatches.Groups.Where({$_.Name -eq 'Seconds'}).Value
-				$Backup.MBPerSecond = $RegExMatches.Groups.Where({$_.Name -eq 'MBPerSecond'}).Value
+				$Backup.Pages = $RegExMatches.Groups.Item('Pages').Value
+				$Backup.Seconds = $RegExMatches.Groups.Item('Seconds').Value
+				$Backup.MBPerSecond = [decimal]::Parse($RegExMatches.Groups.Item('MBPerSecond').Value, [System.Globalization.CultureInfo]::InvariantCulture)
 				$Backup.LogicalFiles = $script:BackupLogicalFileList
 
 				$script:Output = $Backup
@@ -16986,8 +16986,8 @@ catch {
 # SIG # Begin signature block
 # MIInywYJKoZIhvcNAQcCoIInvDCCJ7gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDR4/ZpfUmwlzP8
-# CTVgd02CQGyFoZPDo5TJBQb4seIiNqCCINswggWNMIIEdaADAgECAhAOmxiO+dAt
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAeUAqPENrMFWgW
+# MYEznf9IHDnK1R6ASDVdbVDEGU8Kd6CCINswggWNMIIEdaADAgECAhAOmxiO+dAt
 # 5+/bUOIIQBhaMA0GCSqGSIb3DQEBDAUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
 # EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNV
 # BAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0yMjA4MDEwMDAwMDBa
@@ -17167,34 +17167,34 @@ catch {
 # Uy5BLjEkMCIGA1UEAxMbQ2VydHVtIENvZGUgU2lnbmluZyAyMDIxIENBAhBDuzRB
 # nypScc4/rofK9qMeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcCAQwxCjAI
 # oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
-# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIHFGcke6HzdDNddK831+
-# /gIw1euVwKJTvM3/AvpWWYILMA0GCSqGSIb3DQEBAQUABIICACfaGYWawGevY3ES
-# /IJi8No7QCn6ySuP3LtTc9821E7nwZsRyWooFah6rEy8EBxo7tMqF8EkTa7PvRgy
-# uh/pe8iNaCoOdEwMewz5MO1fE1h3CiEyg4lnCtSrufB/cfwZcGuHu+ZpQQXg4i6I
-# qx/5eqiWxiuBOIy1PhJF6VY/siKogf7WO5uoJ93p4RNhYfnAoBbCTuLGsjfa/Auf
-# 3QYuL/7o2fwUvCXgCQVla9EHXZYNqhcZp/Ijn5hl9/2oT5w5Utg7WtFjaW9hzgnz
-# 9SLDbFgS8SxAL1t5R6gS3dz2ZevIwVZ8t9nFGg8B6qJCPLiwBmkdrzkLfBw88izp
-# CgUCFIv7NUCNjIpDcy/LUe0d2c3HmacueMSlXKvbWUHBOITAd1o+gS5eA5oVEvGf
-# G/g3teke3BIXTqnU14YSg9vxuEytmMeLHdDVR8ANnHWaV9DQXeEieMVxGlWos3S/
-# +uFyinhqqKSIVbUTp/j2Tae0fj2x/IM7j9tmNIRjtHhAdC+lJMztH1jWqb4HrZ2j
-# gSQH0HzJyZ5mcc8KI4ygC39Anaa8h/k2Qhjhp3LbwHVL2/aFBgagHvOZeJBcv2Yi
-# mkEDvzAcoUuoHHYL12eRkeACC7tO/qZciRyt+0ov7ZpcGTghg6sZPSdw76Kkjzm9
-# glcJQCEBhqfLNbAaVKliDTaTHZXdoYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
+# CzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIDsGeSHfiuGWGRJCAYYP
+# yL05emgPJtboUjmc/ATEqiPDMA0GCSqGSIb3DQEBAQUABIICAGRtGh9jEYTivk3D
+# 8SnOpvP3nqoFcV0Iu80AVE5xGGbrvpvqGKYe7lMqutRkMrjo+c3XGCuyuhSjQLVg
+# fv/YM9BS0ACw28AXYj5OLaXiYEZ5/mHjWDl1JfM8J3he+kmg/u31p8edyCRKzMxu
+# OaTY/kKzRxknDiW4PNY7GDdo6IqpWxj+xMDIv8AsiAyUuUhrfp9xIn+WQOUQAwZC
+# E+FiLFY6AyLlPJyY4douVwG4P74cwnqq7O0Wwd94gF2Onlx5Z18F6b6UyFKoqCNv
+# 0K1DP3nGoyyfzdW03QWpXy+nfmZ2uXPX/Ieo7yTrJ2iUeiJnpARZNR+xClc9XEbE
+# P9qDNy4nzdm1U+gcgxYKZqmEWS5ajufhvd3XzPDsDKmRE6PilH/xbqxHvXY0e84T
+# r64CFenimr8bG7/vjcXSfmTzHE8pbfGGQbhWZJJnT5bkLOMDn3KSPz0nOEkB1UEl
+# B5BKmyyHQOOdfgWNU4noRKiS39jNCGP2uBPu/TVSEnZNjEfnWq60T9uxTqqiNplj
+# p+7z3mkT7di/kr6d55g2XqfaORAQiV9kEJz1QwQba+2kKuJljx6NlvWR05P1TYmq
+# 775JbCnz+SDQKYfynql5lKRlCJBr+pJ8443GSE6do6pLxRqzv7AeSihUXp8WXpPc
+# lair35T4mmMxP/DIDjt3kJHGzgX2oYIDJjCCAyIGCSqGSIb3DQEJBjGCAxMwggMP
 # AgEBMH0waTELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJbmMuMUEw
 # PwYDVQQDEzhEaWdpQ2VydCBUcnVzdGVkIEc0IFRpbWVTdGFtcGluZyBSU0E0MDk2
 # IFNIQTI1NiAyMDI1IENBMQIQCE/cM09+RU7bww+P+ZIYNTANBglghkgBZQMEAgEF
 # AKBpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI2
-# MTExMzAxMjA0MFowLwYJKoZIhvcNAQkEMSIEIK76uiH1Ahvyya5qonzxoVefGF2f
-# BgzCp1fB07JJrYhgMA0GCSqGSIb3DQEBAQUABIICABYNTTDJZX54UJyq2lpjf9vL
-# 7fV6XOZozQQe4eIJVqgWNyG41z7HUahTSbLP2y0FCEnT4EkdBLxGhdwdaHw3kw7w
-# y+YkmZpp/I72Rp8fEDLioqVEflxujAGgEvLv0HlnXg4TYatceFbYYIIjrTlYaPz9
-# 5VawrwWwfacTjXGvkFEKGvhjBwi0hV8g1NBPKh+16zMXqSH+noIrBKkkRflyqKhs
-# X5Gx0v829eKxoh+tu9iGS3t1pmp4vD9dBezpNScPXdGrMRERBwDFzPXFU4nm1Nk6
-# s9j6cEykNjVmhlEgsWw6A3GPWB0qKkphyzQAlFc04E822/1tdKvXr1QWXuumqmzE
-# e0HtWmJbjA6RwaCj2SPt/H1hwt1L3cUZ5irvje4jTpfct9KDtBWi1FY910WD0POo
-# O3zKwt7icQzUYaioLPvzu4OTIMm3uUI5H6v3OuQbguHInDIB/X4Bof1h4lKAzfKw
-# xNat8YQKs5keToVEySAXlE3IwouUbAM8FhJXrmYlcWiVCsRCG5yBRprRXfrL9U9v
-# IJbpyRRgHQrr/tOZW5PbSiou/VifRy9rbSo+ifeVSmsxTN3UUfAPAODAOQamEV9m
-# Yj6smO0Qzam2WuIQ9zAkfvNs3zrJHmgZXXw+/0PRK4QSs4Hwc0JXk7czT7vIq4PB
-# m6l8csZjoYWfB2J4Twf0
+# MTEyMDIwNTY1OFowLwYJKoZIhvcNAQkEMSIEIDv5oHPalgDQ9pvMnyeEDbWS/3E8
+# 9/GCTqd0+CNI49pqMA0GCSqGSIb3DQEBAQUABIICAIyNft1ocr57FekmFc4lQWVM
+# ZPDf1AIa0Tp+kuO/Dw8nXoWblcTBnkSG8p6ARnyKgCE7Yxq4cpNLmpFtQrk2n+yR
+# uiBh79Y4airNF0kApJMmycjxOW8O51aqgqnut7Q2/oLWNRj8bdEFj9Qd+S4PowqU
+# XRwS/02hB2VeAEQ2REcIKpPzdKV6N6r9t0F9D3tpzZx+VkhMUVYf6gL5OQupxus9
+# YuGXhtj56gH/LMrcDgWOfeY1qY89p4QKgJXE/iWEzTiXnnTxG3LMJZrWUAdpCCMG
+# 0dAZLts46o65QxEJI7VehtfMuKOPk0pHrZy/CGhs7xIGP6yG13BNFXJYwfxXJRDd
+# zKJYCmxMEH0clz4GBS8XbyFCcZkgwlPRm6ApuQ0u9/v/KKu7dBDiZdM0tahEZwik
+# 4MdYMItTSQv648H6pho8RwiWuXrHhFzJFyDQbuZND8ZI9epR27vd0GOB9fhGhtA3
+# dISIDsFDiqUsta9ERYlfNDYmynQyljyOPgSbTVvj4ti2AhQ/nFr5VpPpYxjv9wwT
+# eThROFr4jN2pg9gs1u6rENeIwGOg1hHEe+bOm3irY8E/2vY0nEDYPHnFV5IgCTcs
+# W65tENQVm6ssSg2KSTUEC3wBS4C0avc521cX2OGBFH5VdQJG9pXHXRCdnTDESbz0
+# vN421KO0Loj6gjm6aYiC
 # SIG # End signature block
